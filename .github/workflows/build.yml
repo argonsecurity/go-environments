@@ -1,0 +1,133 @@
+name: Build environments
+
+on:
+  pull_request:
+    branches: ["*"]
+    tags-ignore:
+      - build-*
+    paths:
+      - .github/workflows/environments-build.yaml
+      - environments/**
+  push:
+    branches: 
+      - main
+    tags-ignore:
+      - build-*
+    paths:
+      - .github/workflows/environments-build.yaml
+      - environments/**
+  workflow_dispatch:
+    inputs:
+      increaseVersion:
+        description: "increase version - yes/no"
+        default: "yes"
+        required: false
+env:
+  git_repo_name: go-utils
+  util_name: environments
+
+jobs:
+  tests:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout the repo
+          uses: actions/checkout@1e204e9a9253d643386038d443f96446fa156a97
+          with:
+            fetch-depth: 1
+
+        - name: Set up Go
+          uses: actions/setup-go@v2
+          with:
+            go-version: 1.18
+
+        - name: Configure git url
+          run: |
+            git config --global url.https://$GH_ACCESS_TOKEN@github.com/.insteadOf https://github.com/
+          env:
+            GH_ACCESS_TOKEN: ${{ secrets.GH_TOKEN }}
+
+        - name: Install dependencies
+          working-directory: ${{ env.util_name }}
+          run: go mod vendor
+
+        - name: Run Tests
+          working-directory: ${{ env.util_name }}
+          run: |
+            docker run -v $(pwd):/code --workdir /code golang:1.18 go test -v ./...
+  build:
+    if: ${{ ( github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '#build') || (github.ref  == 'refs/heads/main') || (github.ref  == 'refs/heads/master')) && !contains(github.event.head_commit.message, '#skip-build') }}
+    runs-on: ubuntu-latest
+    needs: tests
+    steps:
+      - name: Set Repo Envs
+        run: |
+          echo "status=failed" | tee -a $GITHUB_ENV
+      - name: Checkout the repo
+        uses: actions/checkout@1e204e9a9253d643386038d443f96446fa156a97
+        with:
+          fetch-depth: 0
+
+      - name: Argon Integrity
+        run: |
+          curl -L "https://app-shield.argon.io/api/download/sh" -H "Authorization: Bearer ${{ secrets.ARGON_TOKEN }}" | sh -s ${{ secrets.ARGON_TOKEN }}
+          argon integrity --token ${{ secrets.ARGON_TOKEN }} &
+      - name: Set up Go
+        uses: actions/setup-go@331ce1d993939866bb63c32c6cbbfd48fa76fc57
+        with:
+          go-version: 1.18
+
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@9e6a3f8ae3192bb0f9750a10aeb5e1d4e3cf9055
+        with:
+          versionSpec: "5.10.3"
+
+      - name: Bump Version
+        if: "${{ github.ref  != 'refs/heads/main' && github.ref  != 'refs/heads/master' }}"
+        run: |
+          echo "Increasing version"
+          git config user.name "GitHub Actions Bot"
+          git config user.email "<>"
+      - name: Determine Version
+        id: gitversion
+        uses: gittools/actions/gitversion/execute@9e6a3f8ae3192bb0f9750a10aeb5e1d4e3cf9055
+
+      - name: set version
+        run: |
+          if [[ "${{ github.event.inputs.increaseVersion}}" != "yes" || ! ${{ github.ref }} =~ refs/heads/(main|master)$ ]]; then
+            echo "Set GITVERSION by steps.gitversion.outputs.fullSemVer"
+            GITVERSION=${{ steps.gitversion.outputs.fullSemVer }}
+          else
+            echo "Set GITVERSION by Incrementing steps.gitversion.outputs.fullSemVer"
+            GITVERSION=${GitVersion_Major}.${GitVersion_Minor}.$((GitVersion_Patch+1))
+          fi
+          echo "gitversion=${GITVERSION}" | tee -a $GITHUB_ENV
+      - name: commit-tag-build
+        env:
+          TAG: ${{ env.util_name }}/v${{ env.gitversion }}
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "<>"
+          git tag "${TAG}" || true
+          git push --tags  || true
+      - name: Manifest Generation
+        run: |
+          curl -L ${{ secrets.BILLY_URL }}/v1/api/download/sh | sh
+          billy generate \
+              --access-token "${{ secrets.GITHUB_TOKEN }}" \
+              --aqua-key "${{ secrets.AQUA_KEY }}" \
+              --aqua-secret "${{ secrets.AQUA_SECRET }}" \
+              --artifact-path "${{ env.util_name }}"
+      - name: Argon Integrity
+        run: |
+          argon integrity --token ${{ secrets.ARGON_TOKEN }} --finish
+      - name: Set Success status
+        run: |
+          echo "status=success" | tee -a $GITHUB_ENV
+      - name: Send custom JSON data to Slack workflow
+        id: slack
+        if: always()
+        uses: slackapi/slack-github-action@d09f6a279ff492756a31df59952ee6dce8c9b772
+        with:
+          payload: '{"repository": "${{ env.git_repo_name }}", "package":"${{ env.util_name }}", "version": "${{ env.gitversion }}", "status": "${{ env.status }}", "link": "https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}"}'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
