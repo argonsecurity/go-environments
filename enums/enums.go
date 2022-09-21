@@ -13,6 +13,5 @@ const (
 	BitbucketServer Source = "bitbucket_server"
 	Jenkins         Source = "jenkins"
 	Localhost       Source = "localhost"
-	CircleCi        Source = "circleCI"
 	Unknown         Source = "unknown"
 )
