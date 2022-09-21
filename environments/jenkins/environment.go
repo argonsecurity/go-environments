@@ -28,8 +28,9 @@ const (
 	runURLEnv             = "RUN_DISPLAY_URL"
 	repositoryCloneURLEnv = "GIT_URL"
 
-	buildIDEnv = "BUILD_ID"
-	nodeIDEnv  = "NODE_NAME"
+	buildIDEnv     = "BUILD_ID"
+	buildNumberEnv = "BUILD_NUMBER"
+	nodeIDEnv      = "NODE_NAME"
 
 	jobNameEnv   = "JOB_NAME"
 	nodeNameEnv  = "NODE_NAME"
@@ -169,9 +170,9 @@ func loadConfiguration() (*models.Configuration, error) {
 			Id:   os.Getenv(stageNameEnv),
 			Name: os.Getenv(stageNameEnv),
 		},
-		Run: models.Entity{
-			Id:   os.Getenv(buildIDEnv),
-			Name: os.Getenv(runNameEnv),
+		Run: models.BuildRun{
+			BuildId:     os.Getenv(buildIDEnv),
+			BuildNumber: os.Getenv(buildNumberEnv),
 		},
 		Runner: models.Runner{
 			Id:           os.Getenv(nodeIDEnv),
@@ -197,6 +198,9 @@ func loadConfiguration() (*models.Configuration, error) {
 	}
 
 	configuration = environments.EnhanceConfiguration(configuration)
+	if configuration.Pusher.Username == "" {
+		configuration.Pusher.Username = utils.DetectPusher()
+	}
 	configuration.Repository.CloneUrl = utils.StripCredentialsFromUrl(configuration.Repository.CloneUrl)
 	return configuration, nil
 }

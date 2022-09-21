@@ -36,9 +36,9 @@ func loadConfiguration() {
 			Id:   "localhost",
 			Name: "localhost",
 		},
-		Run: models.Entity{
-			Id:   "localhost",
-			Name: "localhost",
+		Run: models.BuildRun{
+			BuildId:     "localhost",
+			BuildNumber: "localhost",
 		},
 		Runner: models.Runner{
 			Id:   "localhost",

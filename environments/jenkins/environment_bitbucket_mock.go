@@ -40,9 +40,9 @@ func loadMockBitbucketConfiguration() error {
 			Source:   enums.Bitbucket,
 			Url:      fmt.Sprintf("https://bitbucket.org/%s/%s.git", MockBitbucketWorkspace, MockBitbucketRepo),
 		},
-		Run: models.Entity{
-			Id:   "4",
-			Name: "jenkins-test-pipeline-main-4",
+		Run: models.BuildRun{
+			BuildId:     "4",
+			BuildNumber: "jenkins-test-pipeline-main-4",
 		},
 		Runner: models.Runner{
 			Id:   "built_in",

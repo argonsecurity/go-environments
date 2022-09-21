@@ -313,9 +313,9 @@ func Test_environment_GetConfiguration(t *testing.T) {
 					Id:   "Run all",
 					Name: "Run all",
 				},
-				Run: models.Entity{
-					Id:   "4",
-					Name: "jenkins-test-project-4",
+				Run: models.BuildRun{
+					BuildId:     "4",
+					BuildNumber: "4",
 				},
 				Runner: models.Runner{
 					Id:           "master",
@@ -366,9 +366,9 @@ func Test_environment_GetConfiguration(t *testing.T) {
 					Id:   "Run all",
 					Name: "Run all",
 				},
-				Run: models.Entity{
-					Id:   "4",
-					Name: "jenkins-test-project-4",
+				Run: models.BuildRun{
+					BuildId:     "4",
+					BuildNumber: "4",
 				},
 				Runner: models.Runner{
 					Id:           "master",

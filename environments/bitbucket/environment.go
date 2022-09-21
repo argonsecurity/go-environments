@@ -13,12 +13,13 @@ import (
 )
 
 const (
-	repositoryPathEnv     = "BITBUCKET_CLONE_DIR"
-	repositoryNameEnv     = "BITBUCKET_REPO_SLUG"
-	repositoryIdEnv       = "BITBUCKET_REPO_UUID"
-	repositoryUrlEnv      = "BITBUCKET_GIT_HTTP_ORIGIN"
-	repositoryFullNameEnv = "BITBUCKET_REPO_FULL_NAME"
-	workspaceEnv          = "BITBUCKET_WORKSPACE"
+	repositoryPathEnv      = "BITBUCKET_CLONE_DIR"
+	repositoryNameEnv      = "BITBUCKET_REPO_SLUG"
+	repositoryIdEnv        = "BITBUCKET_REPO_UUID"
+	repositoryUrlEnv       = "BITBUCKET_GIT_HTTP_ORIGIN"
+	repositoryFullNameEnv  = "BITBUCKET_REPO_FULL_NAME"
+	workspaceEnv           = "BITBUCKET_WORKSPACE"
+	prDestentaionCommitEnv = "BITBUCKET_PR_DESTINATION_COMMIT"
 
 	buildNumber = "BITBUCKET_BUILD_NUMBER"
 
@@ -78,8 +79,12 @@ func loadConfiguration() *models.Configuration {
 			Id:   os.Getenv(pipelineIdEnv),
 			Name: os.Getenv(repositoryNameEnv),
 		},
-		Run: models.Entity{
-			Id: os.Getenv(buildNumber),
+		Run: models.BuildRun{
+			BuildId:     os.Getenv(buildNumber),
+			BuildNumber: os.Getenv(buildNumber),
+		},
+		Pusher: models.Pusher{
+			Username: utils.DetectPusher(),
 		},
 		Runner: models.Runner{
 			OS:           runtime.GOOS,
@@ -87,6 +92,9 @@ func loadConfiguration() *models.Configuration {
 		},
 		PullRequest: models.PullRequest{
 			Id: os.Getenv(mergeRequestIdEnv),
+			TargetRef: models.Ref{
+				Branch: os.Getenv(prDestentaionCommitEnv),
+			},
 		},
 		PipelinePaths: getPipelinePaths(repoPath),
 		Environment:   source,

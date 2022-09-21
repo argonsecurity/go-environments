@@ -60,8 +60,9 @@ func Test_environment_GetConfiguration(t *testing.T) {
 					Id:   "a65c82d2-643f-4362-b55d-ad095527b237-8",
 					Name: "test-pipeline",
 				},
-				Run: models.Entity{
-					Id: "152",
+				Run: models.BuildRun{
+					BuildId: "152",
+					BuildNumber: "20220912.1",
 				},
 				Runner: models.Runner{
 					Id:           "8",
@@ -118,8 +119,9 @@ func Test_environment_GetConfiguration(t *testing.T) {
 					Id:   "a65c82d2-643f-4362-b55d-ad095527b237-8",
 					Name: "test-pipeline",
 				},
-				Run: models.Entity{
-					Id: "178",
+				Run: models.BuildRun{
+					BuildId:     "178",
+					BuildNumber: "20220912.12",
 				},
 				Runner: models.Runner{
 					Id:           "8",
