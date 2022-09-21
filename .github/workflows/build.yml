@@ -100,7 +100,7 @@ jobs:
           echo "gitversion=${GITVERSION}" | tee -a $GITHUB_ENV
       - name: commit-tag-build
         env:
-          TAG: ${{ env.util_name }}/v${{ env.gitversion }}
+          TAG: v${{ env.gitversion }}
         run: |
           git config user.name "GitHub Actions Bot"
           git config user.email "<>"
