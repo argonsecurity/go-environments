@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"os"
 
-	"github.com/argonsecurity/go-utils/environments/environments/utils"
-	"github.com/argonsecurity/go-utils/environments/models"
+	"github.com/argonsecurity/go-environments/environments/utils"
+	"github.com/argonsecurity/go-environments/models"
 )
 
 const (

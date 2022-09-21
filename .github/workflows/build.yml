@@ -7,15 +7,13 @@ on:
       - build-*
     paths:
       - .github/workflows/environments-build.yaml
-      - environments/**
   push:
-    branches: 
+    branches:
       - main
     tags-ignore:
       - build-*
     paths:
       - .github/workflows/environments-build.yaml
-      - environments/**
   workflow_dispatch:
     inputs:
       increaseVersion:
@@ -23,36 +21,36 @@ on:
         default: "yes"
         required: false
 env:
-  git_repo_name: go-utils
+  git_repo_name: go-environments
   util_name: environments
 
 jobs:
   tests:
-      runs-on: ubuntu-latest
-      steps:
-        - name: Checkout the repo
-          uses: actions/checkout@1e204e9a9253d643386038d443f96446fa156a97
-          with:
-            fetch-depth: 1
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@1e204e9a9253d643386038d443f96446fa156a97
+        with:
+          fetch-depth: 1
 
-        - name: Set up Go
-          uses: actions/setup-go@v2
-          with:
-            go-version: 1.18
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.18
 
-        - name: Configure git url
-          run: |
-            git config --global url.https://$GH_ACCESS_TOKEN@github.com/.insteadOf https://github.com/
-          env:
-            GH_ACCESS_TOKEN: ${{ secrets.GH_TOKEN }}
+      - name: Configure git url
+        run: |
+          git config --global url.https://$GH_ACCESS_TOKEN@github.com/.insteadOf https://github.com/
+        env:
+          GH_ACCESS_TOKEN: ${{ secrets.GH_TOKEN }}
 
-        - name: Install dependencies
-          working-directory: ${{ env.util_name }}
-          run: go mod vendor
+      - name: Install dependencies
+        working-directory: "."
+        run: go mod vendor
 
-        - name: Run Tests
-          run: |
-            docker run -v $(pwd):/code --workdir /code golang:1.18 go test -v ./...
+      - name: Run Tests
+        run: |
+          docker run -v $(pwd):/code --workdir /code golang:1.18 go test -v ./...
   build:
     if: ${{ ( github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '#build') || (github.ref  == 'refs/heads/main') || (github.ref  == 'refs/heads/master')) && !contains(github.event.head_commit.message, '#skip-build') }}
     runs-on: ubuntu-latest
@@ -102,7 +100,7 @@ jobs:
           echo "gitversion=${GITVERSION}" | tee -a $GITHUB_ENV
       - name: commit-tag-build
         env:
-          TAG: ${{ env.util_name }}/v${{ env.gitversion }}
+          TAG: v${{ env.gitversion }}
         run: |
           git config user.name "GitHub Actions Bot"
           git config user.email "<>"
@@ -115,7 +113,7 @@ jobs:
               --access-token "${{ secrets.GITHUB_TOKEN }}" \
               --aqua-key "${{ secrets.AQUA_KEY }}" \
               --aqua-secret "${{ secrets.AQUA_SECRET }}" \
-              --artifact-path "${{ env.util_name }}"
+              --artifact-path "."
       - name: Argon Integrity
         run: |
           argon integrity --token ${{ secrets.ARGON_TOKEN }} --finish

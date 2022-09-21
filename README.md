@@ -39,7 +39,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/argonsecurity/go-utils/environments"
+	"github.com/argonsecurity/go-environments"
 )
 
 func main() {

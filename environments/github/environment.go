@@ -11,10 +11,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/argonsecurity/go-utils/environments/enums"
-	"github.com/argonsecurity/go-utils/environments/environments/utils"
-	"github.com/argonsecurity/go-utils/environments/environments/utils/git"
-	"github.com/argonsecurity/go-utils/environments/models"
+	"github.com/argonsecurity/go-environments/enums"
+	"github.com/argonsecurity/go-environments/environments/utils"
+	"github.com/argonsecurity/go-environments/environments/utils/git"
+	"github.com/argonsecurity/go-environments/models"
 )
 
 const (
@@ -23,6 +23,7 @@ const (
 	githubServerEnv     = "GITHUB_SERVER_URL"
 	githubWorkflowEnv   = "GITHUB_WORKFLOW"
 	githubRunIdEnv      = "GITHUB_RUN_ID"
+	githubRunNumberEnv  = "GITHUB_RUN_NUMBER"
 	repositoryPathEnv   = "GITHUB_WORKSPACE"
 
 	githubJobEnv = "GITHUB_JOB"
@@ -80,6 +81,10 @@ func loadConfiguration() error {
 		cloneUrl = fmt.Sprintf("%s.git", repoUrl)
 	}
 
+	username := payload.Sender.Login
+	if username == "" {
+		configuration.Pusher.Username = utils.DetectPusher()
+	}
 	strippedCloneUrl := utils.StripCredentialsFromUrl(cloneUrl)
 	scmId := utils.GenerateScmId(strippedCloneUrl)
 
@@ -91,8 +96,9 @@ func loadConfiguration() error {
 		LocalPath: repoPath,
 		CommitSha: os.Getenv(commitShaEnv),
 		Branch:    getBranch(),
-		Run: models.Entity{
-			Id: os.Getenv(githubRunIdEnv),
+		Run: models.BuildRun{
+			BuildId:     os.Getenv(githubRunIdEnv),
+			BuildNumber: os.Getenv(githubRunNumberEnv),
 		},
 		Job: models.Entity{
 			Id:   os.Getenv(githubJobEnv),
@@ -133,11 +139,13 @@ func loadConfiguration() error {
 				Id:   strconv.Itoa(payload.Sender.Id),
 				Name: payload.Sender.Login,
 			},
+			Username: username,
 		},
 		PipelinePaths: pipelines,
 		Environment:   source,
 		ScmId:         scmId,
 	}
+
 	return nil
 }
 

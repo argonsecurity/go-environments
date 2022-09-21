@@ -1,0 +1,6 @@
+trigger:
+  - main
+pool: default
+variables:
+  trivyVersion: 0.31.2
+steps: [

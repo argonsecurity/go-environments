@@ -5,11 +5,11 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/argonsecurity/go-utils/environments/enums"
-	"github.com/argonsecurity/go-utils/environments/environments/testutils"
-	"github.com/argonsecurity/go-utils/environments/environments/testutils/mocks"
-	"github.com/argonsecurity/go-utils/environments/environments/utils/git"
-	"github.com/argonsecurity/go-utils/environments/models"
+	"github.com/argonsecurity/go-environments/enums"
+	"github.com/argonsecurity/go-environments/environments/testutils"
+	"github.com/argonsecurity/go-environments/environments/testutils/mocks"
+	"github.com/argonsecurity/go-environments/environments/utils/git"
+	"github.com/argonsecurity/go-environments/models"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -313,9 +313,9 @@ func Test_environment_GetConfiguration(t *testing.T) {
 					Id:   "Run all",
 					Name: "Run all",
 				},
-				Run: models.Entity{
-					Id:   "4",
-					Name: "jenkins-test-project-4",
+				Run: models.BuildRun{
+					BuildId:     "4",
+					BuildNumber: "4",
 				},
 				Runner: models.Runner{
 					Id:           "master",
@@ -366,9 +366,9 @@ func Test_environment_GetConfiguration(t *testing.T) {
 					Id:   "Run all",
 					Name: "Run all",
 				},
-				Run: models.Entity{
-					Id:   "4",
-					Name: "jenkins-test-project-4",
+				Run: models.BuildRun{
+					BuildId:     "4",
+					BuildNumber: "4",
 				},
 				Runner: models.Runner{
 					Id:           "master",

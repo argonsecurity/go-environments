@@ -1,8 +1,8 @@
 package localhost
 
 import (
-	"github.com/argonsecurity/go-utils/environments/enums"
-	"github.com/argonsecurity/go-utils/environments/models"
+	"github.com/argonsecurity/go-environments/enums"
+	"github.com/argonsecurity/go-environments/models"
 )
 
 var (
@@ -36,9 +36,9 @@ func loadConfiguration() {
 			Id:   "localhost",
 			Name: "localhost",
 		},
-		Run: models.Entity{
-			Id:   "localhost",
-			Name: "localhost",
+		Run: models.BuildRun{
+			BuildId:     "localhost",
+			BuildNumber: "localhost",
 		},
 		Runner: models.Runner{
 			Id:   "localhost",

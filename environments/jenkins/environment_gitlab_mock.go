@@ -3,8 +3,8 @@ package jenkins
 import (
 	"fmt"
 
-	"github.com/argonsecurity/go-utils/environments/enums"
-	"github.com/argonsecurity/go-utils/environments/models"
+	"github.com/argonsecurity/go-environments/enums"
+	"github.com/argonsecurity/go-environments/models"
 )
 
 var (
@@ -43,9 +43,9 @@ func loadMockGitlabConfiguration() error {
 		Pipeline: models.Entity{
 			Name: "test pipeline",
 		},
-		Run: models.Entity{
-			Id:   "4",
-			Name: "jenkins-test-pipeline-main-4",
+		Run: models.BuildRun{
+			BuildId:     "4",
+			BuildNumber: "jenkins-test-pipeline-main-4",
 		},
 		Runner: models.Runner{
 			Id:   "built_in",

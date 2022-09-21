@@ -5,9 +5,9 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/argonsecurity/go-utils/environments/enums"
-	"github.com/argonsecurity/go-utils/environments/environments/testutils"
-	"github.com/argonsecurity/go-utils/environments/models"
+	"github.com/argonsecurity/go-environments/enums"
+	"github.com/argonsecurity/go-environments/environments/testutils"
+	"github.com/argonsecurity/go-environments/models"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -62,9 +62,11 @@ func Test_environment_GetConfiguration(t *testing.T) {
 					OS:           "linux/amd64",
 					Architecture: runtime.GOARCH,
 				},
-				Run: models.Entity{
-					Id:   "3210743970",
-					Name: "deploy-main",
+				Run: models.BuildRun{
+					BuildId: "3210743970",
+				},
+				Pusher: models.Pusher{
+					Username: "User Name",
 				},
 				PullRequest: models.PullRequest{
 					Id: "",
@@ -117,9 +119,11 @@ func Test_environment_GetConfiguration(t *testing.T) {
 					OS:           "linux/amd64",
 					Architecture: runtime.GOARCH,
 				},
-				Run: models.Entity{
-					Id:   "5510622136",
-					Name: "deploy-branch",
+				Run: models.BuildRun{
+					BuildId: "5510622136",
+				},
+				Pusher: models.Pusher{
+					Username: "User Name",
 				},
 				PullRequest: models.PullRequest{
 					Id: "473847937",
@@ -172,9 +176,8 @@ func Test_environment_GetConfiguration(t *testing.T) {
 					OS:           "linux/amd64",
 					Architecture: runtime.GOARCH,
 				},
-				Run: models.Entity{
-					Id:   "3210743970",
-					Name: "deploy-main",
+				Run: models.BuildRun{
+					BuildId: "3210743970",
 				},
 				PullRequest: models.PullRequest{
 					Id: "",
@@ -186,6 +189,9 @@ func Test_environment_GetConfiguration(t *testing.T) {
 						Sha:    "",
 						Branch: "",
 					},
+				},
+				Pusher: models.Pusher{
+					Username: "User Name",
 				},
 				PipelinePaths: []string{"/tmp/gitlab/repo/.gitlab-ci.yml", "/tmp/gitlab/repo/.gitlab-ci.yaml"},
 				Environment:   enums.GitlabServer,

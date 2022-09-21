@@ -3,13 +3,13 @@ package environments
 import (
 	"fmt"
 
-	"github.com/argonsecurity/go-utils/environments/enums"
-	azure "github.com/argonsecurity/go-utils/environments/environments/jenkins/environments/azure"
-	azureserver "github.com/argonsecurity/go-utils/environments/environments/jenkins/environments/azure_server"
-	"github.com/argonsecurity/go-utils/environments/environments/jenkins/environments/bitbucket"
-	bitbucketserver "github.com/argonsecurity/go-utils/environments/environments/jenkins/environments/bitbucket_server"
-	"github.com/argonsecurity/go-utils/environments/environments/jenkins/environments/gitlab"
-	"github.com/argonsecurity/go-utils/environments/models"
+	"github.com/argonsecurity/go-environments/enums"
+	azure "github.com/argonsecurity/go-environments/environments/jenkins/environments/azure"
+	azureserver "github.com/argonsecurity/go-environments/environments/jenkins/environments/azure_server"
+	"github.com/argonsecurity/go-environments/environments/jenkins/environments/bitbucket"
+	bitbucketserver "github.com/argonsecurity/go-environments/environments/jenkins/environments/bitbucket_server"
+	"github.com/argonsecurity/go-environments/environments/jenkins/environments/gitlab"
+	"github.com/argonsecurity/go-environments/models"
 )
 
 func EnhanceConfiguration(configuration *models.Configuration) *models.Configuration {

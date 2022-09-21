@@ -3,8 +3,8 @@ package bitbucket
 import (
 	"testing"
 
-	"github.com/argonsecurity/go-utils/environments/environments/testutils"
-	"github.com/argonsecurity/go-utils/environments/models"
+	"github.com/argonsecurity/go-environments/environments/testutils"
+	"github.com/argonsecurity/go-environments/models"
 	"github.com/stretchr/testify/assert"
 )
 

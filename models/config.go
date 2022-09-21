@@ -1,6 +1,6 @@
 package models
 
-import "github.com/argonsecurity/go-utils/environments/enums"
+import "github.com/argonsecurity/go-environments/enums"
 
 type Runner struct {
 	Id           string
@@ -45,7 +45,7 @@ type Configuration struct {
 	Branch          string
 	ProjectId       string
 	Job             Entity
-	Run             Entity
+	Run             BuildRun
 	Pipeline        Entity
 	Runner          Runner
 	Repository      Repository
@@ -68,6 +68,11 @@ type Pusher struct {
 	Entity
 	Username string
 	Email    string
+}
+
+type BuildRun struct {
+	BuildId     string
+	BuildNumber string
 }
 
 type Commit struct {

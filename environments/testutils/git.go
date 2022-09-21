@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/argonsecurity/go-utils/environments/environments/utils/git"
+	"github.com/argonsecurity/go-environments/environments/utils/git"
 	"github.com/otiai10/copy"
 )
 

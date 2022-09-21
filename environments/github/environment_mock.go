@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/argonsecurity/go-utils/environments/enums"
-	"github.com/argonsecurity/go-utils/environments/models"
+	"github.com/argonsecurity/go-environments/enums"
+	"github.com/argonsecurity/go-environments/models"
 )
 
 var (
@@ -33,8 +33,8 @@ func loadMockConfiguration() error {
 		LocalPath: "/path/to/repo",
 		CommitSha: "1bhf303744315bc0a5e9945f9f4df4b3f3dab272",
 		Branch:    "refs/heads/master",
-		Run: models.Entity{
-			Id: "2837115383",
+		Run: models.BuildRun{
+			BuildId: "2837115383",
 		},
 		Pipeline: models.Entity{
 			Name: "test-pipeline",
