@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/argonsecurity/go-utils/environments/models"
+	"github.com/argonsecurity/go-environments/models"
 	"github.com/argonsecurity/go-utils/http"
 )
 

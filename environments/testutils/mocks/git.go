@@ -1,6 +1,6 @@
 package mocks
 
-import "github.com/argonsecurity/go-utils/environments/environments/utils/git"
+import "github.com/argonsecurity/go-environments/environments/utils/git"
 
 type MockGitClient struct {
 	remoteUrl string

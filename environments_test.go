@@ -3,13 +3,13 @@ package environments
 import (
 	"testing"
 
-	"github.com/argonsecurity/go-utils/environments/environments/azure"
-	"github.com/argonsecurity/go-utils/environments/environments/bitbucket"
-	"github.com/argonsecurity/go-utils/environments/environments/github"
-	"github.com/argonsecurity/go-utils/environments/environments/gitlab"
-	"github.com/argonsecurity/go-utils/environments/environments/jenkins"
-	"github.com/argonsecurity/go-utils/environments/environments/localhost"
-	"github.com/argonsecurity/go-utils/environments/environments/testutils"
+	"github.com/argonsecurity/go-environments/environments/azure"
+	"github.com/argonsecurity/go-environments/environments/bitbucket"
+	"github.com/argonsecurity/go-environments/environments/github"
+	"github.com/argonsecurity/go-environments/environments/gitlab"
+	"github.com/argonsecurity/go-environments/environments/jenkins"
+	"github.com/argonsecurity/go-environments/environments/localhost"
+	"github.com/argonsecurity/go-environments/environments/testutils"
 	"github.com/stretchr/testify/assert"
 )
 

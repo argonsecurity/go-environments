@@ -8,14 +8,14 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/argonsecurity/go-utils/environments/enums"
-	"github.com/argonsecurity/go-utils/environments/environments/github"
-	"github.com/argonsecurity/go-utils/environments/environments/jenkins/environments"
-	bitbucketserver "github.com/argonsecurity/go-utils/environments/environments/jenkins/environments/bitbucket_server"
-	"github.com/argonsecurity/go-utils/environments/environments/jenkins/environments/gitlab"
-	"github.com/argonsecurity/go-utils/environments/environments/utils"
-	"github.com/argonsecurity/go-utils/environments/environments/utils/git"
-	"github.com/argonsecurity/go-utils/environments/models"
+	"github.com/argonsecurity/go-environments/enums"
+	"github.com/argonsecurity/go-environments/environments/github"
+	"github.com/argonsecurity/go-environments/environments/jenkins/environments"
+	bitbucketserver "github.com/argonsecurity/go-environments/environments/jenkins/environments/bitbucket_server"
+	"github.com/argonsecurity/go-environments/environments/jenkins/environments/gitlab"
+	"github.com/argonsecurity/go-environments/environments/utils"
+	"github.com/argonsecurity/go-environments/environments/utils/git"
+	"github.com/argonsecurity/go-environments/models"
 	"github.com/argonsecurity/go-utils/http"
 )
 

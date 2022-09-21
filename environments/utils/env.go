@@ -3,7 +3,7 @@ package utils
 import (
 	"os"
 
-	"github.com/argonsecurity/go-utils/environments/models"
+	"github.com/argonsecurity/go-environments/models"
 	funk "github.com/thoas/go-funk"
 )
 

@@ -3,8 +3,8 @@ package jenkins
 import (
 	"fmt"
 
-	"github.com/argonsecurity/go-utils/environments/enums"
-	"github.com/argonsecurity/go-utils/environments/models"
+	"github.com/argonsecurity/go-environments/enums"
+	"github.com/argonsecurity/go-environments/models"
 )
 
 var (
@@ -42,7 +42,7 @@ func loadMockGithubConfiguration() error {
 			Name: "mock pipeline",
 		},
 		Run: models.BuildRun{
-			BuildId:   "1",
+			BuildId:     "1",
 			BuildNumber: "jenkins-mock-pipeline-1",
 		},
 		Runner: models.Runner{

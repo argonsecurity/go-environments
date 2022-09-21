@@ -1,4 +1,4 @@
-module github.com/argonsecurity/go-utils/environments
+module github.com/argonsecurity/go-environments
 
 go 1.18
 

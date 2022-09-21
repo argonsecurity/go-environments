@@ -7,9 +7,9 @@ import (
 	"path/filepath"
 	"runtime"
 
-	"github.com/argonsecurity/go-utils/environments/enums"
-	"github.com/argonsecurity/go-utils/environments/environments/utils"
-	"github.com/argonsecurity/go-utils/environments/models"
+	"github.com/argonsecurity/go-environments/enums"
+	"github.com/argonsecurity/go-environments/environments/utils"
+	"github.com/argonsecurity/go-environments/models"
 )
 
 const (
@@ -65,7 +65,7 @@ func loadConfiguration() *models.Configuration {
 		LocalPath: repoPath,
 		Branch:    os.Getenv(branchEnv),
 		CommitSha: os.Getenv(commitShaEnv),
-		Repository: models.Repository{ 
+		Repository: models.Repository{
 			Id:       os.Getenv(repositoryIdEnv),
 			Name:     os.Getenv(repositoryNameEnv),
 			Url:      os.Getenv(repositoryUrlEnv),

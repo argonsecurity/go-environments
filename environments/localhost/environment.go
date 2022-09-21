@@ -1,8 +1,8 @@
 package localhost
 
 import (
-	"github.com/argonsecurity/go-utils/environments/enums"
-	"github.com/argonsecurity/go-utils/environments/models"
+	"github.com/argonsecurity/go-environments/enums"
+	"github.com/argonsecurity/go-environments/models"
 )
 
 var (

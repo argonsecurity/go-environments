@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/argonsecurity/go-utils/environments/enums"
-	"github.com/argonsecurity/go-utils/environments/environments/testutils"
-	"github.com/argonsecurity/go-utils/environments/models"
+	"github.com/argonsecurity/go-environments/enums"
+	"github.com/argonsecurity/go-environments/environments/testutils"
+	"github.com/argonsecurity/go-environments/models"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -61,7 +61,7 @@ func Test_environment_GetConfiguration(t *testing.T) {
 					Name: "test-pipeline",
 				},
 				Run: models.BuildRun{
-					BuildId: "152",
+					BuildId:     "152",
 					BuildNumber: "20220912.1",
 				},
 				Runner: models.Runner{

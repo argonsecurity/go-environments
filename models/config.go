@@ -1,6 +1,6 @@
 package models
 
-import "github.com/argonsecurity/go-utils/environments/enums"
+import "github.com/argonsecurity/go-environments/enums"
 
 type Runner struct {
 	Id           string

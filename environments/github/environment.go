@@ -11,10 +11,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/argonsecurity/go-utils/environments/enums"
-	"github.com/argonsecurity/go-utils/environments/environments/utils"
-	"github.com/argonsecurity/go-utils/environments/environments/utils/git"
-	"github.com/argonsecurity/go-utils/environments/models"
+	"github.com/argonsecurity/go-environments/enums"
+	"github.com/argonsecurity/go-environments/environments/utils"
+	"github.com/argonsecurity/go-environments/environments/utils/git"
+	"github.com/argonsecurity/go-environments/models"
 )
 
 const (
