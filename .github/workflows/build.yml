@@ -7,7 +7,6 @@ on:
       - build-*
     paths:
       - .github/workflows/environments-build.yaml
-      - environments/**
   push:
     branches:
       - main
@@ -15,7 +14,6 @@ on:
       - build-*
     paths:
       - .github/workflows/environments-build.yaml
-      - environments/**
   workflow_dispatch:
     inputs:
       increaseVersion:
