@@ -21,7 +21,7 @@ on:
         default: "yes"
         required: false
 env:
-  git_repo_name: go-enviroments
+  git_repo_name: go-environments
   util_name: environments
 
 jobs:
