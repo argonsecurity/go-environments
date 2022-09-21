@@ -14,8 +14,8 @@ import (
 	"github.com/argonsecurity/go-environments/environments/utils"
 	"github.com/argonsecurity/go-environments/environments/utils/git"
 	"github.com/argonsecurity/go-environments/models"
-	"github.com/argonsecurity/go-utils/logger"
-	schemavalidator "github.com/argonsecurity/go-utils/schema-validator"
+	"github.com/argonsecurity/go-environments/logger"
+	schemavalidator "github.com/argonsecurity/go-environments/schema-validator"
 )
 
 const (

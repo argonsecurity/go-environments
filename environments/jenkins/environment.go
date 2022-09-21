@@ -15,8 +15,8 @@ import (
 	"github.com/argonsecurity/go-environments/environments/jenkins/environments/gitlab"
 	"github.com/argonsecurity/go-environments/environments/utils"
 	"github.com/argonsecurity/go-environments/environments/utils/git"
+	"github.com/argonsecurity/go-environments/http"
 	"github.com/argonsecurity/go-environments/models"
-	"github.com/argonsecurity/go-utils/http"
 )
 
 const (
