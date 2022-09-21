@@ -49,10 +49,8 @@ jobs:
         run: go mod vendor
 
       - name: Run Tests
-        working-directory: "."
         run: |
-          pwd
-          docker run -v $(pwd):/code --workdir /code golang:1.18 go test -v ../..
+          go test -v ../..
   build:
     if: ${{ ( github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '#build') || (github.ref  == 'refs/heads/main') || (github.ref  == 'refs/heads/master')) && !contains(github.event.head_commit.message, '#skip-build') }}
     runs-on: ubuntu-latest
