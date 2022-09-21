@@ -113,7 +113,7 @@ jobs:
               --access-token "${{ secrets.GITHUB_TOKEN }}" \
               --aqua-key "${{ secrets.AQUA_KEY }}" \
               --aqua-secret "${{ secrets.AQUA_SECRET }}" \
-              --artifact-path "${{ env.util_name }}"
+              --artifact-path "."
       - name: Argon Integrity
         run: |
           argon integrity --token ${{ secrets.ARGON_TOKEN }} --finish
