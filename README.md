@@ -25,7 +25,7 @@ The data object collects data both on the CI platform and the SCM repository.
 
 ---
 
-## Testing.
+## Testing
 
 To test the package, run `make test` in the root directory of the package.
 

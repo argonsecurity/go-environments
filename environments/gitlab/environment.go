@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
 
 	"github.com/argonsecurity/go-utils/environments/enums"
 	"github.com/argonsecurity/go-utils/environments/environments/utils"
@@ -22,6 +23,7 @@ const (
 	projectUrlEnv         = "CI_PROJECT_URL"
 	rootNamespaceEnv      = "CI_PROJECT_ROOT_NAMESPACE"
 	repositoryCloneURLEnv = "CI_REPOSITORY_URL"
+	commitAuthorEnv       = "CI_COMMIT_AUTHOR"
 
 	runnerIdEnv          = "CI_RUNNER_ID"
 	runnerOSEnv          = "CI_RUNNER_EXECUTABLE_ARCH"
@@ -60,8 +62,12 @@ func (e environment) GetConfiguration() (*models.Configuration, error) {
 func loadConfiguration() *models.Configuration {
 	source := getSource()
 	repoPath := os.Getenv(repositoryPathEnv)
-	cloneUrl := utils.StripCredentialsFromUrl(os.Getenv(repositoryCloneURLEnv))
-	scmId := utils.GenerateScmId(cloneUrl)
+
+	arr := strings.Split(os.Getenv(commitAuthorEnv), " ")
+	userName := strings.Join(arr[:len(arr)-1][:], " ")
+	if userName == "" {
+		configuration.Pusher.Username = utils.DetectPusher()
+	}
 
 	configuration = &models.Configuration{
 		Url:             os.Getenv(gitlabUrlEnv),
@@ -77,7 +83,7 @@ func loadConfiguration() *models.Configuration {
 			Id:       os.Getenv(projectIdEnv),
 			Name:     os.Getenv(projectNameEnv),
 			Url:      os.Getenv(projectUrlEnv),
-			CloneUrl: cloneUrl,
+			CloneUrl: utils.StripCredentialsFromUrl(os.Getenv(repositoryCloneURLEnv)),
 			Source:   source,
 		},
 		Pipeline: models.Entity{
@@ -88,9 +94,8 @@ func loadConfiguration() *models.Configuration {
 			Id:   os.Getenv(jobNameEnv),
 			Name: os.Getenv(jobNameEnv),
 		},
-		Run: models.Entity{
-			Id:   os.Getenv(jobIdEnv),
-			Name: os.Getenv(jobNameEnv),
+		Run: models.BuildRun{
+			BuildId: os.Getenv(jobIdEnv),
 		},
 		Runner: models.Runner{
 			Id:           os.Getenv(runnerIdEnv),
@@ -109,9 +114,11 @@ func loadConfiguration() *models.Configuration {
 				Sha:    os.Getenv(mergeTargetBranchSha),
 			},
 		},
+		Pusher: models.Pusher{
+			Username: userName,
+		},
 		PipelinePaths: getPipelinePaths(repoPath),
 		Environment:   source,
-		ScmId:         scmId,
 	}
 	return configuration
 }

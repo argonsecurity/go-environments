@@ -40,9 +40,9 @@ func loadMockBitbucketServerConfiguration() error {
 			Source:   enums.BitbucketServer,
 			Url:      fmt.Sprintf("https://staging-bitbucket.org/%s/%s.git", MockBitbucketServerWorkspace, MockBitbucketServerRepo),
 		},
-		Run: models.Entity{
-			Id:   "4",
-			Name: "jenkins-test-pipeline-main-4",
+		Run: models.BuildRun{
+			BuildId:     "4",
+			BuildNumber: "jenkins-test-pipeline-main-4",
 		},
 		Runner: models.Runner{
 			Id:   "built_in",
@@ -95,8 +95,4 @@ func (em *EnvironmentBitbucketServerMock) IsCurrentEnvironment() bool {
 
 func (em *EnvironmentBitbucketServerMock) Name() string {
 	return "jenkins"
-}
-
-func (em *EnvironmentBitbucketServerMock) BuildScmLink(baseUrl, org, subgroups, repo string, isSshUrl bool) string {
-	return fmt.Sprintf("https://staging-bitbucket.org/%s/%s.git", MockBitbucketServerWorkspace, MockBitbucketServerRepo)
 }

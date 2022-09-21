@@ -50,8 +50,9 @@ func Test_environment_GetConfiguration(t *testing.T) {
 					Id:   "{052d6f7d-516e-4207-9e54-7446023ce285}",
 					Name: "test-repo",
 				},
-				Run: models.Entity{
-					Id: "2",
+				Run: models.BuildRun{
+					BuildId:     "2",
+					BuildNumber: "2",
 				},
 				Runner: models.Runner{
 					OS:           runtime.GOOS,
@@ -62,7 +63,6 @@ func Test_environment_GetConfiguration(t *testing.T) {
 				},
 				PipelinePaths: []string{"/tmp/bitbucket/repo/bitbucket-pipelines.yml"},
 				Environment:   enums.Bitbucket,
-				ScmId:         "a664f15182cd78c6d563889694770ec9",
 			},
 			wantErr: false,
 		},
@@ -89,8 +89,9 @@ func Test_environment_GetConfiguration(t *testing.T) {
 					Id:   "{70045d3c-f44f-4507-8c6f-1f5e326a083a}",
 					Name: "test-repo",
 				},
-				Run: models.Entity{
-					Id: "5",
+				Run: models.BuildRun{
+					BuildId:     "5",
+					BuildNumber: "5",
 				},
 				Runner: models.Runner{
 					OS:           runtime.GOOS,
@@ -98,10 +99,13 @@ func Test_environment_GetConfiguration(t *testing.T) {
 				},
 				PullRequest: models.PullRequest{
 					Id: "3",
+					TargetRef: models.Ref{
+						Sha:    "",
+						Branch: "x6pv94ugqxwr",
+					},
 				},
 				PipelinePaths: []string{"/tmp/bitbucket/repo/bitbucket-pipelines.yml"},
 				Environment:   enums.Bitbucket,
-				ScmId:         "a664f15182cd78c6d563889694770ec9",
 			},
 			wantErr: false,
 		},

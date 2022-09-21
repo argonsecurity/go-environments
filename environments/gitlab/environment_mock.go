@@ -35,9 +35,9 @@ func loadMockConfiguration() error {
 		CommitSha:       "3s32e4s818c6d1s5a0f585sf73112673a9bfcfc7",
 		BeforeCommitSha: "0000000000000000000000000000000000000000",
 		Branch:          "master",
-		Run: models.Entity{
-			Id:   "5131544634",
-			Name: "mock run",
+		Run: models.BuildRun{
+			BuildId:     "5131544634",
+			BuildNumber: "mock run",
 		},
 		Pipeline: models.Entity{
 			Id:   "373516881",

@@ -13,12 +13,13 @@ import (
 )
 
 const (
-	repositoryPathEnv     = "BITBUCKET_CLONE_DIR"
-	repositoryNameEnv     = "BITBUCKET_REPO_SLUG"
-	repositoryIdEnv       = "BITBUCKET_REPO_UUID"
-	repositoryUrlEnv      = "BITBUCKET_GIT_HTTP_ORIGIN"
-	repositoryFullNameEnv = "BITBUCKET_REPO_FULL_NAME"
-	workspaceEnv          = "BITBUCKET_WORKSPACE"
+	repositoryPathEnv      = "BITBUCKET_CLONE_DIR"
+	repositoryNameEnv      = "BITBUCKET_REPO_SLUG"
+	repositoryIdEnv        = "BITBUCKET_REPO_UUID"
+	repositoryUrlEnv       = "BITBUCKET_GIT_HTTP_ORIGIN"
+	repositoryFullNameEnv  = "BITBUCKET_REPO_FULL_NAME"
+	workspaceEnv           = "BITBUCKET_WORKSPACE"
+	prDestentaionCommitEnv = "BITBUCKET_PR_DESTINATION_COMMIT"
 
 	buildNumber = "BITBUCKET_BUILD_NUMBER"
 
@@ -54,9 +55,6 @@ func (e environment) GetConfiguration() (*models.Configuration, error) {
 func loadConfiguration() *models.Configuration {
 	source := enums.Bitbucket
 	repoPath := os.Getenv(repositoryPathEnv)
-	cloneUrl := fmt.Sprintf("%s.git", os.Getenv(repositoryUrlEnv))
-	strippedCloneUrl := utils.StripCredentialsFromUrl(cloneUrl)
-	scmId := utils.GenerateScmId(strippedCloneUrl)
 
 	configuration = &models.Configuration{
 		Url:       bitbucketUrl,
@@ -64,11 +62,11 @@ func loadConfiguration() *models.Configuration {
 		LocalPath: repoPath,
 		Branch:    os.Getenv(branchEnv),
 		CommitSha: os.Getenv(commitShaEnv),
-		Repository: models.Repository{ 
+		Repository: models.Repository{
 			Id:       os.Getenv(repositoryIdEnv),
 			Name:     os.Getenv(repositoryNameEnv),
 			Url:      os.Getenv(repositoryUrlEnv),
-			CloneUrl: strippedCloneUrl,
+			CloneUrl: fmt.Sprintf("%s.git", os.Getenv(repositoryUrlEnv)),
 			Source:   source,
 		},
 		Organization: models.Entity{
@@ -78,8 +76,12 @@ func loadConfiguration() *models.Configuration {
 			Id:   os.Getenv(pipelineIdEnv),
 			Name: os.Getenv(repositoryNameEnv),
 		},
-		Run: models.Entity{
-			Id: os.Getenv(buildNumber),
+		Run: models.BuildRun{
+			BuildId:     os.Getenv(buildNumber),
+			BuildNumber: os.Getenv(buildNumber),
+		},
+		Pusher: models.Pusher{
+			Username: utils.DetectPusher(),
 		},
 		Runner: models.Runner{
 			OS:           runtime.GOOS,
@@ -87,10 +89,12 @@ func loadConfiguration() *models.Configuration {
 		},
 		PullRequest: models.PullRequest{
 			Id: os.Getenv(mergeRequestIdEnv),
+			TargetRef: models.Ref{
+				Branch: os.Getenv(prDestentaionCommitEnv),
+			},
 		},
 		PipelinePaths: getPipelinePaths(repoPath),
 		Environment:   source,
-		ScmId:         scmId,
 	}
 	return configuration
 }

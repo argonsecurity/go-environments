@@ -48,8 +48,8 @@ func loadMockConfiguration() error {
 			Id:   "752e0c81-72s8-44eb-93cb-1d3b5gbd1acc-63",
 			Name: MockRepoName,
 		},
-		Run: models.Entity{
-			Id: "3557",
+		Run: models.BuildRun{
+			BuildId: "3557",
 		},
 		Runner: models.Runner{
 			Id:           "1",

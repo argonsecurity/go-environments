@@ -1,11 +1,7 @@
 package environments
 
 import (
-	"fmt"
-
 	"github.com/argonsecurity/go-utils/environments/enums"
-	azure "github.com/argonsecurity/go-utils/environments/environments/jenkins/environments/azure"
-	azureserver "github.com/argonsecurity/go-utils/environments/environments/jenkins/environments/azure_server"
 	"github.com/argonsecurity/go-utils/environments/environments/jenkins/environments/bitbucket"
 	bitbucketserver "github.com/argonsecurity/go-utils/environments/environments/jenkins/environments/bitbucket_server"
 	"github.com/argonsecurity/go-utils/environments/environments/jenkins/environments/gitlab"
@@ -26,22 +22,4 @@ func EnhanceConfiguration(configuration *models.Configuration) *models.Configura
 	}
 
 	return configuration
-}
-
-func BuildGenericScmLink(baseUrl, org, subgroups, repo string, isSshUrl bool) string {
-	return fmt.Sprintf("%s/%s/%s%s", baseUrl, org, subgroups, repo)
-}
-
-func BuildScmLink(baseUrl, org, subgroups, repo string, isSshUrl bool, repoSource enums.Source) string {
-	if repoSource == enums.Azure {
-		return azure.BuildScmLink(baseUrl, org, subgroups, repo, isSshUrl)
-	}
-	if repoSource == enums.AzureServer {
-		return azureserver.BuildScmLink(baseUrl, org, subgroups, repo, isSshUrl)
-	}
-	if repoSource == enums.BitbucketServer {
-		return bitbucketserver.BuildScmLink(baseUrl, org, subgroups, repo, isSshUrl)
-	}
-
-	return BuildGenericScmLink(baseUrl, org, subgroups, repo, isSshUrl)
 }

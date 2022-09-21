@@ -36,13 +36,3 @@ func CheckBitbucketServerByHTTPRequest(url string, httpClient http.HTTPService) 
 	_, err := httpClient.Get(apiUrl, nil, nil)
 	return err == nil || strings.Contains(err.Error(), "bitbucket")
 }
-
-func BuildScmLink(baseUrl, org, subgroups, repo string, isSshUrl bool) string {
-	fixedBaseUrl := baseUrl
-	fixedSubgroups := fmt.Sprintf("%srepos/", subgroups)
-	if isSshUrl {
-		fixedBaseUrl = strings.Replace(fixedBaseUrl, "git@", "", 1)
-	}
-	fixedBaseUrl = fmt.Sprintf("%s/projects", fixedBaseUrl)
-	return fmt.Sprintf("%s/%s/%s%s", fixedBaseUrl, org, fixedSubgroups, repo)
-}

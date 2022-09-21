@@ -28,8 +28,9 @@ const (
 	runURLEnv             = "RUN_DISPLAY_URL"
 	repositoryCloneURLEnv = "GIT_URL"
 
-	buildIDEnv = "BUILD_ID"
-	nodeIDEnv  = "NODE_NAME"
+	buildIDEnv     = "BUILD_ID"
+	buildNumberEnv = "BUILD_NUMBER"
+	nodeIDEnv      = "NODE_NAME"
 
 	jobNameEnv   = "JOB_NAME"
 	nodeNameEnv  = "NODE_NAME"
@@ -58,10 +59,7 @@ var (
 	bitbucketServerUriRegexp = regexp.MustCompile(`scm/(.*?)/(.*?)(?:\.git|$)`)
 	uriRegexp                = regexp.MustCompile(`/?(.+?)/(?:(.+/))?(.+?)(?:\.git|$)`)
 	httpUrlRegexp            = regexp.MustCompile(`(https?://.+?)(/.+)`)
-	sshUrlRegexp             = regexp.MustCompile(`(ssh?://.+?)(?:\:[0-9]+)(/.+)`)
 	gitUrlRegexp             = regexp.MustCompile(`git@(.+?)(\:.+)`)
-	sshUriRegexp             = regexp.MustCompile(`(?:/(?:v3|[0-9]+))?/(?P<org>.+?)/(.+/)?(?P<repo>.+?)(?:\.git|$)`)
-	sshIdentificationRegexp  = regexp.MustCompile(`^.*@|ssh://`)
 )
 
 type environment struct{}
@@ -82,15 +80,14 @@ func (e environment) GetConfiguration() (*models.Configuration, error) {
 // i.e https://example.company.io/gitlab
 func parseDataFromCloneUrl(cloneUrl, apiUrl string, repoSource enums.Source) (string, string, string) {
 	var regexp = uriRegexp
-	baseUrl, uri, isSshUrl := getUriFromCloneUrl(cloneUrl, apiUrl)
+	baseUrl, uri := getUriFromCloneUrl(cloneUrl, apiUrl)
 
 	// In bitbucket server the clone url looks like this: https://server-bitbucket.company.com/scm/project/repo.git
 	// so we need to extract the organization and repository names using a different regex
-	if isSshUrl {
-		regexp = sshUriRegexp
-	} else if repoSource == enums.BitbucketServer {
+	if repoSource == enums.BitbucketServer {
 		regexp = bitbucketServerUriRegexp
 	}
+
 	result := regexp.FindAllStringSubmatch(uri, -1)[0]
 
 	var org, subgroups, repo string
@@ -100,27 +97,22 @@ func parseDataFromCloneUrl(cloneUrl, apiUrl string, repoSource enums.Source) (st
 		org, repo = result[1], result[2]
 	}
 
-	return environments.BuildScmLink(baseUrl, org, subgroups, repo, isSshUrl, repoSource), org, repo
+	return fmt.Sprintf("%s/%s/%s%s", baseUrl, org, subgroups, repo), org, repo
 }
 
 // getUriFromCloneUrl for cases where the baseUrl is not actually
 // a part of the cloneUrl (i.e. Github), we need to extract the URI
 // from the cloneUrl without using the baseUrl
-func getUriFromCloneUrl(cloneUrl, apiUrl string) (string, string, bool) {
-	isSshUrl := sshIdentificationRegexp.MatchString(cloneUrl)
+func getUriFromCloneUrl(cloneUrl, apiUrl string) (string, string) {
 	if strings.Contains(cloneUrl, apiUrl) && apiUrl != "" {
-		return apiUrl, strings.Replace(cloneUrl, apiUrl, "", 1), isSshUrl
+		return apiUrl, strings.Replace(cloneUrl, apiUrl, "", 1)
 	}
 	if httpUrlRegexp.MatchString(cloneUrl) {
 		result := httpUrlRegexp.FindAllStringSubmatch(cloneUrl, -1)
-		return result[0][1], result[0][2], isSshUrl
-	}
-	if sshUrlRegexp.MatchString(cloneUrl) {
-		result := sshUrlRegexp.FindAllStringSubmatch(cloneUrl, -1)
-		return strings.Replace(result[0][1], "ssh", "https", 1), result[0][2], isSshUrl
+		return result[0][1], result[0][2]
 	}
 	result := gitUrlRegexp.FindAllStringSubmatch(cloneUrl, -1)[0]
-	return fmt.Sprintf("https://%s", result[1]), strings.Replace(result[2], ":", "/", 1), isSshUrl
+	return fmt.Sprintf("https://%s", result[1]), strings.Replace(result[2], ":", "/", 1)
 }
 
 func loadConfiguration() (*models.Configuration, error) {
@@ -146,8 +138,6 @@ func loadConfiguration() (*models.Configuration, error) {
 		}
 	}
 
-	scmId := utils.GenerateScmId(cloneUrl)
-
 	branch := getBranchName(repositoryPath, commit)
 	configuration := &models.Configuration{
 		Url:       os.Getenv(jenkinsURLEnv),
@@ -169,9 +159,9 @@ func loadConfiguration() (*models.Configuration, error) {
 			Id:   os.Getenv(stageNameEnv),
 			Name: os.Getenv(stageNameEnv),
 		},
-		Run: models.Entity{
-			Id:   os.Getenv(buildIDEnv),
-			Name: os.Getenv(runNameEnv),
+		Run: models.BuildRun{
+			BuildId:     os.Getenv(buildIDEnv),
+			BuildNumber: os.Getenv(buildNumberEnv),
 		},
 		Runner: models.Runner{
 			Id:           os.Getenv(nodeIDEnv),
@@ -193,10 +183,12 @@ func loadConfiguration() (*models.Configuration, error) {
 		},
 		PipelinePaths: getAllPipelinePaths(repositoryPath),
 		Environment:   enums.Jenkins,
-		ScmId:         scmId,
 	}
 
 	configuration = environments.EnhanceConfiguration(configuration)
+	if configuration.Pusher.Username == "" {
+		configuration.Pusher.Username = utils.DetectPusher()
+	}
 	configuration.Repository.CloneUrl = utils.StripCredentialsFromUrl(configuration.Repository.CloneUrl)
 	return configuration, nil
 }

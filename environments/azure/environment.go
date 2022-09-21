@@ -30,6 +30,7 @@ const (
 	userEmailEnv      = "BUILD_REQUESTEDFOREMAIL"
 	pipelineNameEnv   = "BUILD_DEFINITIONNAME"
 	buildIDEnv        = "BUILD_BUILDID"
+	buildNumberEnv    = "BUILD_BUILDNUMBER"
 	endpointURLEnv    = "SYSTEM_TASKDEFINITIONSURI"
 	collectionUriEnv  = "SYSTEM_COLLECTIONURI"
 	commitShaEnv      = "BUILD_SOURCEVERSION"
@@ -89,9 +90,12 @@ func loadConfiguration() error {
 		cloneUrl = fmt.Sprintf("%s.git", repoUrl)
 	}
 
-	strippedCloneUrl := utils.StripCredentialsFromUrl(cloneUrl)
-	scmId := utils.GenerateScmId(strippedCloneUrl)
 	source := getSource()
+
+	userName := os.Getenv(usernameEnv)
+	if userName == "" {
+		userName = utils.DetectPusher()
+	}
 
 	configuration = &models.Configuration{
 		Url:       os.Getenv(endpointURLEnv),
@@ -108,11 +112,11 @@ func loadConfiguration() error {
 			Id:       os.Getenv(repositoryIdEnv),
 			Name:     os.Getenv(repositoryNameEnv),
 			Url:      repoUrl,
-			CloneUrl: strippedCloneUrl,
+			CloneUrl: cloneUrl,
 			Source:   source,
 		},
 		Pusher: models.Pusher{
-			Username: os.Getenv(usernameEnv),
+			Username: userName,
 			Email:    os.Getenv(userEmailEnv),
 		},
 		Job: models.Entity{
@@ -123,8 +127,9 @@ func loadConfiguration() error {
 			Id:   fmt.Sprintf("%s-%s", os.Getenv(projectIDEnv), os.Getenv(definitionIDEnv)),
 			Name: os.Getenv(pipelineNameEnv),
 		},
-		Run: models.Entity{
-			Id: os.Getenv(buildIDEnv),
+		Run: models.BuildRun{
+			BuildId:     os.Getenv(buildIDEnv),
+			BuildNumber: os.Getenv(buildNumberEnv),
 		},
 		Runner: models.Runner{
 			Id:           os.Getenv(agentIDEnv),
@@ -144,7 +149,6 @@ func loadConfiguration() error {
 		},
 		PipelinePaths: getPipelinePaths(repoPath),
 		Environment:   source,
-		ScmId:         scmId,
 	}
 	return nil
 }

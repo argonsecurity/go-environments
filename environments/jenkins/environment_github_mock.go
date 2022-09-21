@@ -41,9 +41,9 @@ func loadMockGithubConfiguration() error {
 		Pipeline: models.Entity{
 			Name: "mock pipeline",
 		},
-		Run: models.Entity{
-			Id:   "1",
-			Name: "jenkins-mock-pipeline-1",
+		Run: models.BuildRun{
+			BuildId:   "1",
+			BuildNumber: "jenkins-mock-pipeline-1",
 		},
 		Runner: models.Runner{
 			Id:   "built_in",

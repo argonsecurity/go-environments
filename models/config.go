@@ -45,7 +45,7 @@ type Configuration struct {
 	Branch          string
 	ProjectId       string
 	Job             Entity
-	Run             Entity
+	Run             BuildRun
 	Pipeline        Entity
 	Runner          Runner
 	Repository      Repository
@@ -55,7 +55,6 @@ type Configuration struct {
 	Pusher          Pusher
 	PipelinePaths   []string
 	Environment     enums.Source
-	ScmId           string
 }
 
 type Author struct {
@@ -68,6 +67,11 @@ type Pusher struct {
 	Entity
 	Username string
 	Email    string
+}
+
+type BuildRun struct {
+	BuildId     string
+	BuildNumber string
 }
 
 type Commit struct {

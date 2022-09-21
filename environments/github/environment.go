@@ -23,6 +23,7 @@ const (
 	githubServerEnv     = "GITHUB_SERVER_URL"
 	githubWorkflowEnv   = "GITHUB_WORKFLOW"
 	githubRunIdEnv      = "GITHUB_RUN_ID"
+	githubRunNumberEnv  = "GITHUB_RUN_NUMBER"
 	repositoryPathEnv   = "GITHUB_WORKSPACE"
 
 	githubJobEnv = "GITHUB_JOB"
@@ -80,8 +81,10 @@ func loadConfiguration() error {
 		cloneUrl = fmt.Sprintf("%s.git", repoUrl)
 	}
 
-	strippedCloneUrl := utils.StripCredentialsFromUrl(cloneUrl)
-	scmId := utils.GenerateScmId(strippedCloneUrl)
+	username := payload.Sender.Login
+	if username == "" {
+		configuration.Pusher.Username = utils.DetectPusher()
+	}
 
 	pipelines := GetPipelinePaths(repoPath)
 	repoId := strconv.Itoa(payload.Repository.Id)
@@ -91,8 +94,9 @@ func loadConfiguration() error {
 		LocalPath: repoPath,
 		CommitSha: os.Getenv(commitShaEnv),
 		Branch:    getBranch(),
-		Run: models.Entity{
-			Id: os.Getenv(githubRunIdEnv),
+		Run: models.BuildRun{
+			BuildId:     os.Getenv(githubRunIdEnv),
+			BuildNumber: os.Getenv(githubRunNumberEnv),
 		},
 		Job: models.Entity{
 			Id:   os.Getenv(githubJobEnv),
@@ -112,7 +116,7 @@ func loadConfiguration() error {
 			Id:       repoId,
 			Name:     strings.Split(os.Getenv(githubRepositoryEnv), "/")[1],
 			Url:      repoUrl,
-			CloneUrl: strippedCloneUrl,
+			CloneUrl: utils.StripCredentialsFromUrl(cloneUrl),
 			Source:   source,
 		},
 		PullRequest: models.PullRequest{
@@ -133,11 +137,12 @@ func loadConfiguration() error {
 				Id:   strconv.Itoa(payload.Sender.Id),
 				Name: payload.Sender.Login,
 			},
+			Username: username,
 		},
 		PipelinePaths: pipelines,
 		Environment:   source,
-		ScmId:         scmId,
 	}
+
 	return nil
 }
 

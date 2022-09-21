@@ -38,8 +38,9 @@ func Test_environment_GetConfiguration(t *testing.T) {
 				LocalPath: testRepoPath,
 				CommitSha: "2c6e3880fd94ddb7ef72d34e683cdc0c47bec6e6",
 				Branch:    "refs/heads/main",
-				Run: models.Entity{
-					Id: "3008488429",
+				Run: models.BuildRun{
+					BuildId:     "3008488429",
+					BuildNumber: "3",
 				},
 				Job: models.Entity{
 					Id:   "test",
@@ -88,6 +89,7 @@ func Test_environment_GetConfiguration(t *testing.T) {
 					Name: "test-org",
 				},
 				Pusher: models.Pusher{
+					Username: "username123",
 					Entity: models.Entity{
 						Id:   "19283746",
 						Name: "username123",
@@ -98,7 +100,6 @@ func Test_environment_GetConfiguration(t *testing.T) {
 					filepath.Join(testRepoPath, ".github/workflows/second.yaml"),
 				},
 				Environment: enums.Github,
-				ScmId:       "b30f418cdcc9970849d3d031de5df54f",
 			},
 			wantErr: false,
 		},
@@ -111,8 +112,9 @@ func Test_environment_GetConfiguration(t *testing.T) {
 				LocalPath: testRepoPath,
 				CommitSha: "mky2jknpc4fuz6qsn0vtouqwfjbno39itu0hifvs",
 				Branch:    "test-branch",
-				Run: models.Entity{
-					Id: "3014839969",
+				Run: models.BuildRun{
+					BuildId:     "3014839969",
+					BuildNumber: "6",
 				},
 				Job: models.Entity{
 					Id:   "test",
@@ -149,6 +151,7 @@ func Test_environment_GetConfiguration(t *testing.T) {
 					Name: "test-org",
 				},
 				Pusher: models.Pusher{
+					Username: "username123",
 					Entity: models.Entity{
 						Id:   "99887766",
 						Name: "username123",
@@ -159,7 +162,6 @@ func Test_environment_GetConfiguration(t *testing.T) {
 					filepath.Join(testRepoPath, ".github/workflows/second.yaml"),
 				},
 				Environment: enums.Github,
-				ScmId:       "b30f418cdcc9970849d3d031de5df54f",
 			},
 			wantErr: false,
 		},
@@ -172,8 +174,9 @@ func Test_environment_GetConfiguration(t *testing.T) {
 				LocalPath: testRepoPath,
 				CommitSha: "2c6e3880fd94ddb7ef72d34e683cdc0c47bec6e6",
 				Branch:    "refs/heads/main",
-				Run: models.Entity{
-					Id: "3008488429",
+				Run: models.BuildRun{
+					BuildId:     "3008488429",
+					BuildNumber: "3",
 				},
 				Job: models.Entity{
 					Id:   "test",
@@ -222,6 +225,7 @@ func Test_environment_GetConfiguration(t *testing.T) {
 					Name: "test-org",
 				},
 				Pusher: models.Pusher{
+					Username: "username123",
 					Entity: models.Entity{
 						Id:   "19283746",
 						Name: "username123",
@@ -232,7 +236,6 @@ func Test_environment_GetConfiguration(t *testing.T) {
 					filepath.Join(testRepoPath, ".github/workflows/second.yaml"),
 				},
 				Environment: enums.GithubServer,
-				ScmId:       "b30f418cdcc9970849d3d031de5df54f",
 			},
 			wantErr: false,
 		},
