@@ -108,7 +108,7 @@ func Test_environment_GetConfiguration(t *testing.T) {
 					Source:   enums.Azure,
 				},
 				Pusher: models.Pusher{
-					Username: "Microsoft.VisualStudio.Services.TFS",
+					Username: "User Name",
 					Email:    "user@email.com",
 				},
 				Job: models.Entity{
