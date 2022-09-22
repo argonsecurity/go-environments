@@ -234,7 +234,10 @@ func (e environment) Name() string {
 }
 
 func (e environment) IsCurrentEnvironment() bool {
-	_, isExist := os.LookupEnv("JENKINS_HOME")
+	var isExist bool
+	if _, isExist = os.LookupEnv("JENKINS_HOME"); !isExist {
+		_, isExist = os.LookupEnv("JENKINS_URL")
+	}
 	return isExist
 }
 
