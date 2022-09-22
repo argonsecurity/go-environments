@@ -13,8 +13,8 @@ import (
 	"github.com/argonsecurity/go-environments/enums"
 	"github.com/argonsecurity/go-environments/environments/utils"
 	"github.com/argonsecurity/go-environments/environments/utils/git"
-	"github.com/argonsecurity/go-environments/models"
 	"github.com/argonsecurity/go-environments/logger"
+	"github.com/argonsecurity/go-environments/models"
 	schemavalidator "github.com/argonsecurity/go-environments/schema-validator"
 )
 
@@ -45,7 +45,7 @@ const (
 	repositoryNameEnv = "BUILD_REPOSITORY_NAME"
 	repositoryUriEnv  = "BUILD_REPOSITORY_URI"
 
-	usernameEnv = "BUILD_QUEUEDBY"
+	usernameEnv = "BUILD_REQUESTEDFOR"
 
 	agentIDEnv             = "AGENT_ID"
 	agentNameEnv           = "AGENT_NAME"
