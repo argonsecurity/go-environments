@@ -62,12 +62,6 @@ func (e environment) GetConfiguration() (*models.Configuration, error) {
 func loadConfiguration() *models.Configuration {
 	source := getSource()
 	repoPath := os.Getenv(repositoryPathEnv)
-
-	arr := strings.Split(os.Getenv(commitAuthorEnv), " ")
-	userName := strings.Join(arr[:len(arr)-1][:], " ")
-	if userName == "" {
-		configuration.Pusher.Username = utils.DetectPusher()
-	}
 	cloneUrl := utils.StripCredentialsFromUrl(os.Getenv(repositoryCloneURLEnv))
 	scmId := utils.GenerateScmId(cloneUrl)
 
@@ -117,7 +111,7 @@ func loadConfiguration() *models.Configuration {
 			},
 		},
 		Pusher: models.Pusher{
-			Username: userName,
+			Username: getUsername(),
 		},
 		PipelinePaths: getPipelinePaths(repoPath),
 		Environment:   source,
@@ -170,4 +164,13 @@ func getPipelinePaths(rootDir string) []string {
 	}
 
 	return paths
+}
+
+func getUsername() string {
+	arr := strings.Split(os.Getenv(commitAuthorEnv), " ")
+	username := strings.Join(arr[:len(arr)-1][:], " ")
+	if username == "" {
+		username = utils.DetectPusher()
+	}
+	return username
 }
