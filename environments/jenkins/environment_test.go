@@ -35,6 +35,7 @@ func Test_parseDataFromCloneUrl(t *testing.T) {
 		wantUrl  string
 		wantOrg  string
 		wantRepo string
+		wantErr  bool
 	}{
 		{
 			name: "GitHub HTTP clone url",
@@ -190,10 +191,25 @@ func Test_parseDataFromCloneUrl(t *testing.T) {
 			wantOrg:  "TS",
 			wantRepo: "test-repo",
 		},
+		{
+			name: "Cannot parse clone url",
+			args: args{
+				cloneUrl:   "hello",
+				apiUrl:     "",
+				repoSource: enums.BitbucketServer,
+			},
+			wantUrl:  "",
+			wantOrg:  "",
+			wantRepo: "",
+			wantErr:  true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotUrl, gotOrg, gotRepo := parseDataFromCloneUrl(tt.args.cloneUrl, tt.args.apiUrl, tt.args.repoSource)
+			gotUrl, gotOrg, gotRepo, err := parseDataFromCloneUrl(tt.args.cloneUrl, tt.args.apiUrl, tt.args.repoSource)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("parseDataFromCloneUrl() error = %v, wantErr %v", err, tt.wantErr)
+			}
 			if gotUrl != tt.wantUrl {
 				t.Errorf("parseDataFromCloneUrl() gotUrl = %v, want %v", gotUrl, tt.wantUrl)
 			}
@@ -217,6 +233,7 @@ func Test_getUriFromCloneUrl(t *testing.T) {
 		args        args
 		wantBaseUrl string
 		wantUri     string
+		wantErr     bool
 	}{
 		{
 			name: "CloneUrl contains apiUrl",
@@ -263,10 +280,23 @@ func Test_getUriFromCloneUrl(t *testing.T) {
 			wantBaseUrl: "https://gitlab.com",
 			wantUri:     "/group/subgroup/repo.git",
 		},
+		{
+			name: "Cannot parse clone url",
+			args: args{
+				cloneUrl: "hello",
+				apiUrl:   "",
+			},
+			wantBaseUrl: "",
+			wantUri:     "",
+			wantErr:     true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotBaseUrl, gotUri, _ := getUriFromCloneUrl(tt.args.cloneUrl, tt.args.apiUrl)
+			gotBaseUrl, gotUri, _, err := getUriFromCloneUrl(tt.args.cloneUrl, tt.args.apiUrl)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("getUriFromCloneUrl() error = %v, wantErr %v", err, tt.wantErr)
+			}
 			if gotBaseUrl != tt.wantBaseUrl {
 				t.Errorf("getUriFromCloneUrl() gotBaseUrl = %v, want %v", gotBaseUrl, tt.wantBaseUrl)
 			}
