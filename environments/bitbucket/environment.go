@@ -19,7 +19,7 @@ const (
 	repositoryUrlEnv       = "BITBUCKET_GIT_HTTP_ORIGIN"
 	repositoryFullNameEnv  = "BITBUCKET_REPO_FULL_NAME"
 	workspaceEnv           = "BITBUCKET_WORKSPACE"
-	prDestentaionCommitEnv = "BITBUCKET_PR_DESTINATION_COMMIT"
+	prDestentaionBranchEnv = "BITBUCKET_PR_DESTINATION_BRANCH"
 
 	buildNumber = "BITBUCKET_BUILD_NUMBER"
 
@@ -93,7 +93,7 @@ func loadConfiguration() *models.Configuration {
 		PullRequest: models.PullRequest{
 			Id: os.Getenv(mergeRequestIdEnv),
 			TargetRef: models.Ref{
-				Branch: os.Getenv(prDestentaionCommitEnv),
+				Branch: os.Getenv(prDestentaionBranchEnv),
 			},
 		},
 		PipelinePaths: getPipelinePaths(repoPath),

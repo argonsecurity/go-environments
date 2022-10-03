@@ -102,7 +102,7 @@ func Test_environment_GetConfiguration(t *testing.T) {
 					Id: "3",
 					TargetRef: models.Ref{
 						Sha:    "",
-						Branch: "x6pv94ugqxwr",
+						Branch: "master",
 					},
 				},
 				PipelinePaths: []string{"/tmp/bitbucket/repo/bitbucket-pipelines.yml"},
