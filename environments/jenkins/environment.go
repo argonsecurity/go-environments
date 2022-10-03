@@ -81,9 +81,12 @@ func (e environment) GetConfiguration() (*models.Configuration, error) {
 // the base url is used for cases where the base of the scm url includes a part of the URI
 //
 // i.e https://example.company.io/gitlab
-func parseDataFromCloneUrl(cloneUrl, apiUrl string, repoSource enums.Source) (string, string, string) {
+func parseDataFromCloneUrl(cloneUrl, apiUrl string, repoSource enums.Source) (string, string, string, error) {
 	var regexp = uriRegexp
-	baseUrl, uri, isSshUrl := getUriFromCloneUrl(cloneUrl, apiUrl)
+	baseUrl, uri, isSshUrl, err := getUriFromCloneUrl(cloneUrl, apiUrl)
+	if err != nil {
+		return "", "", "", err
+	}
 
 	// In bitbucket server the clone url looks like this: https://server-bitbucket.company.com/scm/project/repo.git
 	// so we need to extract the organization and repository names using a different regex
@@ -92,7 +95,11 @@ func parseDataFromCloneUrl(cloneUrl, apiUrl string, repoSource enums.Source) (st
 	} else if repoSource == enums.BitbucketServer {
 		regexp = bitbucketServerUriRegexp
 	}
-	result := regexp.FindAllStringSubmatch(uri, -1)[0]
+	results := regexp.FindAllStringSubmatch(uri, -1)
+	if len(results) == 0 {
+		return "", "", "", fmt.Errorf("could not parse clone url: %s", cloneUrl)
+	}
+	result := results[0]
 
 	var org, subgroups, repo string
 	if len(result) == 4 { // url contains subgroups
@@ -101,27 +108,31 @@ func parseDataFromCloneUrl(cloneUrl, apiUrl string, repoSource enums.Source) (st
 		org, repo = result[1], result[2]
 	}
 
-	return environments.BuildScmLink(baseUrl, org, subgroups, repo, isSshUrl, repoSource), org, repo
+	return environments.BuildScmLink(baseUrl, org, subgroups, repo, isSshUrl, repoSource), org, repo, nil
 }
 
 // getUriFromCloneUrl for cases where the baseUrl is not actually
 // a part of the cloneUrl (i.e. Github), we need to extract the URI
 // from the cloneUrl without using the baseUrl
-func getUriFromCloneUrl(cloneUrl, apiUrl string) (string, string, bool) {
+func getUriFromCloneUrl(cloneUrl, apiUrl string) (string, string, bool, error) {
 	isSshUrl := sshIdentificationRegexp.MatchString(cloneUrl)
 	if strings.Contains(cloneUrl, apiUrl) && apiUrl != "" {
-		return apiUrl, strings.Replace(cloneUrl, apiUrl, "", 1), isSshUrl
+		return apiUrl, strings.Replace(cloneUrl, apiUrl, "", 1), isSshUrl, nil
 	}
 	if httpUrlRegexp.MatchString(cloneUrl) {
 		result := httpUrlRegexp.FindAllStringSubmatch(cloneUrl, -1)
-		return result[0][1], result[0][2], isSshUrl
+		return result[0][1], result[0][2], isSshUrl, nil
 	}
 	if sshUrlRegexp.MatchString(cloneUrl) {
 		result := sshUrlRegexp.FindAllStringSubmatch(cloneUrl, -1)
-		return strings.Replace(result[0][1], "ssh", "https", 1), result[0][2], isSshUrl
+		return strings.Replace(result[0][1], "ssh", "https", 1), result[0][2], isSshUrl, nil
 	}
-	result := gitUrlRegexp.FindAllStringSubmatch(cloneUrl, -1)[0]
-	return fmt.Sprintf("https://%s", result[1]), strings.Replace(result[2], ":", "/", 1), isSshUrl
+	results := gitUrlRegexp.FindAllStringSubmatch(cloneUrl, -1)
+	if len(results) == 0 {
+		return "", "", isSshUrl, fmt.Errorf("could not parse clone url: %s", cloneUrl)
+	}
+	result := results[0]
+	return fmt.Sprintf("https://%s", result[1]), strings.Replace(result[2], ":", "/", 1), isSshUrl, nil
 }
 
 func loadConfiguration() (*models.Configuration, error) {
@@ -137,7 +148,10 @@ func loadConfiguration() (*models.Configuration, error) {
 	}
 
 	repoSource, apiUrl := getRepositorySource(cloneUrl)
-	repositoryURL, org, repositoryName := parseDataFromCloneUrl(cloneUrl, apiUrl, repoSource)
+	repositoryURL, org, repositoryName, err := parseDataFromCloneUrl(cloneUrl, apiUrl, repoSource)
+	if err != nil {
+		return nil, err
+	}
 
 	commit := os.Getenv(commitShaEnv)
 	if commit == "" {
