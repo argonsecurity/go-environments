@@ -103,7 +103,7 @@ func parseDataFromCloneUrl(cloneUrl, apiUrl string, repoSource enums.Source) (st
 	logger.Warnf("isSshUrl %b", isSshUrl)
 	logger.Warnf("repoSource %b", repoSource)
 	if len(results) == 0 {
-		return "", "", "", fmt.Errorf("could not parse clone url: %s", cloneUrl)
+		return "", "", "", fmt.Errorf("could not parse clone url: %s, uri %s , results: %s, regexp: %s", cloneUrl, uri, results, regexp)
 	}
 	result := results[0]
 
@@ -139,7 +139,7 @@ func getUriFromCloneUrl(cloneUrl, apiUrl string) (string, string, bool, error) {
 		logger.Warnf("results %s", results)
 		logger.Warnf("regexp %s", gitUrlRegexp)
 		logger.Warnf("isSshUrl %b", isSshUrl)
-		return "", "", isSshUrl, fmt.Errorf("could not parse clone url: %s", cloneUrl)
+		return "", "", isSshUrl, fmt.Errorf("could not parse clone url: %s, giturl regexp: %s", cloneUrl, gitUrlRegexp)
 	}
 	result := results[0]
 	return fmt.Sprintf("https://%s", result[1]), strings.Replace(result[2], ":", "/", 1), isSshUrl, nil
