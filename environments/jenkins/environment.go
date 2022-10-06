@@ -3,7 +3,6 @@ package jenkins
 import (
 	"fmt"
 	githubserver "github.com/argonsecurity/go-environments/environments/jenkins/environments/github_server"
-	"github.com/argonsecurity/go-environments/logger"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -98,13 +97,8 @@ func parseDataFromCloneUrl(cloneUrl, apiUrl string, repoSource enums.Source) (st
 		regexp = bitbucketServerUriRegexp
 	}
 	results := regexp.FindAllStringSubmatch(uri, -1)
-	logger.Warnf("uri %s", uri)
-	logger.Warnf("results %s", results)
-	logger.Warnf("regexp %s", regexp)
-	logger.Warnf("isSshUrl %b", isSshUrl)
-	logger.Warnf("repoSource %b", repoSource)
 	if len(results) == 0 {
-		return "", "", "", fmt.Errorf("could not parse clone url: %s, uri %s , results: %s, regexp: %s", cloneUrl, uri, results, regexp)
+		return "", "", "", fmt.Errorf("could not parse clone url: %s", cloneUrl)
 	}
 	result := results[0]
 
@@ -136,11 +130,7 @@ func getUriFromCloneUrl(cloneUrl, apiUrl string) (string, string, bool, error) {
 	}
 	results := gitUrlRegexp.FindAllStringSubmatch(cloneUrl, -1)
 	if len(results) == 0 {
-		logger.Warnf("cloneUrl %s", cloneUrl)
-		logger.Warnf("results %s", results)
-		logger.Warnf("regexp %s", gitUrlRegexp)
-		logger.Warnf("isSshUrl %b", isSshUrl)
-		return "", "", isSshUrl, fmt.Errorf("could not parse clone url: %s, giturl regexp: %s", cloneUrl, gitUrlRegexp)
+		return "", "", isSshUrl, fmt.Errorf("could not parse clone url: %s", cloneUrl)
 	}
 	result := results[0]
 	return fmt.Sprintf("https://%s", result[1]), strings.Replace(result[2], ":", "/", 1), isSshUrl, nil
