@@ -297,7 +297,6 @@ func discoverSCMSource(gitUrl string) (enums.Source, string) {
 			return enums.GitlabServer, url
 		}
 		if githubserver.CheckGithubServerByHTTPRequest(url, httpClient) {
-			fmt.Println("here")
 			return enums.GithubServer, githubserver.GetGithubServerApiUrl(url)
 		}
 
