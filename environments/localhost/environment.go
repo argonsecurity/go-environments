@@ -85,7 +85,7 @@ func getCommit() string {
 }
 
 func getBranch(commit string) string {
-	if branch, ok := os.LookupEnv("OVVERIDE_BRANCH"); ok {
+	if branch, ok := os.LookupEnv("OVERRIDE_BRANCH"); ok {
 		return branch
 	}
 
@@ -95,7 +95,7 @@ func getBranch(commit string) string {
 }
 
 func getSource() enums.Source {
-	source, ok := os.LookupEnv("OVVERIDE_BUILDSYSTEM")
+	source, ok := os.LookupEnv("OVERRIDE_BUILDSYSTEM")
 	if ok {
 		return enums.Source(source)
 	}
