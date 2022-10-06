@@ -1,7 +1,11 @@
 package localhost
 
 import (
+	"os"
+
 	"github.com/argonsecurity/go-environments/enums"
+	"github.com/argonsecurity/go-environments/environments/utils"
+	"github.com/argonsecurity/go-environments/environments/utils/git"
 	"github.com/argonsecurity/go-environments/models"
 )
 
@@ -20,13 +24,17 @@ func (e environment) GetConfiguration() (*models.Configuration, error) {
 }
 
 func loadConfiguration() {
+	commit := getCommit()
+	branch := getBranch(commit)
 	configuration = &models.Configuration{
-		Url: "localhost",
+		Url:       "localhost",
+		Branch:    branch,
+		CommitSha: commit,
 		Repository: models.Repository{
 			Id:     "localhost",
 			Name:   "localhost",
 			Url:    "localhost",
-			Source: enums.Localhost,
+			Source: getSource(),
 		},
 		Pipeline: models.Entity{
 			Id:   "localhost",
@@ -37,8 +45,8 @@ func loadConfiguration() {
 			Name: "localhost",
 		},
 		Run: models.BuildRun{
-			BuildId:     "localhost",
-			BuildNumber: "localhost",
+			BuildId:     "",
+			BuildNumber: "",
 		},
 		Runner: models.Runner{
 			Id:   "localhost",
@@ -48,6 +56,9 @@ func loadConfiguration() {
 		Environment:   enums.Localhost,
 		PipelinePaths: []string{},
 		ScmId:         "localhost",
+		Pusher: models.Pusher{
+			Username: utils.DetectPusher(),
+		},
 	}
 }
 
@@ -65,6 +76,31 @@ func (e environment) GetBuildLink() string {
 
 func (e environment) GetFileLineLink(filename string, ref string, line int) string {
 	return "localhost"
+}
+
+func getCommit() string {
+	path, _ := os.Getwd()
+	commit, _ := git.GetGitCommit(path)
+	return commit
+}
+
+func getBranch(commit string) string {
+	if branch, ok := os.LookupEnv("OVERRIDE_BRANCH"); ok {
+		return branch
+	}
+
+	path, _ := os.Getwd()
+	branch, _ := git.GetGitBranch(path, commit)
+	return branch
+}
+
+func getSource() enums.Source {
+	source, ok := os.LookupEnv("OVERRIDE_BUILDSYSTEM")
+	if ok {
+		return enums.Source(source)
+	}
+
+	return enums.Localhost
 }
 
 func (e environment) IsCurrentEnvironment() bool {
