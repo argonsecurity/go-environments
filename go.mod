@@ -3,6 +3,7 @@ module github.com/argonsecurity/go-environments
 go 1.18
 
 require (
+	github.com/argonsecurity/go-utils/http v0.1.140
 	github.com/otiai10/copy v1.7.0
 	github.com/pkg/errors v0.9.1
 	github.com/rs/zerolog v1.25.0
@@ -19,5 +20,4 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/xeipuuv/gojsonpointer v0.0.0-20180127040702-4e3ac2762d5f // indirect
 	github.com/xeipuuv/gojsonreference v0.0.0-20180127040603-bd5ef7bd5415 // indirect
-	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
 )
