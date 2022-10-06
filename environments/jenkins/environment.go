@@ -135,6 +135,10 @@ func getUriFromCloneUrl(cloneUrl, apiUrl string) (string, string, bool, error) {
 	}
 	results := gitUrlRegexp.FindAllStringSubmatch(cloneUrl, -1)
 	if len(results) == 0 {
+		logger.Warnf("cloneUrl %s", cloneUrl)
+		logger.Warnf("results %s", results)
+		logger.Warnf("regexp %s", gitUrlRegexp)
+		logger.Warnf("isSshUrl %b", isSshUrl)
 		return "", "", isSshUrl, fmt.Errorf("could not parse clone url: %s", cloneUrl)
 	}
 	result := results[0]
