@@ -2,6 +2,7 @@ package jenkins
 
 import (
 	"fmt"
+	"github.com/argonsecurity/go-environments/logger"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -96,6 +97,11 @@ func parseDataFromCloneUrl(cloneUrl, apiUrl string, repoSource enums.Source) (st
 		regexp = bitbucketServerUriRegexp
 	}
 	results := regexp.FindAllStringSubmatch(uri, -1)
+	logger.Warnf("uri %s", uri)
+	logger.Warnf("results %s", results)
+	logger.Warnf("regexp %s", regexp)
+	logger.Warnf("isSshUrl %b", isSshUrl)
+	logger.Warnf("repoSource %b", repoSource)
 	if len(results) == 0 {
 		return "", "", "", fmt.Errorf("could not parse clone url: %s", cloneUrl)
 	}
