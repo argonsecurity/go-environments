@@ -373,48 +373,6 @@ func Test_environment_GetFileLineLink(t *testing.T) {
 	}
 }
 
-func Test_environment_IsCurrentEnvironment(t *testing.T) {
-	tests := []struct {
-		name         string
-		envsFilePath string
-		want         bool
-	}{
-		{
-			name:         "GitHub main environment",
-			envsFilePath: githubMainEnvsFilePath,
-			want:         true,
-		},
-		{
-			name:         "GitHub pr environment",
-			envsFilePath: githubPrEnvsFilePath,
-			want:         true,
-		},
-		{
-			name:         "Not GitHub environment",
-			envsFilePath: "",
-			want:         false,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			e := prepareTest(t, tt.envsFilePath)
-			if got := e.IsCurrentEnvironment(); got != tt.want {
-				t.Errorf("environment.IsCurrentEnvironment() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func prepareTest(t *testing.T, envsFilePath string) environment {
-	e := environment{}
-	configuration = nil
-	testRepoCleanup := testutils.PrepareTestGitRepository(testRepoPath, testRepoCloneUrl, testdataPath)
-	t.Cleanup(testRepoCleanup)
-	envCleanup := testutils.SetEnvsFromFile(envsFilePath)
-	t.Cleanup(envCleanup)
-	return e
-}
-
 func TestGetFileLink(t *testing.T) {
 	type args struct {
 		repositoryURL string
@@ -491,4 +449,46 @@ func TestGetFileLink(t *testing.T) {
 			}
 		})
 	}
+}
+
+func Test_environment_IsCurrentEnvironment(t *testing.T) {
+	tests := []struct {
+		name         string
+		envsFilePath string
+		want         bool
+	}{
+		{
+			name:         "GitHub main environment",
+			envsFilePath: githubMainEnvsFilePath,
+			want:         true,
+		},
+		{
+			name:         "GitHub pr environment",
+			envsFilePath: githubPrEnvsFilePath,
+			want:         true,
+		},
+		{
+			name:         "Not GitHub environment",
+			envsFilePath: "",
+			want:         false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			e := prepareTest(t, tt.envsFilePath)
+			if got := e.IsCurrentEnvironment(); got != tt.want {
+				t.Errorf("environment.IsCurrentEnvironment() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func prepareTest(t *testing.T, envsFilePath string) environment {
+	e := environment{}
+	configuration = nil
+	testRepoCleanup := testutils.PrepareTestGitRepository(testRepoPath, testRepoCloneUrl, testdataPath)
+	t.Cleanup(testRepoCleanup)
+	envCleanup := testutils.SetEnvsFromFile(envsFilePath)
+	t.Cleanup(envCleanup)
+	return e
 }
