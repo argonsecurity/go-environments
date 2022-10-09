@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/fs"
-	"net/url"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -172,8 +171,32 @@ func (e environment) GetBuildLink() string {
 	return fmt.Sprintf("%s/%s/actions/runs/%s", os.Getenv(githubServerEnv), os.Getenv(githubRepositoryEnv), os.Getenv(githubRunIdEnv))
 }
 
-func (e environment) GetFileLineLink(filePath string, ref string, lineNumber int) string {
-	return fmt.Sprintf("%s/%s/blob/%s/%s", os.Getenv(githubServerEnv), os.Getenv(githubRepositoryEnv), ref, url.PathEscape(filePath))
+func (e environment) GetFileLineLink(filePath string, ref string, startLine int, endLine int) string {
+	return GetFileLink(
+		fmt.Sprintf("%s/%s", os.Getenv(githubServerEnv), os.Getenv(githubRepositoryEnv)),
+		filePath,
+		ref,
+		startLine,
+		endLine,
+	)
+}
+
+func GetFileLink(repositoryURL string, filename string, ref string, startLine, endLine int) string {
+	url := fmt.Sprintf("%s/blob/%s/%s",
+		repositoryURL,
+		ref,
+		filename,
+	)
+
+	if startLine != 0 {
+		if endLine == 0 {
+			endLine = startLine
+		}
+
+		url = fmt.Sprintf("%s#L%d-L%d", url, startLine, endLine)
+	}
+
+	return url
 }
 
 func (e environment) IsCurrentEnvironment() bool {
