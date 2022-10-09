@@ -36,7 +36,7 @@ type Environment interface {
 	GetStepLink() string
 
 	// GetFileLineLink get a link to a file line
-	GetFileLineLink(filename string, ref string, line int) string
+	GetFileLineLink(filename string, ref string, startLine int, endLine int) string
 
 	// Name get the name of the environment
 	Name() string
