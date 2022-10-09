@@ -171,20 +171,25 @@ func (e environment) GetBuildLink() string {
 	return fmt.Sprintf("%s/%s/actions/runs/%s", os.Getenv(githubServerEnv), os.Getenv(githubRepositoryEnv), os.Getenv(githubRunIdEnv))
 }
 
-func (e environment) GetFileLineLink(filePath string, ref string, startLine int, endLine int) string {
+func (e environment) GetFileLineLink(filePath string, branch string, commit string, startLine int, endLine int) string {
 	return GetFileLink(
 		fmt.Sprintf("%s/%s", os.Getenv(githubServerEnv), os.Getenv(githubRepositoryEnv)),
 		filePath,
-		ref,
+		branch,
+		commit,
 		startLine,
 		endLine,
 	)
 }
 
-func GetFileLink(repositoryURL string, filename string, ref string, startLine, endLine int) string {
+func GetFileLink(repositoryURL string, filename string, branch string, commit string, startLine, endLine int) string {
+	refToUse := branch
+	if commit != "" {
+		refToUse = commit
+	}
 	url := fmt.Sprintf("%s/blob/%s/%s",
 		repositoryURL,
-		ref,
+		refToUse,
 		filename,
 	)
 

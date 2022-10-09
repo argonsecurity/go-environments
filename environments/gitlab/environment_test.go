@@ -18,8 +18,10 @@ const (
 	testRepoPath                 = "/tmp/gitlab/repo"
 	testRepoUrl                  = "https://gitlab.com/test-group/test-sub-group/test-project"
 	testdataPath                 = "../gitlab/testdata/repo"
-	testRef                      = "ref"
-	testPath                     = "path/to/file"
+
+	testCommit = "commit"
+	testBranch = "branch"
+	testPath   = "path/to/file"
 )
 
 var (
@@ -275,7 +277,8 @@ func Test_environment_GetBuildLink(t *testing.T) {
 func Test_environment_GetFileLineLink(t *testing.T) {
 	type args struct {
 		filename  string
-		ref       string
+		branch    string
+		commit    string
 		startLine int
 		endLine   int
 	}
@@ -289,47 +292,47 @@ func Test_environment_GetFileLineLink(t *testing.T) {
 			name: "File from branch",
 			args: args{
 				filename:  testPath,
-				ref:       "branchName",
+				branch:    testBranch,
 				startLine: 1,
 			},
 			envsFilePath: gitlabMainEnvsFilePath,
-			want:         "https://gitlab.com/test-group/test-sub-group/test-project/-/blob/branchName/path/to/file#L1-L1",
+			want:         "https://gitlab.com/test-group/test-sub-group/test-project/-/blob/branch/path/to/file#L1-L1",
 		},
 		{
 			name: "File from branch with line number 0",
 			args: args{
 				filename:  testPath,
-				ref:       "branchName",
+				branch:    testBranch,
 				startLine: 0,
 			},
 			envsFilePath: gitlabMainEnvsFilePath,
-			want:         "https://gitlab.com/test-group/test-sub-group/test-project/-/blob/branchName/path/to/file",
+			want:         "https://gitlab.com/test-group/test-sub-group/test-project/-/blob/branch/path/to/file",
 		},
 		{
 			name: "File from commit",
 			args: args{
 				filename:  testPath,
-				ref:       "1a70bx6328bad78d919dca422d1as1g1ec97c5f6",
+				commit:    testCommit,
 				startLine: 1,
 			},
 			envsFilePath: gitlabMainEnvsFilePath,
-			want:         "https://gitlab.com/test-group/test-sub-group/test-project/-/blob/1a70bx6328bad78d919dca422d1as1g1ec97c5f6/path/to/file#L1-L1",
+			want:         "https://gitlab.com/test-group/test-sub-group/test-project/-/blob/commit/path/to/file#L1-L1",
 		},
 		{
 			name: "Empty file path",
 			args: args{
 				filename:  "",
-				ref:       "1a70bx6328bad78d919dca422d1as1g1ec97c5f6",
+				commit:    testCommit,
 				startLine: 1,
 			},
 			envsFilePath: gitlabMainEnvsFilePath,
-			want:         "https://gitlab.com/test-group/test-sub-group/test-project/-/blob/1a70bx6328bad78d919dca422d1as1g1ec97c5f6/#L1-L1",
+			want:         "https://gitlab.com/test-group/test-sub-group/test-project/-/blob/commit/#L1-L1",
 		},
 		{
 			name: "Empty ref",
 			args: args{
 				filename:  testPath,
-				ref:       "",
+				branch:    "",
 				startLine: 1,
 			},
 			envsFilePath: gitlabMainEnvsFilePath,
@@ -339,28 +342,28 @@ func Test_environment_GetFileLineLink(t *testing.T) {
 			name: "Not GitLab environment",
 			args: args{
 				filename:  testPath,
-				ref:       "branchName",
+				branch:    testBranch,
 				startLine: 1,
 			},
 			envsFilePath: "",
-			want:         "/-/blob/branchName/path/to/file#L1-L1",
+			want:         "/-/blob/branch/path/to/file#L1-L1",
 		},
 		{
 			name: "Different line numbers",
 			args: args{
 				filename:  testPath,
-				ref:       testRef,
+				branch:    testBranch,
 				startLine: 1,
 				endLine:   2,
 			},
 			envsFilePath: gitlabMainEnvsFilePath,
-			want:         "https://gitlab.com/test-group/test-sub-group/test-project/-/blob/ref/path/to/file#L1-L2",
+			want:         "https://gitlab.com/test-group/test-sub-group/test-project/-/blob/branch/path/to/file#L1-L2",
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			e := prepareTest(t, tt.envsFilePath)
-			if got := e.GetFileLineLink(tt.args.filename, tt.args.ref, tt.args.startLine, tt.args.endLine); got != tt.want {
+			if got := e.GetFileLineLink(tt.args.filename, tt.args.branch, tt.args.commit, tt.args.startLine, tt.args.endLine); got != tt.want {
 				t.Errorf("environment.GetFileLineLink() = %v, want %v", got, tt.want)
 			}
 		})
@@ -371,7 +374,8 @@ func TestGetFileLink(t *testing.T) {
 	type args struct {
 		repositoryURL string
 		filename      string
-		ref           string
+		branch        string
+		commit        string
 		startLine     int
 		endLine       int
 	}
@@ -385,35 +389,58 @@ func TestGetFileLink(t *testing.T) {
 			args: args{
 				repositoryURL: testRepoUrl,
 				filename:      testPath,
-				ref:           testRef,
+				branch:        testBranch,
 			},
-			want: "https://gitlab.com/test-group/test-sub-group/test-project/-/blob/ref/path/to/file",
+			want: "https://gitlab.com/test-group/test-sub-group/test-project/-/blob/branch/path/to/file",
 		},
 		{
 			name: "One line",
 			args: args{
 				repositoryURL: testRepoUrl,
 				filename:      testPath,
-				ref:           testRef,
+				branch:        testBranch,
 				startLine:     1,
 			},
-			want: "https://gitlab.com/test-group/test-sub-group/test-project/-/blob/ref/path/to/file#L1-L1",
+			want: "https://gitlab.com/test-group/test-sub-group/test-project/-/blob/branch/path/to/file#L1-L1",
 		},
 		{
 			name: "Different lines",
 			args: args{
 				repositoryURL: testRepoUrl,
 				filename:      testPath,
-				ref:           testRef,
+				branch:        testBranch,
 				startLine:     1,
 				endLine:       2,
 			},
-			want: "https://gitlab.com/test-group/test-sub-group/test-project/-/blob/ref/path/to/file#L1-L2",
+			want: "https://gitlab.com/test-group/test-sub-group/test-project/-/blob/branch/path/to/file#L1-L2",
+		},
+		{
+			name: "With commit",
+			args: args{
+				repositoryURL: testRepoUrl,
+				filename:      testPath,
+				commit:        testCommit,
+				startLine:     1,
+				endLine:       2,
+			},
+			want: "https://gitlab.com/test-group/test-sub-group/test-project/-/blob/commit/path/to/file#L1-L2",
+		},
+		{
+			name: "With commit and branch",
+			args: args{
+				repositoryURL: testRepoUrl,
+				filename:      testPath,
+				branch:        testBranch,
+				commit:        testCommit,
+				startLine:     1,
+				endLine:       2,
+			},
+			want: "https://gitlab.com/test-group/test-sub-group/test-project/-/blob/commit/path/to/file#L1-L2",
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := GetFileLink(tt.args.repositoryURL, tt.args.filename, tt.args.ref, tt.args.startLine, tt.args.endLine); got != tt.want {
+			if got := GetFileLink(tt.args.repositoryURL, tt.args.filename, tt.args.branch, tt.args.commit, tt.args.startLine, tt.args.endLine); got != tt.want {
 				t.Errorf("GetFileLink() = %v, want %v", got, tt.want)
 			}
 		})

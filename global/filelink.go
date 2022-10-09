@@ -8,9 +8,9 @@ import (
 	"github.com/argonsecurity/go-environments/environments/gitlab"
 )
 
-type GetFileLinkFunc func(string, string, string, int, int) string
+type GetFileLinkFunc func(string, string, string, string, int, int) string
 
-func GetFileLink(source enums.Source, repositoryURL string, filename string, ref string, startLine int, endLine int) string {
+func GetFileLink(source enums.Source, repositoryURL string, filename string, branch string, commit string, startLine int, endLine int) string {
 	var f GetFileLinkFunc
 	switch source {
 	case enums.Github, enums.GithubServer:
@@ -24,7 +24,7 @@ func GetFileLink(source enums.Source, repositoryURL string, filename string, ref
 	}
 
 	if f != nil {
-		return f(repositoryURL, filename, ref, startLine, endLine)
+		return f(repositoryURL, filename, branch, commit, startLine, endLine)
 	}
 
 	return ""

@@ -18,7 +18,8 @@ const (
 	testRepoUrl           = "http://dev.azure.com/test-workspace/test-repo"
 	testdataPath          = "../azure/testdata/repo"
 
-	testRef          = "ref"
+	testBranch       = "branch"
+	testCommit       = "commit"
 	testPath         = "path/to/file"
 	testBuildRepoURL = "https://dev.azure.com/test-organization/_git/test-repo"
 )
@@ -223,7 +224,8 @@ func Test_environment_GetBuildLink(t *testing.T) {
 func Test_environment_GetFileLineLink(t *testing.T) {
 	type args struct {
 		filePath  string
-		ref       string
+		branch    string
+		commit    string
 		startLine int
 		endLine   int
 	}
@@ -237,47 +239,47 @@ func Test_environment_GetFileLineLink(t *testing.T) {
 			name: "File from branch",
 			args: args{
 				filePath:  testPath,
-				ref:       "branchName",
+				branch:    testBranch,
 				startLine: 1,
 			},
 			envsFilePath: azureMainEnvsFilePath,
-			want:         "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GBbranchName&line=1&lineEnd=2&lineStartColumn=1&lineEndColumn=1&lineStyle=plain&_a=contents",
+			want:         "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GBbranch&line=1&lineEnd=2&lineStartColumn=1&lineEndColumn=1&lineStyle=plain&_a=contents",
 		},
 		{
 			name: "File from branch with line number 0",
 			args: args{
 				filePath:  testPath,
-				ref:       "branchName",
+				branch:    testBranch,
 				startLine: 0,
 			},
 			envsFilePath: azureMainEnvsFilePath,
-			want:         "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GBbranchName&_a=contents",
+			want:         "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GBbranch&_a=contents",
 		},
 		{
 			name: "File from commit",
 			args: args{
 				filePath:  testPath,
-				ref:       "1a70bx6328bad78d919dca422d1as1g1ec97c5f6",
+				commit:    testCommit,
 				startLine: 1,
 			},
 			envsFilePath: azureMainEnvsFilePath,
-			want:         "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GB1a70bx6328bad78d919dca422d1as1g1ec97c5f6&line=1&lineEnd=2&lineStartColumn=1&lineEndColumn=1&lineStyle=plain&_a=contents",
+			want:         "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GCcommit&line=1&lineEnd=2&lineStartColumn=1&lineEndColumn=1&lineStyle=plain&_a=contents",
 		},
 		{
 			name: "Empty file path",
 			args: args{
 				filePath:  "",
-				ref:       "1a70bx6328bad78d919dca422d1as1g1ec97c5f6",
+				commit:    testCommit,
 				startLine: 1,
 			},
 			envsFilePath: azureMainEnvsFilePath,
-			want:         "https://dev.azure.com/test-organization/_git/test-repo?path=&version=GB1a70bx6328bad78d919dca422d1as1g1ec97c5f6&line=1&lineEnd=2&lineStartColumn=1&lineEndColumn=1&lineStyle=plain&_a=contents",
+			want:         "https://dev.azure.com/test-organization/_git/test-repo?path=&version=GCcommit&line=1&lineEnd=2&lineStartColumn=1&lineEndColumn=1&lineStyle=plain&_a=contents",
 		},
 		{
 			name: "Empty ref",
 			args: args{
 				filePath:  testPath,
-				ref:       "",
+				branch:    "",
 				startLine: 1,
 			},
 			envsFilePath: azureMainEnvsFilePath,
@@ -287,48 +289,48 @@ func Test_environment_GetFileLineLink(t *testing.T) {
 			name: "Not azure environment",
 			args: args{
 				filePath:  testPath,
-				ref:       "branchName",
+				branch:    testBranch,
 				startLine: 1,
 			},
 			envsFilePath: "",
-			want:         "_git/?path=path%2Fto%2Ffile&version=GBbranchName&line=1&lineEnd=2&lineStartColumn=1&lineEndColumn=1&lineStyle=plain&_a=contents",
+			want:         "_git/?path=path%2Fto%2Ffile&version=GBbranch&line=1&lineEnd=2&lineStartColumn=1&lineEndColumn=1&lineStyle=plain&_a=contents",
 		},
 		{
 			name: "No lines",
 			args: args{
 				filePath: testPath,
-				ref:      testRef,
+				branch:   testBranch,
 			},
 			envsFilePath: azureMainEnvsFilePath,
-			want:         "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GBref&_a=contents",
+			want:         "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GBbranch&_a=contents",
 		},
 		{
 			name: "Same lines",
 			args: args{
 				filePath:  testPath,
-				ref:       testRef,
+				branch:    testBranch,
 				startLine: 1,
 				endLine:   1,
 			},
 			envsFilePath: azureMainEnvsFilePath,
-			want:         "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GBref&line=1&lineEnd=2&lineStartColumn=1&lineEndColumn=1&lineStyle=plain&_a=contents",
+			want:         "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GBbranch&line=1&lineEnd=2&lineStartColumn=1&lineEndColumn=1&lineStyle=plain&_a=contents",
 		},
 		{
 			name: "Different lines",
 			args: args{
 				filePath:  testPath,
-				ref:       testRef,
+				branch:    testBranch,
 				startLine: 1,
 				endLine:   2,
 			},
 			envsFilePath: azureMainEnvsFilePath,
-			want:         "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GBref&line=1&lineEnd=3&lineStartColumn=1&lineEndColumn=1&lineStyle=plain&_a=contents",
+			want:         "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GBbranch&line=1&lineEnd=3&lineStartColumn=1&lineEndColumn=1&lineStyle=plain&_a=contents",
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			e := prepareTest(t, tt.envsFilePath)
-			if got := e.GetFileLineLink(tt.args.filePath, tt.args.ref, tt.args.startLine, tt.args.endLine); got != tt.want {
+			if got := e.GetFileLineLink(tt.args.filePath, tt.args.branch, tt.args.commit, tt.args.startLine, tt.args.endLine); got != tt.want {
 				t.Errorf("environment.GetFileLineLink() = %v, want %v", got, tt.want)
 			}
 		})
@@ -428,7 +430,8 @@ func TestGetFileLink(t *testing.T) {
 	type args struct {
 		repositoryURL string
 		filePath      string
-		ref           string
+		branch        string
+		commit        string
 		startLine     int
 		endLine       int
 	}
@@ -442,36 +445,59 @@ func TestGetFileLink(t *testing.T) {
 			args: args{
 				repositoryURL: testBuildRepoURL,
 				filePath:      testPath,
-				ref:           testRef,
+				branch:        testBranch,
 			},
-			want: "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GBref&_a=contents",
+			want: "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GBbranch&_a=contents",
 		},
 		{
 			name: "Same line",
 			args: args{
 				repositoryURL: testBuildRepoURL,
 				filePath:      testPath,
-				ref:           testRef,
+				branch:        testBranch,
 				startLine:     1,
 				endLine:       1,
 			},
-			want: "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GBref&line=1&lineEnd=2&lineStartColumn=1&lineEndColumn=1&lineStyle=plain&_a=contents",
+			want: "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GBbranch&line=1&lineEnd=2&lineStartColumn=1&lineEndColumn=1&lineStyle=plain&_a=contents",
 		},
 		{
 			name: "Different lines",
 			args: args{
 				repositoryURL: testBuildRepoURL,
 				filePath:      testPath,
-				ref:           testRef,
+				branch:        testBranch,
 				startLine:     1,
 				endLine:       2,
 			},
-			want: "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GBref&line=1&lineEnd=3&lineStartColumn=1&lineEndColumn=1&lineStyle=plain&_a=contents",
+			want: "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GBbranch&line=1&lineEnd=3&lineStartColumn=1&lineEndColumn=1&lineStyle=plain&_a=contents",
+		},
+		{
+			name: "With commit",
+			args: args{
+				repositoryURL: testBuildRepoURL,
+				filePath:      testPath,
+				commit:        testCommit,
+				startLine:     1,
+				endLine:       2,
+			},
+			want: "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GCcommit&line=1&lineEnd=3&lineStartColumn=1&lineEndColumn=1&lineStyle=plain&_a=contents",
+		},
+		{
+			name: "With commit and branch",
+			args: args{
+				repositoryURL: testBuildRepoURL,
+				filePath:      testPath,
+				branch:        testBranch,
+				commit:        testCommit,
+				startLine:     1,
+				endLine:       2,
+			},
+			want: "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GCcommit&line=1&lineEnd=3&lineStartColumn=1&lineEndColumn=1&lineStyle=plain&_a=contents",
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := GetFileLink(tt.args.repositoryURL, tt.args.filePath, tt.args.ref, tt.args.startLine, tt.args.endLine); got != tt.want {
+			if got := GetFileLink(tt.args.repositoryURL, tt.args.filePath, tt.args.branch, tt.args.commit, tt.args.startLine, tt.args.endLine); got != tt.want {
 				t.Errorf("GetFileLink() = %v, want %v", got, tt.want)
 			}
 		})
