@@ -128,10 +128,30 @@ func (e environment) GetBuildLink() string {
 	return fmt.Sprintf("%s/%s/%s/-/pipelines/%s", os.Getenv(gitlabUrlEnv), os.Getenv(groupNameEnv), os.Getenv(projectNameEnv), os.Getenv(pipelineIdEnv))
 }
 
-func (e environment) GetFileLineLink(filename string, ref string, line int) string {
-	url := fmt.Sprintf("%s/%s/%s/-/blob/%s/%s", os.Getenv(gitlabUrlEnv), os.Getenv(groupNameEnv), os.Getenv(projectNameEnv), ref, filename)
-	if line != 0 {
-		return fmt.Sprintf("%s#L%d", url, line)
+func (e environment) GetFileLineLink(filename string, ref string, startLine int, endLine int) string {
+	repoURL := os.Getenv(projectUrlEnv)
+	return GetFileLink(
+		repoURL,
+		filename,
+		ref,
+		startLine,
+		endLine,
+	)
+}
+
+func GetFileLink(repositoryURL string, filename string, ref string, startLine, endLine int) string {
+	url := fmt.Sprintf("%s/-/blob/%s/%s",
+		repositoryURL,
+		ref,
+		filename,
+	)
+
+	if startLine != 0 {
+		if endLine == 0 {
+			endLine = startLine
+		}
+
+		url = fmt.Sprintf("%s#L%d-L%d", url, startLine, endLine)
 	}
 	return url
 }
