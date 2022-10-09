@@ -165,22 +165,36 @@ func (e environment) GetBuildLink() string {
 	return fmt.Sprintf("%s%s/_build?definitionId=%s&_a=summary", os.Getenv(endpointURLEnv), os.Getenv(projectNameEnv), os.Getenv(definitionIDEnv))
 }
 
-func (e environment) GetFileLineLink(filePath string, branchName string, lineNumber int) string {
-	if lineNumber != 0 {
-		return fmt.Sprintf("%s_git/%s?path=%s&version=GB%s&line=%d&lineEnd=%d&lineStartColumn=1&lineEndColumn=1&lineStyle=plain&_a=contents",
-			os.Getenv(endpointURLEnv),
-			os.Getenv(repositoryNameEnv),
-			strings.Replace(filePath, "/", "%2F", -1),
-			branchName,
-			lineNumber,
-			lineNumber+1,
+func (e environment) GetFileLineLink(filePath string, ref string, startLine int, endLine int) string {
+	return GetFileLink(
+		fmt.Sprintf("%s_git/%s", os.Getenv(endpointURLEnv), os.Getenv(repositoryNameEnv)),
+		filePath,
+		ref,
+		startLine,
+		endLine,
+	)
+}
+
+func GetFileLink(repositoryURL string, filename string, ref string, startLine, endLine int) string {
+	if startLine != 0 {
+		if endLine == 0 {
+			endLine = startLine
+		}
+		endLine++ // In Azure, we specify endColumn to be 1, therefor, end endLine must be +1 from the expected endLine
+
+		return fmt.Sprintf("%s?path=%s&version=GB%s&line=%d&lineEnd=%d&lineStartColumn=1&lineEndColumn=1&lineStyle=plain&_a=contents",
+			repositoryURL,
+			url.PathEscape(filename),
+			url.PathEscape(ref),
+			startLine,
+			endLine,
 		)
 	}
-	return fmt.Sprintf("%s_git/%s?path=%s&version=GB%s&_a=contents",
-		os.Getenv(endpointURLEnv),
-		os.Getenv(repositoryNameEnv),
-		strings.Replace(filePath, "/", "%2F", -1),
-		branchName,
+
+	return fmt.Sprintf("%s?path=%s&version=GB%s&_a=contents",
+		repositoryURL,
+		url.PathEscape(filename),
+		url.PathEscape(ref),
 	)
 }
 
