@@ -2,6 +2,7 @@ package jenkins
 
 import (
 	"fmt"
+	githubserver "github.com/argonsecurity/go-environments/environments/jenkins/environments/github_server"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -285,7 +286,11 @@ func discoverSCMSource(gitUrl string) (enums.Source, string) {
 		if gitlab.CheckGitlabByHTTPRequest(url, httpClient) {
 			return enums.GitlabServer, url
 		}
+		if githubserver.CheckGithubServerByHTTPRequest(url, httpClient) {
+			return enums.GithubServer, githubserver.GetGithubServerApiUrl(url)
+		}
 
+		// bitbucket server check is last because some scms might return 200 with error page for this endpoint
 		if bitbucketserver.CheckBitbucketServerByHTTPRequest(url, httpClient) {
 			return enums.BitbucketServer, url
 		}
