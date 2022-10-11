@@ -148,7 +148,7 @@ func loadConfiguration() (*models.Configuration, error) {
 		return nil, err
 	}
 
-	repoSource, apiUrl := getRepositorySource(cloneUrl)
+	repoSource, apiUrl := GetRepositorySource(cloneUrl)
 	repositoryURL, org, repositoryName, err := parseDataFromCloneUrl(cloneUrl, apiUrl, repoSource)
 	if err != nil {
 		return nil, err
@@ -263,7 +263,7 @@ func getRepositoryCloneURL(repositoryPath string) (string, error) {
 	return git.GetGitRemoteURL(repositoryPath)
 }
 
-func getRepositorySource(cloneUrl string) (enums.Source, string) {
+func GetRepositorySource(cloneUrl string) (enums.Source, string) {
 	switch {
 	case strings.Contains(cloneUrl, bitbucketHostname):
 		return enums.Bitbucket, bitbucketApiUrl
@@ -276,10 +276,10 @@ func getRepositorySource(cloneUrl string) (enums.Source, string) {
 
 	}
 
-	return DiscoverSCMSource(cloneUrl)
+	return discoverSCMSource(cloneUrl)
 }
 
-func DiscoverSCMSource(gitUrl string) (enums.Source, string) {
+func discoverSCMSource(gitUrl string) (enums.Source, string) {
 	urls := utils.ParseGitURL(gitUrl)
 	httpClient := http.GetHTTPClient("", nil)
 	for _, url := range urls {
