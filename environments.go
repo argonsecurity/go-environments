@@ -24,7 +24,8 @@ var (
 	}
 )
 
-type GetFileLinkFunc func(string, string, string, string, int, int) string
+type GetFileLineLinkFunc func(string, string, string, string, int, int) string
+type GetFileLinkFunc func(string, string, string, string) string
 
 // Environment is an interface for interacting with CI/CD environments
 type Environment interface {
@@ -75,8 +76,8 @@ func GetOrDetectEnvironment(name string) (Environment, error) {
 	return DetectEnvironment(), nil
 }
 
-func GetFileLink(source enums.Source, repositoryURL string, filename string, branch string, commit string, startLine int, endLine int) string {
-	var f GetFileLinkFunc
+func GetFileLineLink(source enums.Source, repositoryURL string, filename string, branch string, commit string, startLine int, endLine int) string {
+	var f GetFileLineLinkFunc
 	switch source {
 	case enums.Github, enums.GithubServer:
 		f = github.GetFileLink
@@ -84,6 +85,26 @@ func GetFileLink(source enums.Source, repositoryURL string, filename string, bra
 		f = gitlab.GetFileLink
 	case enums.Azure, enums.AzureServer:
 		f = azure.GetFileLineLink
+	case enums.Bitbucket, enums.BitbucketServer:
+		f = bitbucket.GetFileLineLink
+	}
+
+	if f != nil {
+		return f(repositoryURL, filename, branch, commit, startLine, endLine)
+	}
+
+	return ""
+}
+
+func GetFileLineLink(source enums.Source, repositoryURL string, filename string, branch string, commit string, startLine int, endLine int) string {
+	var f GetFileLinkFunc
+	switch source {
+	case enums.Github, enums.GithubServer:
+		f = github.GetFileLink
+	case enums.Gitlab, enums.GitlabServer:
+		f = gitlab.GetFileLink
+	case enums.Azure, enums.AzureServer:
+		f = azure.GetFileLink
 	case enums.Bitbucket, enums.BitbucketServer:
 		f = bitbucket.GetFileLink
 	}
