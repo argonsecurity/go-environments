@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/fs"
-	"net/url"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -172,8 +171,49 @@ func (e environment) GetBuildLink() string {
 	return fmt.Sprintf("%s/%s/actions/runs/%s", os.Getenv(githubServerEnv), os.Getenv(githubRepositoryEnv), os.Getenv(githubRunIdEnv))
 }
 
-func (e environment) GetFileLineLink(filePath string, ref string, lineNumber int) string {
-	return fmt.Sprintf("%s/%s/blob/%s/%s", os.Getenv(githubServerEnv), os.Getenv(githubRepositoryEnv), ref, url.PathEscape(filePath))
+func (e environment) GetFileLink(filename string, branch string, commit string) string {
+	return GetFileLink(
+		fmt.Sprintf("%s/%s", os.Getenv(githubServerEnv), os.Getenv(githubRepositoryEnv)),
+		filename,
+		branch,
+		commit,
+	)
+}
+
+func (e environment) GetFileLineLink(filename string, branch string, commit string, startLine int, endLine int) string {
+	return GetFileLineLink(
+		fmt.Sprintf("%s/%s", os.Getenv(githubServerEnv), os.Getenv(githubRepositoryEnv)),
+		filename,
+		branch,
+		commit,
+		startLine,
+		endLine,
+	)
+}
+
+func GetFileLink(repositoryURL string, filename string, branch string, commit string) string {
+	refToUse := branch
+	if commit != "" {
+		refToUse = commit
+	}
+	return fmt.Sprintf("%s/blob/%s/%s",
+		repositoryURL,
+		refToUse,
+		filename,
+	)
+}
+
+func GetFileLineLink(repositoryURL string, filename string, branch string, commit string, startLine, endLine int) string {
+	url := GetFileLink(repositoryURL, filename, branch, commit)
+	if startLine != 0 {
+		if endLine == 0 {
+			endLine = startLine
+		}
+
+		url = fmt.Sprintf("%s#L%d-L%d", url, startLine, endLine)
+	}
+
+	return url
 }
 
 func (e environment) IsCurrentEnvironment() bool {

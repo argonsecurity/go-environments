@@ -111,13 +111,60 @@ func (e environment) GetBuildLink() string {
 	return fmt.Sprintf("%s/%s/pipelines/results/%s", bitbucketUrl, os.Getenv(repositoryFullNameEnv), url.PathEscape(os.Getenv(buildNumber)))
 }
 
-func (e environment) GetFileLineLink(filename string, ref string, line int) string {
-	url := fmt.Sprintf("%s/%s/src/%s/%s", bitbucketUrl, os.Getenv(repositoryFullNameEnv), ref, filename)
-	if line != 0 {
-		return fmt.Sprintf("%s#lines-%d", url, line)
-	}
-	return url
+func (e environment) GetFileLink(filename string, branch string, commit string) string {
+	return GetFileLink(
+		fmt.Sprintf("%s/%s", bitbucketUrl, os.Getenv(repositoryFullNameEnv)),
+		filename,
+		branch,
+		commit,
+	)
 }
+
+func (e environment) GetFileLineLink(filename string, branch string, commit string, startLine int, endLine int) string {
+	return GetFileLineLink(
+		fmt.Sprintf("%s/%s", bitbucketUrl, os.Getenv(repositoryFullNameEnv)),
+		filename,
+		branch,
+		commit,
+		startLine,
+		endLine,
+	)
+}
+
+func GetFileLineLink(repositoryURL string, filename string, branch string, commit string, startLine, endLine int) string {
+	link := GetFileLink(repositoryURL, filename, branch, commit)
+	if startLine != 0 {
+		if endLine == 0 {
+			endLine = startLine
+		}
+		return fmt.Sprintf("%s#lines-%d:%d", link, startLine, endLine)
+	}
+	return link
+}
+
+func GetFileLink(repositoryURL string, filename string, branch string, commit string) string {
+	if branch != "" && commit != "" {
+		return fmt.Sprintf("%s/src/%s/%s?at=%s",
+			repositoryURL,
+			commit,
+			filename,
+			url.PathEscape(branch),
+		)
+	} else if branch != "" && commit == "" {
+		return fmt.Sprintf("%s/src/%s/%s",
+			repositoryURL,
+			branch,
+			filename,
+		)
+	} else {
+		return fmt.Sprintf("%s/src/%s/%s",
+			repositoryURL,
+			commit,
+			filename,
+		)
+	}
+}
+
 func (e environment) IsCurrentEnvironment() bool {
 	_, isExist := os.LookupEnv("BITBUCKET_PROJECT_KEY")
 	return isExist

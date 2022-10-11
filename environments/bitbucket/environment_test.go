@@ -18,6 +18,11 @@ var (
 	testRepoUrl               = "http://bitbucket.org/test-workspace/test-repo"
 	testRepoCloneUrl          = fmt.Sprintf("%s%s", testRepoUrl, ".git")
 	testdataPath              = "../bitbucket/testdata/repo"
+
+	testBranch          = "branch"
+	testBranchWithSlash = "feature/branch"
+	testCommit          = "commit"
+	testPath            = "path/to/file"
 )
 
 func Test_environment_GetConfiguration(t *testing.T) {
@@ -179,11 +184,11 @@ func Test_environment_GetBuildLink(t *testing.T) {
 	}
 }
 
-func Test_environment_GetFileLineLink(t *testing.T) {
+func Test_environment_GetFileLink(t *testing.T) {
 	type args struct {
-		filePath   string
-		ref        string
-		lineNumber int
+		filename string
+		branch   string
+		commit   string
 	}
 	tests := []struct {
 		name         string
@@ -194,69 +199,332 @@ func Test_environment_GetFileLineLink(t *testing.T) {
 		{
 			name: "File from branch",
 			args: args{
-				filePath:   "path/to/file",
-				ref:        "branchName",
-				lineNumber: 1,
+				filename: testPath,
+				branch:   testBranch,
 			},
 			envsFilePath: bitbucketMainEnvsFilePath,
-			want:         "https://bitbucket.org/test-workspace/test-repo/src/branchName/path/to/file#lines-1",
-		},
-		{
-			name: "File from branch with line number 0",
-			args: args{
-				filePath:   "path/to/file",
-				ref:        "branchName",
-				lineNumber: 0,
-			},
-			envsFilePath: bitbucketMainEnvsFilePath,
-			want:         "https://bitbucket.org/test-workspace/test-repo/src/branchName/path/to/file",
+			want:         "https://bitbucket.org/test-workspace/test-repo/src/branch/path/to/file",
 		},
 		{
 			name: "File from commit",
 			args: args{
-				filePath:   "path/to/file",
-				ref:        "1a70bx6328bad78d919dca422d1as1g1ec97c5f6",
-				lineNumber: 1,
+				filename: testPath,
+				commit:   testCommit,
 			},
 			envsFilePath: bitbucketMainEnvsFilePath,
-			want:         "https://bitbucket.org/test-workspace/test-repo/src/1a70bx6328bad78d919dca422d1as1g1ec97c5f6/path/to/file#lines-1",
+			want:         "https://bitbucket.org/test-workspace/test-repo/src/commit/path/to/file",
 		},
 		{
 			name: "Empty file path",
 			args: args{
-				filePath:   "",
-				ref:        "1a70bx6328bad78d919dca422d1as1g1ec97c5f6",
-				lineNumber: 1,
+				filename: "",
+				commit:   testCommit,
 			},
 			envsFilePath: bitbucketMainEnvsFilePath,
-			want:         "https://bitbucket.org/test-workspace/test-repo/src/1a70bx6328bad78d919dca422d1as1g1ec97c5f6/#lines-1",
+			want:         "https://bitbucket.org/test-workspace/test-repo/src/commit/",
 		},
 		{
 			name: "Empty ref",
 			args: args{
-				filePath:   "path/to/file",
-				ref:        "",
-				lineNumber: 1,
+				filename: testPath,
+				branch:   "",
 			},
 			envsFilePath: bitbucketMainEnvsFilePath,
-			want:         "https://bitbucket.org/test-workspace/test-repo/src//path/to/file#lines-1",
+			want:         "https://bitbucket.org/test-workspace/test-repo/src//path/to/file",
 		},
 		{
 			name: "Not Bitbucket environment",
 			args: args{
-				filePath:   "path/to/file",
-				ref:        "branchName",
-				lineNumber: 1,
+				filename: testPath,
+				branch:   testBranch,
 			},
 			envsFilePath: "",
-			want:         "https://bitbucket.org//src/branchName/path/to/file#lines-1",
+			want:         "https://bitbucket.org//src/branch/path/to/file",
+		},
+		{
+			name: "Branch with Slash",
+			args: args{
+				filename: testPath,
+				branch:   testBranchWithSlash,
+				commit:   testCommit,
+			},
+			envsFilePath: bitbucketMainEnvsFilePath,
+			want:         "https://bitbucket.org/test-workspace/test-repo/src/commit/path/to/file?at=feature%2Fbranch",
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			e := prepareTest(t, tt.envsFilePath)
-			if got := e.GetFileLineLink(tt.args.filePath, tt.args.ref, tt.args.lineNumber); got != tt.want {
+			if got := e.GetFileLink(tt.args.filename, tt.args.branch, tt.args.commit); got != tt.want {
+				t.Errorf("environment.GetFileLink() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_environment_GetFileLineLink(t *testing.T) {
+	type args struct {
+		filePath  string
+		branch    string
+		commit    string
+		startLine int
+		endLine   int
+	}
+	tests := []struct {
+		name         string
+		args         args
+		envsFilePath string
+		want         string
+	}{
+		{
+			name: "File from branch",
+			args: args{
+				filePath:  testPath,
+				branch:    testBranch,
+				startLine: 1,
+			},
+			envsFilePath: bitbucketMainEnvsFilePath,
+			want:         "https://bitbucket.org/test-workspace/test-repo/src/branch/path/to/file#lines-1:1",
+		},
+		{
+			name: "File from branch with line number 0",
+			args: args{
+				filePath:  testPath,
+				branch:    testBranch,
+				startLine: 0,
+			},
+			envsFilePath: bitbucketMainEnvsFilePath,
+			want:         "https://bitbucket.org/test-workspace/test-repo/src/branch/path/to/file",
+		},
+		{
+			name: "File from commit",
+			args: args{
+				filePath:  testPath,
+				commit:    testCommit,
+				startLine: 1,
+			},
+			envsFilePath: bitbucketMainEnvsFilePath,
+			want:         "https://bitbucket.org/test-workspace/test-repo/src/commit/path/to/file#lines-1:1",
+		},
+		{
+			name: "Empty file path",
+			args: args{
+				filePath:  "",
+				commit:    testCommit,
+				startLine: 1,
+			},
+			envsFilePath: bitbucketMainEnvsFilePath,
+			want:         "https://bitbucket.org/test-workspace/test-repo/src/commit/#lines-1:1",
+		},
+		{
+			name: "Empty ref",
+			args: args{
+				filePath:  testPath,
+				branch:    "",
+				startLine: 1,
+			},
+			envsFilePath: bitbucketMainEnvsFilePath,
+			want:         "https://bitbucket.org/test-workspace/test-repo/src//path/to/file#lines-1:1",
+		},
+		{
+			name: "Not Bitbucket environment",
+			args: args{
+				filePath:  testPath,
+				branch:    testBranch,
+				startLine: 1,
+			},
+			envsFilePath: "",
+			want:         "https://bitbucket.org//src/branch/path/to/file#lines-1:1",
+		},
+		{
+			name: "Branch with Slash",
+			args: args{
+				filePath:  testPath,
+				branch:    testBranchWithSlash,
+				commit:    testCommit,
+				startLine: 1,
+			},
+			envsFilePath: bitbucketMainEnvsFilePath,
+			want:         "https://bitbucket.org/test-workspace/test-repo/src/commit/path/to/file?at=feature%2Fbranch#lines-1:1",
+		},
+		{
+			name: "Same line",
+			args: args{
+				filePath:  testPath,
+				commit:    testCommit,
+				startLine: 1,
+				endLine:   1,
+			},
+			envsFilePath: bitbucketMainEnvsFilePath,
+			want:         "https://bitbucket.org/test-workspace/test-repo/src/commit/path/to/file#lines-1:1",
+		},
+		{
+			name: "Different lines",
+			args: args{
+				filePath:  testPath,
+				commit:    testCommit,
+				startLine: 1,
+				endLine:   2,
+			},
+			envsFilePath: bitbucketMainEnvsFilePath,
+			want:         "https://bitbucket.org/test-workspace/test-repo/src/commit/path/to/file#lines-1:2",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			e := prepareTest(t, tt.envsFilePath)
+			if got := e.GetFileLineLink(tt.args.filePath, tt.args.branch, tt.args.commit, tt.args.startLine, tt.args.endLine); got != tt.want {
 				t.Errorf("environment.GetFileLineLink() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestGetFileLink(t *testing.T) {
+	type args struct {
+		repositoryURL string
+		filename      string
+		branch        string
+		commit        string
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{
+			name: "With branch",
+			args: args{
+				repositoryURL: testRepoUrl,
+				filename:      testPath,
+				branch:        testBranch,
+			},
+			want: "http://bitbucket.org/test-workspace/test-repo/src/branch/path/to/file",
+		},
+		{
+			name: "With commit",
+			args: args{
+				repositoryURL: testRepoUrl,
+				filename:      testPath,
+				commit:        testCommit,
+			},
+			want: "http://bitbucket.org/test-workspace/test-repo/src/commit/path/to/file",
+		},
+		{
+			name: "With commit and branch",
+			args: args{
+				repositoryURL: testRepoUrl,
+				filename:      testPath,
+				commit:        testCommit,
+				branch:        testBranch,
+			},
+			want: "http://bitbucket.org/test-workspace/test-repo/src/commit/path/to/file?at=branch",
+		},
+		{
+			name: "With commit and branch with slash",
+			args: args{
+				repositoryURL: testRepoUrl,
+				filename:      testPath,
+				commit:        testCommit,
+				branch:        testBranchWithSlash,
+			},
+			want: "http://bitbucket.org/test-workspace/test-repo/src/commit/path/to/file?at=feature%2Fbranch",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := GetFileLink(tt.args.repositoryURL, tt.args.filename, tt.args.branch, tt.args.commit); got != tt.want {
+				t.Errorf("GetFileLink() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestGetFileLineLink(t *testing.T) {
+	type args struct {
+		repositoryURL string
+		filename      string
+		branch        string
+		commit        string
+		startLine     int
+		endLine       int
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{
+			name: "No line numbers",
+			args: args{
+				repositoryURL: testRepoUrl,
+				filename:      testPath,
+				branch:        testBranch,
+			},
+			want: "http://bitbucket.org/test-workspace/test-repo/src/branch/path/to/file",
+		},
+		{
+			name: "Same line",
+			args: args{
+				repositoryURL: testRepoUrl,
+				filename:      testPath,
+				branch:        testBranch,
+				startLine:     1,
+				endLine:       1,
+			},
+			want: "http://bitbucket.org/test-workspace/test-repo/src/branch/path/to/file#lines-1:1",
+		},
+		{
+			name: "Different lines",
+			args: args{
+				repositoryURL: testRepoUrl,
+				filename:      testPath,
+				branch:        testBranch,
+				startLine:     1,
+				endLine:       2,
+			},
+			want: "http://bitbucket.org/test-workspace/test-repo/src/branch/path/to/file#lines-1:2",
+		},
+		{
+			name: "With commit",
+			args: args{
+				repositoryURL: testRepoUrl,
+				filename:      testPath,
+				commit:        testCommit,
+				startLine:     1,
+				endLine:       2,
+			},
+			want: "http://bitbucket.org/test-workspace/test-repo/src/commit/path/to/file#lines-1:2",
+		},
+		{
+			name: "With commit and branch",
+			args: args{
+				repositoryURL: testRepoUrl,
+				filename:      testPath,
+				commit:        testCommit,
+				branch:        testBranch,
+				startLine:     1,
+				endLine:       2,
+			},
+			want: "http://bitbucket.org/test-workspace/test-repo/src/commit/path/to/file?at=branch#lines-1:2",
+		},
+		{
+			name: "With commit and branch with slash",
+			args: args{
+				repositoryURL: testRepoUrl,
+				filename:      testPath,
+				commit:        testCommit,
+				branch:        testBranchWithSlash,
+				startLine:     1,
+				endLine:       2,
+			},
+			want: "http://bitbucket.org/test-workspace/test-repo/src/commit/path/to/file?at=feature%2Fbranch#lines-1:2",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := GetFileLineLink(tt.args.repositoryURL, tt.args.filename, tt.args.branch, tt.args.commit, tt.args.startLine, tt.args.endLine); got != tt.want {
+				t.Errorf("GetFileLineLink() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -269,12 +537,12 @@ func Test_environment_IsCurrentEnvironment(t *testing.T) {
 		want         bool
 	}{
 		{
-			name:         "GitLab main environment",
+			name:         "Bitbucket main environment",
 			envsFilePath: bitbucketMainEnvsFilePath,
 			want:         true,
 		},
 		{
-			name:         "GitLab pr environment",
+			name:         "Bitbucket pr environment",
 			envsFilePath: bitbucketPrEnvsFilePath,
 			want:         true,
 		},
