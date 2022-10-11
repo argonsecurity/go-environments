@@ -239,6 +239,10 @@ func (env environment) GetBuildLink() string {
 	return os.Getenv(runURLEnv)
 }
 
+func (e environment) GetFileLink(filename string, branch string, commit string) string {
+	return ""
+}
+
 func (e environment) GetFileLineLink(filename string, branch string, commit string, startLine int, endLine int) string {
 	return ""
 }
