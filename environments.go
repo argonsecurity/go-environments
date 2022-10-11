@@ -96,7 +96,7 @@ func GetFileLineLink(source enums.Source, repositoryURL string, filename string,
 	return ""
 }
 
-func GetFileLink(source enums.Source, repositoryURL string, filename string, branch string, commit string, startLine int, endLine int) string {
+func GetFileLink(source enums.Source, repositoryURL string, filename string, branch string, commit string) string {
 	var f GetFileLinkFunc
 	switch source {
 	case enums.Github, enums.GithubServer:
