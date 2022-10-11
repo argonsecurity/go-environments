@@ -78,7 +78,7 @@ func (e environment) GetFileLink(filename string, branch string, commit string) 
 	return ""
 }
 
-func (e environment) GetFileLineLink(filename string, ref string, commitId string, startLine int, endLine int) string {
+func (e environment) GetFileLineLink(filename string, ref string, commit string, startLine int, endLine int) string {
 	return "localhost"
 }
 
