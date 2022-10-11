@@ -491,9 +491,11 @@ func Test_environment_GetBuildLink(t *testing.T) {
 
 func Test_environment_GetFileLineLink(t *testing.T) {
 	type args struct {
-		filename string
-		ref      string
-		line     int
+		filename  string
+		branch    string
+		commit    string
+		startLine int
+		endLine   int
 	}
 	tests := []struct {
 		name         string
@@ -515,7 +517,7 @@ func Test_environment_GetFileLineLink(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			e := prepareTest(t, tt.envsFilePath)
-			if got := e.GetFileLineLink(tt.args.filename, tt.args.ref, tt.args.line); got != tt.want {
+			if got := e.GetFileLineLink(tt.args.filename, tt.args.branch, tt.args.commit, tt.args.startLine, tt.args.endLine); got != tt.want {
 				t.Errorf("environment.GetFileLineLink() = %v, want %v", got, tt.want)
 			}
 		})

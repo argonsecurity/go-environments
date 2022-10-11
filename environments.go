@@ -24,6 +24,9 @@ var (
 	}
 )
 
+type GetFileLineLinkFunc func(string, string, string, string, int, int) string
+type GetFileLinkFunc func(string, string, string, string) string
+
 // Environment is an interface for interacting with CI/CD environments
 type Environment interface {
 	// GetConfiguration get a environment configuration
@@ -35,8 +38,11 @@ type Environment interface {
 	// GetStepLink get a link to the current step
 	GetStepLink() string
 
+	// GetFileLink get a link to a file
+	GetFileLink(filename string, ref string, commit string) string
+
 	// GetFileLineLink get a link to a file line
-	GetFileLineLink(filename string, ref string, startLine int, endLine int) string
+	GetFileLineLink(filename string, ref string, commit string, startLine int, endLine int) string
 
 	// Name get the name of the environment
 	Name() string
@@ -68,4 +74,44 @@ func GetOrDetectEnvironment(name string) (Environment, error) {
 		return GetEnvironment(name)
 	}
 	return DetectEnvironment(), nil
+}
+
+func GetFileLineLink(source enums.Source, repositoryURL string, filename string, branch string, commit string, startLine int, endLine int) string {
+	var f GetFileLineLinkFunc
+	switch source {
+	case enums.Github, enums.GithubServer:
+		f = github.GetFileLineLink
+	case enums.Gitlab, enums.GitlabServer:
+		f = gitlab.GetFileLineLink
+	case enums.Azure, enums.AzureServer:
+		f = azure.GetFileLineLink
+	case enums.Bitbucket, enums.BitbucketServer:
+		f = bitbucket.GetFileLineLink
+	}
+
+	if f != nil {
+		return f(repositoryURL, filename, branch, commit, startLine, endLine)
+	}
+
+	return ""
+}
+
+func GetFileLink(source enums.Source, repositoryURL string, filename string, branch string, commit string) string {
+	var f GetFileLinkFunc
+	switch source {
+	case enums.Github, enums.GithubServer:
+		f = github.GetFileLink
+	case enums.Gitlab, enums.GitlabServer:
+		f = gitlab.GetFileLink
+	case enums.Azure, enums.AzureServer:
+		f = azure.GetFileLink
+	case enums.Bitbucket, enums.BitbucketServer:
+		f = bitbucket.GetFileLink
+	}
+
+	if f != nil {
+		return f(repositoryURL, filename, branch, commit)
+	}
+
+	return ""
 }

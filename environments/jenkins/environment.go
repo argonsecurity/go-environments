@@ -2,6 +2,7 @@ package jenkins
 
 import (
 	"fmt"
+	githubserver "github.com/argonsecurity/go-environments/environments/jenkins/environments/github_server"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -147,7 +148,7 @@ func loadConfiguration() (*models.Configuration, error) {
 		return nil, err
 	}
 
-	repoSource, apiUrl := getRepositorySource(cloneUrl)
+	repoSource, apiUrl := GetRepositorySource(cloneUrl)
 	repositoryURL, org, repositoryName, err := parseDataFromCloneUrl(cloneUrl, apiUrl, repoSource)
 	if err != nil {
 		return nil, err
@@ -239,7 +240,11 @@ func (env environment) GetBuildLink() string {
 	return os.Getenv(runURLEnv)
 }
 
-func (e environment) GetFileLineLink(filename string, ref string, line int) string {
+func (e environment) GetFileLink(filename string, branch string, commit string) string {
+	return ""
+}
+
+func (e environment) GetFileLineLink(filename string, branch string, commit string, startLine int, endLine int) string {
 	return ""
 }
 
@@ -262,7 +267,7 @@ func getRepositoryCloneURL(repositoryPath string) (string, error) {
 	return git.GetGitRemoteURL(repositoryPath)
 }
 
-func getRepositorySource(cloneUrl string) (enums.Source, string) {
+func GetRepositorySource(cloneUrl string) (enums.Source, string) {
 	switch {
 	case strings.Contains(cloneUrl, bitbucketHostname):
 		return enums.Bitbucket, bitbucketApiUrl
@@ -285,7 +290,11 @@ func discoverSCMSource(gitUrl string) (enums.Source, string) {
 		if gitlab.CheckGitlabByHTTPRequest(url, httpClient) {
 			return enums.GitlabServer, url
 		}
+		if githubserver.CheckGithubServerByHTTPRequest(url, httpClient) {
+			return enums.GithubServer, githubserver.GetGithubServerApiUrl(url)
+		}
 
+		// bitbucket server check is last because some scms might return 200 with error page for this endpoint
 		if bitbucketserver.CheckBitbucketServerByHTTPRequest(url, httpClient) {
 			return enums.BitbucketServer, url
 		}

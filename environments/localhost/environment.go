@@ -74,7 +74,11 @@ func (e environment) GetBuildLink() string {
 	return "localhost"
 }
 
-func (e environment) GetFileLineLink(filename string, ref string, line int) string {
+func (e environment) GetFileLink(filename string, branch string, commit string) string {
+	return ""
+}
+
+func (e environment) GetFileLineLink(filename string, ref string, commit string, startLine int, endLine int) string {
 	return "localhost"
 }
 
