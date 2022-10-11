@@ -37,6 +37,9 @@ type Environment interface {
 	// GetStepLink get a link to the current step
 	GetStepLink() string
 
+	// GetFileLink get a link to a file
+	GetFileLink(filename string, ref string, commitId string) string
+
 	// GetFileLineLink get a link to a file line
 	GetFileLineLink(filename string, ref string, commitId string, startLine int, endLine int) string
 
@@ -80,7 +83,7 @@ func GetFileLink(source enums.Source, repositoryURL string, filename string, bra
 	case enums.Gitlab, enums.GitlabServer:
 		f = gitlab.GetFileLink
 	case enums.Azure, enums.AzureServer:
-		f = azure.GetFileLink
+		f = azure.GetFileLineLink
 	case enums.Bitbucket, enums.BitbucketServer:
 		f = bitbucket.GetFileLink
 	}
