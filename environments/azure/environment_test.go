@@ -311,7 +311,7 @@ func Test_environment_GetFileLineLink(t *testing.T) {
 				startLine: 1,
 			},
 			envsFilePath: azureMainEnvsFilePath,
-			want:         "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GBbranch&line=1&lineEnd=2&lineStartColumn=1&lineEndColumn=1&lineStyle=plain&_a=contents",
+			want:         "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GBbranch&_a=contents&line=1&lineEnd=2&lineStartColumn=1&lineEndColumn=1&lineStyle=plain",
 		},
 		{
 			name: "File from branch with line number 0",
@@ -331,7 +331,7 @@ func Test_environment_GetFileLineLink(t *testing.T) {
 				startLine: 1,
 			},
 			envsFilePath: azureMainEnvsFilePath,
-			want:         "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GCcommit&line=1&lineEnd=2&lineStartColumn=1&lineEndColumn=1&lineStyle=plain&_a=contents",
+			want:         "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GCcommit&_a=contents&line=1&lineEnd=2&lineStartColumn=1&lineEndColumn=1&lineStyle=plain",
 		},
 		{
 			name: "Empty file path",
@@ -341,7 +341,7 @@ func Test_environment_GetFileLineLink(t *testing.T) {
 				startLine: 1,
 			},
 			envsFilePath: azureMainEnvsFilePath,
-			want:         "https://dev.azure.com/test-organization/_git/test-repo?path=&version=GCcommit&line=1&lineEnd=2&lineStartColumn=1&lineEndColumn=1&lineStyle=plain&_a=contents",
+			want:         "https://dev.azure.com/test-organization/_git/test-repo?path=&version=GCcommit&_a=contents&line=1&lineEnd=2&lineStartColumn=1&lineEndColumn=1&lineStyle=plain",
 		},
 		{
 			name: "Empty ref",
@@ -351,7 +351,7 @@ func Test_environment_GetFileLineLink(t *testing.T) {
 				startLine: 1,
 			},
 			envsFilePath: azureMainEnvsFilePath,
-			want:         "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GB&line=1&lineEnd=2&lineStartColumn=1&lineEndColumn=1&lineStyle=plain&_a=contents",
+			want:         "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GB&_a=contents&line=1&lineEnd=2&lineStartColumn=1&lineEndColumn=1&lineStyle=plain",
 		},
 		{
 			name: "Not azure environment",
@@ -361,7 +361,7 @@ func Test_environment_GetFileLineLink(t *testing.T) {
 				startLine: 1,
 			},
 			envsFilePath: "",
-			want:         "_git/?path=path%2Fto%2Ffile&version=GBbranch&line=1&lineEnd=2&lineStartColumn=1&lineEndColumn=1&lineStyle=plain&_a=contents",
+			want:         "_git/?path=path%2Fto%2Ffile&version=GBbranch&_a=contents&line=1&lineEnd=2&lineStartColumn=1&lineEndColumn=1&lineStyle=plain",
 		},
 		{
 			name: "No lines",
@@ -381,7 +381,7 @@ func Test_environment_GetFileLineLink(t *testing.T) {
 				endLine:   1,
 			},
 			envsFilePath: azureMainEnvsFilePath,
-			want:         "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GBbranch&line=1&lineEnd=2&lineStartColumn=1&lineEndColumn=1&lineStyle=plain&_a=contents",
+			want:         "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GBbranch&_a=contents&line=1&lineEnd=2&lineStartColumn=1&lineEndColumn=1&lineStyle=plain",
 		},
 		{
 			name: "Different lines",
@@ -392,7 +392,7 @@ func Test_environment_GetFileLineLink(t *testing.T) {
 				endLine:   2,
 			},
 			envsFilePath: azureMainEnvsFilePath,
-			want:         "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GBbranch&line=1&lineEnd=3&lineStartColumn=1&lineEndColumn=1&lineStyle=plain&_a=contents",
+			want:         "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GBbranch&_a=contents&line=1&lineEnd=3&lineStartColumn=1&lineEndColumn=1&lineStyle=plain",
 		},
 	}
 	for _, tt := range tests {
