@@ -276,10 +276,10 @@ func getRepositorySource(cloneUrl string) (enums.Source, string) {
 
 	}
 
-	return discoverSCMSource(cloneUrl)
+	return DiscoverSCMSource(cloneUrl)
 }
 
-func discoverSCMSource(gitUrl string) (enums.Source, string) {
+func DiscoverSCMSource(gitUrl string) (enums.Source, string) {
 	urls := utils.ParseGitURL(gitUrl)
 	httpClient := http.GetHTTPClient("", nil)
 	for _, url := range urls {
