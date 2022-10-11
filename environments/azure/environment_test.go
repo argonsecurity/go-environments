@@ -221,6 +221,74 @@ func Test_environment_GetBuildLink(t *testing.T) {
 	}
 }
 
+func Test_environment_GetFileLink(t *testing.T) {
+	type args struct {
+		filename string
+		branch   string
+		commit   string
+	}
+	tests := []struct {
+		name         string
+		envsFilePath string
+		args         args
+		want         string
+	}{
+		{
+			name: "File from branch",
+			args: args{
+				filename: testPath,
+				branch:   testBranch,
+			},
+			envsFilePath: azureMainEnvsFilePath,
+			want:         "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GBbranch&_a=contents",
+		},
+		{
+			name: "File from commit",
+			args: args{
+				filename: testPath,
+				commit:   testCommit,
+			},
+			envsFilePath: azureMainEnvsFilePath,
+			want:         "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GCcommit&_a=contents",
+		},
+		{
+			name: "Empty file path",
+			args: args{
+				filename: "",
+				commit:   testCommit,
+			},
+			envsFilePath: azureMainEnvsFilePath,
+			want:         "https://dev.azure.com/test-organization/_git/test-repo?path=&version=GCcommit&_a=contents",
+		},
+		{
+			name: "Empty branch",
+			args: args{
+				filename: testPath,
+				branch:   "",
+			},
+			envsFilePath: azureMainEnvsFilePath,
+			want:         "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GB&_a=contents",
+		},
+		{
+			name: "Not azure environment",
+			args: args{
+				filename: testPath,
+				branch:   testBranch,
+			},
+			envsFilePath: "",
+			want:         "_git/?path=path%2Fto%2Ffile&version=GBbranch&_a=contents",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			e := prepareTest(t, tt.envsFilePath)
+			if got := e.GetFileLink(tt.args.filename, tt.args.branch, tt.args.commit); got != tt.want {
+				t.Errorf("environment.GetFileLink() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func Test_environment_GetFileLineLink(t *testing.T) {
 	type args struct {
 		filePath  string
@@ -340,6 +408,56 @@ func Test_environment_GetFileLineLink(t *testing.T) {
 func TestGetFileLink(t *testing.T) {
 	type args struct {
 		repositoryURL string
+		filename      string
+		branch        string
+		commit        string
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{
+			name: "Branch",
+			args: args{
+				repositoryURL: testBuildRepoURL,
+				filename:      testPath,
+				branch:        testBranch,
+			},
+			want: "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GBbranch&_a=contents",
+		},
+		{
+			name: "With commit",
+			args: args{
+				repositoryURL: testBuildRepoURL,
+				filename:      testPath,
+				commit:        testCommit,
+			},
+			want: "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GCcommit&_a=contents",
+		},
+		{
+			name: "With commit and branch",
+			args: args{
+				repositoryURL: testBuildRepoURL,
+				filename:      testPath,
+				branch:        testBranch,
+				commit:        testCommit,
+			},
+			want: "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GCcommit&_a=contents",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := GetFileLink(tt.args.repositoryURL, tt.args.filename, tt.args.branch, tt.args.commit); got != tt.want {
+				t.Errorf("GetFileLineLink() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestGetFileLineLink(t *testing.T) {
+	type args struct {
+		repositoryURL string
 		filePath      string
 		branch        string
 		commit        string
@@ -369,7 +487,7 @@ func TestGetFileLink(t *testing.T) {
 				startLine:     1,
 				endLine:       1,
 			},
-			want: "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GBbranch&line=1&lineEnd=2&lineStartColumn=1&lineEndColumn=1&lineStyle=plain&_a=contents",
+			want: "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GBbranch&_a=contents&line=1&lineEnd=2&lineStartColumn=1&lineEndColumn=1&lineStyle=plain",
 		},
 		{
 			name: "Different lines",
@@ -380,7 +498,7 @@ func TestGetFileLink(t *testing.T) {
 				startLine:     1,
 				endLine:       2,
 			},
-			want: "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GBbranch&line=1&lineEnd=3&lineStartColumn=1&lineEndColumn=1&lineStyle=plain&_a=contents",
+			want: "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GBbranch&_a=contents&line=1&lineEnd=3&lineStartColumn=1&lineEndColumn=1&lineStyle=plain",
 		},
 		{
 			name: "With commit",
@@ -391,7 +509,7 @@ func TestGetFileLink(t *testing.T) {
 				startLine:     1,
 				endLine:       2,
 			},
-			want: "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GCcommit&line=1&lineEnd=3&lineStartColumn=1&lineEndColumn=1&lineStyle=plain&_a=contents",
+			want: "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GCcommit&_a=contents&line=1&lineEnd=3&lineStartColumn=1&lineEndColumn=1&lineStyle=plain",
 		},
 		{
 			name: "With commit and branch",
@@ -403,13 +521,13 @@ func TestGetFileLink(t *testing.T) {
 				startLine:     1,
 				endLine:       2,
 			},
-			want: "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GCcommit&line=1&lineEnd=3&lineStartColumn=1&lineEndColumn=1&lineStyle=plain&_a=contents",
+			want: "https://dev.azure.com/test-organization/_git/test-repo?path=path%2Fto%2Ffile&version=GCcommit&_a=contents&line=1&lineEnd=3&lineStartColumn=1&lineEndColumn=1&lineStyle=plain",
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := GetFileLink(tt.args.repositoryURL, tt.args.filePath, tt.args.branch, tt.args.commit, tt.args.startLine, tt.args.endLine); got != tt.want {
-				t.Errorf("GetFileLink() = %v, want %v", got, tt.want)
+			if got := GetFileLineLink(tt.args.repositoryURL, tt.args.filePath, tt.args.branch, tt.args.commit, tt.args.startLine, tt.args.endLine); got != tt.want {
+				t.Errorf("GetFileLineLink() = %v, want %v", got, tt.want)
 			}
 		})
 	}

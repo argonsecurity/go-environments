@@ -165,10 +165,19 @@ func (e environment) GetBuildLink() string {
 	return fmt.Sprintf("%s%s/_build?definitionId=%s&_a=summary", os.Getenv(endpointURLEnv), os.Getenv(projectNameEnv), os.Getenv(definitionIDEnv))
 }
 
-func (e environment) GetFileLineLink(filePath string, branch string, commit string, startLine int, endLine int) string {
+func (e environment) GetFileLink(filename string, branch string, commit string) string {
 	return GetFileLink(
 		fmt.Sprintf("%s_git/%s", os.Getenv(endpointURLEnv), os.Getenv(repositoryNameEnv)),
-		filePath,
+		filename,
+		branch,
+		commit,
+	)
+}
+
+func (e environment) GetFileLineLink(filename string, branch string, commit string, startLine int, endLine int) string {
+	return GetFileLineLink(
+		fmt.Sprintf("%s_git/%s", os.Getenv(endpointURLEnv), os.Getenv(repositoryNameEnv)),
+		filename,
 		branch,
 		commit,
 		startLine,
@@ -176,26 +185,29 @@ func (e environment) GetFileLineLink(filePath string, branch string, commit stri
 	)
 }
 
-func GetFileLink(repositoryURL string, filename string, branch string, commit string, startLine, endLine int) string {
-	refToUse := fmt.Sprintf("GB%s", branch)
-	if commit != "" {
-		refToUse = fmt.Sprintf("GC%s", commit)
-	}
+func GetFileLineLink(repositoryURL string, filename string, branch string, commit string, startLine, endLine int) string {
+	fileLink := GetFileLink(repositoryURL, filename, branch, commit)
 	if startLine != 0 {
 		if endLine == 0 {
 			endLine = startLine
 		}
 		endLine++ // In Azure, we specify endColumn to be 1, therefor, end endLine must be +1 from the expected endLine
 
-		return fmt.Sprintf("%s?path=%s&version=%s&line=%d&lineEnd=%d&lineStartColumn=1&lineEndColumn=1&lineStyle=plain&_a=contents",
-			repositoryURL,
-			url.PathEscape(filename),
-			url.PathEscape(refToUse),
+		return fmt.Sprintf("%s&line=%d&lineEnd=%d&lineStartColumn=1&lineEndColumn=1&lineStyle=plain",
+			fileLink,
 			startLine,
 			endLine,
 		)
 	}
 
+	return fileLink
+}
+
+func GetFileLink(repositoryURL string, filename string, branch string, commit string) string {
+	refToUse := fmt.Sprintf("GB%s", branch)
+	if commit != "" {
+		refToUse = fmt.Sprintf("GC%s", commit)
+	}
 	return fmt.Sprintf("%s?path=%s&version=%s&_a=contents",
 		repositoryURL,
 		url.PathEscape(filename),
