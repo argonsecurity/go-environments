@@ -111,8 +111,17 @@ func (e environment) GetBuildLink() string {
 	return fmt.Sprintf("%s/%s/pipelines/results/%s", bitbucketUrl, os.Getenv(repositoryFullNameEnv), url.PathEscape(os.Getenv(buildNumber)))
 }
 
-func (e environment) GetFileLineLink(filename string, branch string, commit string, startLine int, endLine int) string {
+func (e environment) GetFileLink(filename string, branch string, commit string) string {
 	return GetFileLink(
+		fmt.Sprintf("%s/%s", bitbucketUrl, os.Getenv(repositoryFullNameEnv)),
+		filename,
+		branch,
+		commit,
+	)
+}
+
+func (e environment) GetFileLineLink(filename string, branch string, commit string, startLine int, endLine int) string {
+	return GetFileLineLink(
 		fmt.Sprintf("%s/%s", bitbucketUrl, os.Getenv(repositoryFullNameEnv)),
 		filename,
 		branch,
@@ -122,29 +131,8 @@ func (e environment) GetFileLineLink(filename string, branch string, commit stri
 	)
 }
 
-func GetFileLink(repositoryURL string, filename string, branch string, commit string, startLine, endLine int) string {
-	link := ""
-	if branch != "" && commit != "" {
-		link = fmt.Sprintf("%s/src/%s/%s?at=%s",
-			repositoryURL,
-			commit,
-			filename,
-			url.PathEscape(branch),
-		)
-	} else if branch != "" && commit == "" {
-		link = fmt.Sprintf("%s/src/%s/%s",
-			repositoryURL,
-			branch,
-			filename,
-		)
-	} else {
-		link = fmt.Sprintf("%s/src/%s/%s",
-			repositoryURL,
-			commit,
-			filename,
-		)
-	}
-
+func GetFileLineLink(repositoryURL string, filename string, branch string, commit string, startLine, endLine int) string {
+	link := GetFileLink(repositoryURL, filename, branch, commit)
 	if startLine != 0 {
 		if endLine == 0 {
 			endLine = startLine
@@ -152,6 +140,29 @@ func GetFileLink(repositoryURL string, filename string, branch string, commit st
 		return fmt.Sprintf("%s#lines-%d:%d", link, startLine, endLine)
 	}
 	return link
+}
+
+func GetFileLink(repositoryURL string, filename string, branch string, commit string) string {
+	if branch != "" && commit != "" {
+		return fmt.Sprintf("%s/src/%s/%s?at=%s",
+			repositoryURL,
+			commit,
+			filename,
+			url.PathEscape(branch),
+		)
+	} else if branch != "" && commit == "" {
+		return fmt.Sprintf("%s/src/%s/%s",
+			repositoryURL,
+			branch,
+			filename,
+		)
+	} else {
+		return fmt.Sprintf("%s/src/%s/%s",
+			repositoryURL,
+			commit,
+			filename,
+		)
+	}
 }
 
 func (e environment) IsCurrentEnvironment() bool {

@@ -184,6 +184,84 @@ func Test_environment_GetBuildLink(t *testing.T) {
 	}
 }
 
+func Test_environment_GetFileLink(t *testing.T) {
+	type args struct {
+		filename string
+		branch   string
+		commit   string
+	}
+	tests := []struct {
+		name         string
+		args         args
+		envsFilePath string
+		want         string
+	}{
+		{
+			name: "File from branch",
+			args: args{
+				filename: testPath,
+				branch:   testBranch,
+			},
+			envsFilePath: bitbucketMainEnvsFilePath,
+			want:         "https://bitbucket.org/test-workspace/test-repo/src/branch/path/to/file",
+		},
+		{
+			name: "File from commit",
+			args: args{
+				filename: testPath,
+				commit:   testCommit,
+			},
+			envsFilePath: bitbucketMainEnvsFilePath,
+			want:         "https://bitbucket.org/test-workspace/test-repo/src/commit/path/to/file",
+		},
+		{
+			name: "Empty file path",
+			args: args{
+				filename: "",
+				commit:   testCommit,
+			},
+			envsFilePath: bitbucketMainEnvsFilePath,
+			want:         "https://bitbucket.org/test-workspace/test-repo/src/commit/",
+		},
+		{
+			name: "Empty ref",
+			args: args{
+				filename: testPath,
+				branch:   "",
+			},
+			envsFilePath: bitbucketMainEnvsFilePath,
+			want:         "https://bitbucket.org/test-workspace/test-repo/src//path/to/file",
+		},
+		{
+			name: "Not Bitbucket environment",
+			args: args{
+				filename: testPath,
+				branch:   testBranch,
+			},
+			envsFilePath: "",
+			want:         "https://bitbucket.org//src/branch/path/to/file",
+		},
+		{
+			name: "Branch with Slash",
+			args: args{
+				filename: testPath,
+				branch:   testBranchWithSlash,
+				commit:   testCommit,
+			},
+			envsFilePath: bitbucketMainEnvsFilePath,
+			want:         "https://bitbucket.org/test-workspace/test-repo/src/commit/path/to/file?at=feature%2Fbranch",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			e := prepareTest(t, tt.envsFilePath)
+			if got := e.GetFileLink(tt.args.filename, tt.args.branch, tt.args.commit); got != tt.want {
+				t.Errorf("environment.GetFileLink() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func Test_environment_GetFileLineLink(t *testing.T) {
 	type args struct {
 		filePath  string
@@ -308,6 +386,66 @@ func TestGetFileLink(t *testing.T) {
 		filename      string
 		branch        string
 		commit        string
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{
+			name: "With branch",
+			args: args{
+				repositoryURL: testRepoUrl,
+				filename:      testPath,
+				branch:        testBranch,
+			},
+			want: "http://bitbucket.org/test-workspace/test-repo/src/branch/path/to/file",
+		},
+		{
+			name: "With commit",
+			args: args{
+				repositoryURL: testRepoUrl,
+				filename:      testPath,
+				commit:        testCommit,
+			},
+			want: "http://bitbucket.org/test-workspace/test-repo/src/commit/path/to/file",
+		},
+		{
+			name: "With commit and branch",
+			args: args{
+				repositoryURL: testRepoUrl,
+				filename:      testPath,
+				commit:        testCommit,
+				branch:        testBranch,
+			},
+			want: "http://bitbucket.org/test-workspace/test-repo/src/commit/path/to/file?at=branch",
+		},
+		{
+			name: "With commit and branch with slash",
+			args: args{
+				repositoryURL: testRepoUrl,
+				filename:      testPath,
+				commit:        testCommit,
+				branch:        testBranchWithSlash,
+			},
+			want: "http://bitbucket.org/test-workspace/test-repo/src/commit/path/to/file?at=feature%2Fbranch",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := GetFileLink(tt.args.repositoryURL, tt.args.filename, tt.args.branch, tt.args.commit); got != tt.want {
+				t.Errorf("GetFileLink() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestGetFileLineLink(t *testing.T) {
+	type args struct {
+		repositoryURL string
+		filename      string
+		branch        string
+		commit        string
 		startLine     int
 		endLine       int
 	}
@@ -385,8 +523,8 @@ func TestGetFileLink(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := GetFileLink(tt.args.repositoryURL, tt.args.filename, tt.args.branch, tt.args.commit, tt.args.startLine, tt.args.endLine); got != tt.want {
-				t.Errorf("GetFileLink() = %v, want %v", got, tt.want)
+			if got := GetFileLineLink(tt.args.repositoryURL, tt.args.filename, tt.args.branch, tt.args.commit, tt.args.startLine, tt.args.endLine); got != tt.want {
+				t.Errorf("GetFileLineLink() = %v, want %v", got, tt.want)
 			}
 		})
 	}
