@@ -317,6 +317,57 @@ func Test_environment_GetBuildLink(t *testing.T) {
 	}
 }
 
+func Test_environment_GetFileLink(t *testing.T) {
+	type args struct {
+		filePath string
+		branch   string
+		commit   string
+	}
+	tests := []struct {
+		name         string
+		args         args
+		envsFilePath string
+		want         string
+	}{
+		{
+			name: "With branch",
+			args: args{
+				filePath: testFilepath,
+				branch:   testBranch,
+			},
+			envsFilePath: githubMainEnvsFilePath,
+			want:         "https://github.com/test-org/test-repo/blob/branch/path/to/file",
+		},
+		{
+			name: "With commit",
+			args: args{
+				filePath: "path/to/file",
+				commit:   testCommit,
+			},
+			envsFilePath: githubMainEnvsFilePath,
+			want:         "https://github.com/test-org/test-repo/blob/commit/path/to/file",
+		},
+		{
+			name: "With commit and branch",
+			args: args{
+				filePath: "path/to/file",
+				commit:   testCommit,
+				branch:   testBranch,
+			},
+			envsFilePath: githubMainEnvsFilePath,
+			want:         "https://github.com/test-org/test-repo/blob/commit/path/to/file",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			e := prepareTest(t, tt.envsFilePath)
+			if got := e.GetFileLink(tt.args.filePath, tt.args.branch, tt.args.commit); got != tt.want {
+				t.Errorf("environment.GetFileLink() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func Test_environment_GetFileLineLink(t *testing.T) {
 	type args struct {
 		filePath  string
@@ -335,32 +386,44 @@ func Test_environment_GetFileLineLink(t *testing.T) {
 			name: "No lines",
 			args: args{
 				filePath: testFilepath,
-				branch:   "branchName",
+				branch:   testBranch,
 			},
 			envsFilePath: githubMainEnvsFilePath,
-			want:         "https://github.com/test-org/test-repo/blob/branchName/path/to/file",
+			want:         "https://github.com/test-org/test-repo/blob/branch/path/to/file",
 		},
 		{
 			name: "Same line",
 			args: args{
 				filePath:  testFilepath,
-				commit:    "1a70bx6328bad78d919dca422d1as1g1ec97c5f6",
+				commit:    testCommit,
 				startLine: 1,
 				endLine:   1,
 			},
 			envsFilePath: githubMainEnvsFilePath,
-			want:         "https://github.com/test-org/test-repo/blob/1a70bx6328bad78d919dca422d1as1g1ec97c5f6/path/to/file#L1-L1",
+			want:         "https://github.com/test-org/test-repo/blob/commit/path/to/file#L1-L1",
 		},
 		{
 			name: "Different lines",
 			args: args{
 				filePath:  "path/to/file",
-				commit:    "1a70bx6328bad78d919dca422d1as1g1ec97c5f6",
+				commit:    testCommit,
 				startLine: 1,
 				endLine:   2,
 			},
 			envsFilePath: githubMainEnvsFilePath,
-			want:         "https://github.com/test-org/test-repo/blob/1a70bx6328bad78d919dca422d1as1g1ec97c5f6/path/to/file#L1-L2",
+			want:         "https://github.com/test-org/test-repo/blob/commit/path/to/file#L1-L2",
+		},
+		{
+			name: "With branch and commit",
+			args: args{
+				filePath:  "path/to/file",
+				branch:    testBranch,
+				commit:    testCommit,
+				startLine: 1,
+				endLine:   2,
+			},
+			envsFilePath: githubMainEnvsFilePath,
+			want:         "https://github.com/test-org/test-repo/blob/commit/path/to/file#L1-L2",
 		},
 	}
 	for _, tt := range tests {
@@ -374,6 +437,56 @@ func Test_environment_GetFileLineLink(t *testing.T) {
 }
 
 func TestGetFileLink(t *testing.T) {
+	type args struct {
+		repositoryURL string
+		filename      string
+		branch        string
+		commit        string
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{
+			name: "With branch",
+			args: args{
+				repositoryURL: testRepoUrl,
+				filename:      testFilepath,
+				branch:        testBranch,
+			},
+			want: "https://github.com/test-org/test-repo/blob/branch/path/to/file",
+		},
+		{
+			name: "With commit",
+			args: args{
+				repositoryURL: testRepoUrl,
+				filename:      testFilepath,
+				commit:        testCommit,
+			},
+			want: "https://github.com/test-org/test-repo/blob/commit/path/to/file",
+		},
+		{
+			name: "With commit and branch",
+			args: args{
+				repositoryURL: testRepoUrl,
+				filename:      testFilepath,
+				commit:        testCommit,
+				branch:        testBranch,
+			},
+			want: "https://github.com/test-org/test-repo/blob/commit/path/to/file",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := GetFileLink(tt.args.repositoryURL, tt.args.filename, tt.args.branch, tt.args.commit); got != tt.want {
+				t.Errorf("GetFileLink() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestGetFileLineLink(t *testing.T) {
 	type args struct {
 		repositoryURL string
 		filename      string
@@ -444,8 +557,8 @@ func TestGetFileLink(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := GetFileLink(tt.args.repositoryURL, tt.args.filename, tt.args.branch, tt.args.commit, tt.args.startLine, tt.args.endLine); got != tt.want {
-				t.Errorf("GetFileLink() = %v, want %v", got, tt.want)
+			if got := GetFileLineLink(tt.args.repositoryURL, tt.args.filename, tt.args.branch, tt.args.commit, tt.args.startLine, tt.args.endLine); got != tt.want {
+				t.Errorf("GetFileLineLink() = %v, want %v", got, tt.want)
 			}
 		})
 	}
