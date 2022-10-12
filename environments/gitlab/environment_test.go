@@ -364,7 +364,7 @@ func Test_environment_GetFileLineLink(t *testing.T) {
 				startLine: 1,
 			},
 			envsFilePath: gitlabMainEnvsFilePath,
-			want:         "https://gitlab.com/test-group/test-sub-group/test-project/-/blob/branch/path/to/file#L1-L1",
+			want:         "https://gitlab.com/test-group/test-sub-group/test-project/-/blob/branch/path/to/file#L1-1",
 		},
 		{
 			name: "File from branch with line number 0",
@@ -384,7 +384,7 @@ func Test_environment_GetFileLineLink(t *testing.T) {
 				startLine: 1,
 			},
 			envsFilePath: gitlabMainEnvsFilePath,
-			want:         "https://gitlab.com/test-group/test-sub-group/test-project/-/blob/commit/path/to/file#L1-L1",
+			want:         "https://gitlab.com/test-group/test-sub-group/test-project/-/blob/commit/path/to/file#L1-1",
 		},
 		{
 			name: "Empty file path",
@@ -394,7 +394,7 @@ func Test_environment_GetFileLineLink(t *testing.T) {
 				startLine: 1,
 			},
 			envsFilePath: gitlabMainEnvsFilePath,
-			want:         "https://gitlab.com/test-group/test-sub-group/test-project/-/blob/commit/#L1-L1",
+			want:         "https://gitlab.com/test-group/test-sub-group/test-project/-/blob/commit/#L1-1",
 		},
 		{
 			name: "Empty ref",
@@ -404,7 +404,7 @@ func Test_environment_GetFileLineLink(t *testing.T) {
 				startLine: 1,
 			},
 			envsFilePath: gitlabMainEnvsFilePath,
-			want:         "https://gitlab.com/test-group/test-sub-group/test-project/-/blob//path/to/file#L1-L1",
+			want:         "https://gitlab.com/test-group/test-sub-group/test-project/-/blob//path/to/file#L1-1",
 		},
 		{
 			name: "Not GitLab environment",
@@ -414,7 +414,7 @@ func Test_environment_GetFileLineLink(t *testing.T) {
 				startLine: 1,
 			},
 			envsFilePath: "",
-			want:         "/-/blob/branch/path/to/file#L1-L1",
+			want:         "/-/blob/branch/path/to/file#L1-1",
 		},
 		{
 			name: "Different line numbers",
@@ -425,7 +425,7 @@ func Test_environment_GetFileLineLink(t *testing.T) {
 				endLine:   2,
 			},
 			envsFilePath: gitlabMainEnvsFilePath,
-			want:         "https://gitlab.com/test-group/test-sub-group/test-project/-/blob/branch/path/to/file#L1-L2",
+			want:         "https://gitlab.com/test-group/test-sub-group/test-project/-/blob/branch/path/to/file#L1-2",
 		},
 	}
 	for _, tt := range tests {
@@ -519,7 +519,7 @@ func TestGetFileLineLink(t *testing.T) {
 				branch:        testBranch,
 				startLine:     1,
 			},
-			want: "https://gitlab.com/test-group/test-sub-group/test-project/-/blob/branch/path/to/file#L1-L1",
+			want: "https://gitlab.com/test-group/test-sub-group/test-project/-/blob/branch/path/to/file#L1-1",
 		},
 		{
 			name: "Different lines",
@@ -530,7 +530,7 @@ func TestGetFileLineLink(t *testing.T) {
 				startLine:     1,
 				endLine:       2,
 			},
-			want: "https://gitlab.com/test-group/test-sub-group/test-project/-/blob/branch/path/to/file#L1-L2",
+			want: "https://gitlab.com/test-group/test-sub-group/test-project/-/blob/branch/path/to/file#L1-2",
 		},
 		{
 			name: "With commit",
@@ -541,7 +541,7 @@ func TestGetFileLineLink(t *testing.T) {
 				startLine:     1,
 				endLine:       2,
 			},
-			want: "https://gitlab.com/test-group/test-sub-group/test-project/-/blob/commit/path/to/file#L1-L2",
+			want: "https://gitlab.com/test-group/test-sub-group/test-project/-/blob/commit/path/to/file#L1-2",
 		},
 		{
 			name: "With commit and branch",
@@ -553,7 +553,7 @@ func TestGetFileLineLink(t *testing.T) {
 				startLine:     1,
 				endLine:       2,
 			},
-			want: "https://gitlab.com/test-group/test-sub-group/test-project/-/blob/commit/path/to/file#L1-L2",
+			want: "https://gitlab.com/test-group/test-sub-group/test-project/-/blob/commit/path/to/file#L1-2",
 		},
 	}
 	for _, tt := range tests {
