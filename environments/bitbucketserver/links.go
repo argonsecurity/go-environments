@@ -10,7 +10,8 @@ func GetFileLink(repositoryURL string, filename string, branch string, commit st
 			repositoryURL,
 			filename,
 			commit)
-	} else if branch != "" {
+	}
+	if branch != "" {
 		return fmt.Sprintf("%s/browse/%s?at=%s",
 			repositoryURL,
 			filename,
