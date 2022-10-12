@@ -170,7 +170,7 @@ func GetFileLineLink(repositoryURL string, filename string, branch string, commi
 			endLine = startLine
 		}
 
-		url = fmt.Sprintf("%s#L%d-L%d", url, startLine, endLine)
+		url = fmt.Sprintf("%s#L%d-%d", url, startLine, endLine)
 	}
 	return url
 }

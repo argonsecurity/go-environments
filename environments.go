@@ -6,6 +6,7 @@ import (
 	"github.com/argonsecurity/go-environments/enums"
 	"github.com/argonsecurity/go-environments/environments/azure"
 	"github.com/argonsecurity/go-environments/environments/bitbucket"
+	"github.com/argonsecurity/go-environments/environments/bitbucketserver"
 	"github.com/argonsecurity/go-environments/environments/github"
 	"github.com/argonsecurity/go-environments/environments/gitlab"
 	"github.com/argonsecurity/go-environments/environments/jenkins"
@@ -85,8 +86,10 @@ func GetFileLineLink(source enums.Source, repositoryURL string, filename string,
 		f = gitlab.GetFileLineLink
 	case enums.Azure, enums.AzureServer:
 		f = azure.GetFileLineLink
-	case enums.Bitbucket, enums.BitbucketServer:
+	case enums.Bitbucket:
 		f = bitbucket.GetFileLineLink
+	case enums.BitbucketServer:
+		f = bitbucketserver.GetFileLineLink
 	}
 
 	if f != nil {
@@ -105,8 +108,10 @@ func GetFileLink(source enums.Source, repositoryURL string, filename string, bra
 		f = gitlab.GetFileLink
 	case enums.Azure, enums.AzureServer:
 		f = azure.GetFileLink
-	case enums.Bitbucket, enums.BitbucketServer:
+	case enums.Bitbucket:
 		f = bitbucket.GetFileLink
+	case enums.BitbucketServer:
+		f = bitbucketserver.GetFileLink
 	}
 
 	if f != nil {

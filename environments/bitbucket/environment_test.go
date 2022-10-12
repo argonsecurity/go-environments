@@ -284,7 +284,7 @@ func Test_environment_GetFileLineLink(t *testing.T) {
 				startLine: 1,
 			},
 			envsFilePath: bitbucketMainEnvsFilePath,
-			want:         "https://bitbucket.org/test-workspace/test-repo/src/branch/path/to/file#lines-1:1",
+			want:         "https://bitbucket.org/test-workspace/test-repo/src/branch/path/to/file#lines-1",
 		},
 		{
 			name: "File from branch with line number 0",
@@ -304,7 +304,7 @@ func Test_environment_GetFileLineLink(t *testing.T) {
 				startLine: 1,
 			},
 			envsFilePath: bitbucketMainEnvsFilePath,
-			want:         "https://bitbucket.org/test-workspace/test-repo/src/commit/path/to/file#lines-1:1",
+			want:         "https://bitbucket.org/test-workspace/test-repo/src/commit/path/to/file#lines-1",
 		},
 		{
 			name: "Empty file path",
@@ -314,7 +314,7 @@ func Test_environment_GetFileLineLink(t *testing.T) {
 				startLine: 1,
 			},
 			envsFilePath: bitbucketMainEnvsFilePath,
-			want:         "https://bitbucket.org/test-workspace/test-repo/src/commit/#lines-1:1",
+			want:         "https://bitbucket.org/test-workspace/test-repo/src/commit/#lines-1",
 		},
 		{
 			name: "Empty ref",
@@ -324,7 +324,7 @@ func Test_environment_GetFileLineLink(t *testing.T) {
 				startLine: 1,
 			},
 			envsFilePath: bitbucketMainEnvsFilePath,
-			want:         "https://bitbucket.org/test-workspace/test-repo/src//path/to/file#lines-1:1",
+			want:         "https://bitbucket.org/test-workspace/test-repo/src//path/to/file#lines-1",
 		},
 		{
 			name: "Not Bitbucket environment",
@@ -334,7 +334,7 @@ func Test_environment_GetFileLineLink(t *testing.T) {
 				startLine: 1,
 			},
 			envsFilePath: "",
-			want:         "https://bitbucket.org//src/branch/path/to/file#lines-1:1",
+			want:         "https://bitbucket.org//src/branch/path/to/file#lines-1",
 		},
 		{
 			name: "Branch with Slash",
@@ -345,7 +345,7 @@ func Test_environment_GetFileLineLink(t *testing.T) {
 				startLine: 1,
 			},
 			envsFilePath: bitbucketMainEnvsFilePath,
-			want:         "https://bitbucket.org/test-workspace/test-repo/src/commit/path/to/file?at=feature%2Fbranch#lines-1:1",
+			want:         "https://bitbucket.org/test-workspace/test-repo/src/commit/path/to/file?at=feature%2Fbranch#lines-1",
 		},
 		{
 			name: "Same line",
@@ -356,7 +356,7 @@ func Test_environment_GetFileLineLink(t *testing.T) {
 				endLine:   1,
 			},
 			envsFilePath: bitbucketMainEnvsFilePath,
-			want:         "https://bitbucket.org/test-workspace/test-repo/src/commit/path/to/file#lines-1:1",
+			want:         "https://bitbucket.org/test-workspace/test-repo/src/commit/path/to/file#lines-1",
 		},
 		{
 			name: "Different lines",
@@ -472,7 +472,7 @@ func TestGetFileLineLink(t *testing.T) {
 				startLine:     1,
 				endLine:       1,
 			},
-			want: "http://bitbucket.org/test-workspace/test-repo/src/branch/path/to/file#lines-1:1",
+			want: "http://bitbucket.org/test-workspace/test-repo/src/branch/path/to/file#lines-1",
 		},
 		{
 			name: "Different lines",
