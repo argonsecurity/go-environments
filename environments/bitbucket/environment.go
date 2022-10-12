@@ -134,11 +134,13 @@ func (e environment) GetFileLineLink(filename string, branch string, commit stri
 func GetFileLineLink(repositoryURL string, filename string, branch string, commit string, startLine, endLine int) string {
 	link := GetFileLink(repositoryURL, filename, branch, commit)
 	if startLine != 0 {
-		if endLine == 0 {
-			endLine = startLine
+		lines := fmt.Sprintf("#lines-%d", startLine)
+		if endLine != 0 && endLine != startLine {
+			lines = fmt.Sprintf("%s:%d", lines, endLine)
 		}
-		return fmt.Sprintf("%s#lines-%d:%d", link, startLine, endLine)
+		link += lines
 	}
+
 	return link
 }
 
