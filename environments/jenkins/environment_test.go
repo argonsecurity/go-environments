@@ -206,18 +206,18 @@ func Test_parseDataFromCloneUrl(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotUrl, gotOrg, gotRepo, err := parseDataFromCloneUrl(tt.args.cloneUrl, tt.args.apiUrl, tt.args.repoSource)
+			gotUrl, gotOrg, gotRepo, err := ParseDataFromCloneUrl(tt.args.cloneUrl, tt.args.apiUrl, tt.args.repoSource)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("parseDataFromCloneUrl() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("ParseDataFromCloneUrl() error = %v, wantErr %v", err, tt.wantErr)
 			}
 			if gotUrl != tt.wantUrl {
-				t.Errorf("parseDataFromCloneUrl() gotUrl = %v, want %v", gotUrl, tt.wantUrl)
+				t.Errorf("ParseDataFromCloneUrl() gotUrl = %v, want %v", gotUrl, tt.wantUrl)
 			}
 			if gotOrg != tt.wantOrg {
-				t.Errorf("parseDataFromCloneUrl() gotOrg = %v, want %v", gotOrg, tt.wantOrg)
+				t.Errorf("ParseDataFromCloneUrl() gotOrg = %v, want %v", gotOrg, tt.wantOrg)
 			}
 			if gotRepo != tt.wantRepo {
-				t.Errorf("parseDataFromCloneUrl() gotRepo = %v, want %v", gotRepo, tt.wantRepo)
+				t.Errorf("ParseDataFromCloneUrl() gotRepo = %v, want %v", gotRepo, tt.wantRepo)
 			}
 		})
 	}
