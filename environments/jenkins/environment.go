@@ -77,12 +77,12 @@ func (e environment) GetConfiguration() (*models.Configuration, error) {
 	return configuration, nil
 }
 
-// parseDataFromCloneUrl extracts data from the clone url
+// ParseDataFromCloneUrl extracts data from the clone url
 // and returns the repository url, organization and repository name
 // the base url is used for cases where the base of the scm url includes a part of the URI
 //
 // i.e https://example.company.io/gitlab
-func parseDataFromCloneUrl(cloneUrl, apiUrl string, repoSource enums.Source) (string, string, string, error) {
+func ParseDataFromCloneUrl(cloneUrl, apiUrl string, repoSource enums.Source) (string, string, string, error) {
 	var regexp = uriRegexp
 	baseUrl, uri, isSshUrl, err := getUriFromCloneUrl(cloneUrl, apiUrl)
 	if err != nil {
@@ -149,7 +149,7 @@ func loadConfiguration() (*models.Configuration, error) {
 	}
 
 	repoSource, apiUrl := GetRepositorySource(cloneUrl)
-	repositoryURL, org, repositoryName, err := parseDataFromCloneUrl(cloneUrl, apiUrl, repoSource)
+	repositoryURL, org, repositoryName, err := ParseDataFromCloneUrl(cloneUrl, apiUrl, repoSource)
 	if err != nil {
 		return nil, err
 	}
