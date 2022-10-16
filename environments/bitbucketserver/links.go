@@ -2,9 +2,11 @@ package bitbucketserver
 
 import (
 	"fmt"
+	"strings"
 )
 
 func GetFileLink(repositoryURL string, filename string, branch string, commit string) string {
+	repositoryURL = strings.TrimSuffix(repositoryURL, "/browse")
 	if commit != "" {
 		return fmt.Sprintf("%s/browse/%s?at=%s",
 			repositoryURL,
