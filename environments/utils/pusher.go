@@ -11,6 +11,7 @@ var possibleUserEnvVars = []string{
 	"BITBUCKET_ACTOR",
 	"GITHUB_ACTOR",
 	"CODEBUILD_GIT_AUTHOR",
+	"CIRCLE_USERNAME",
 }
 
 func DetectPusher() string {
