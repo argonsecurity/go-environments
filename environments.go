@@ -2,6 +2,7 @@ package environments
 
 import (
 	"fmt"
+	"github.com/argonsecurity/go-environments/environments/circleci"
 
 	"github.com/argonsecurity/go-environments/enums"
 	"github.com/argonsecurity/go-environments/environments/azure"
@@ -21,6 +22,7 @@ var (
 		enums.Azure:     azure.Azure,
 		enums.Bitbucket: bitbucket.Bitbucket,
 		enums.Jenkins:   jenkins.Jenkins,
+		enums.CircleCi:  circleci.CircleCi,
 		enums.Localhost: localhost.Localhost,
 	}
 )

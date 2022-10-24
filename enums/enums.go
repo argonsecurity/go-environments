@@ -14,4 +14,5 @@ const (
 	Jenkins         Source = "jenkins"
 	Localhost       Source = "localhost"
 	Unknown         Source = "unknown"
+	CircleCi        Source = "circleci"
 )
