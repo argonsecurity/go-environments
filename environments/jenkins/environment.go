@@ -37,9 +37,11 @@ const (
 	runNameEnv   = "BUILD_TAG"
 	stageNameEnv = "STAGE_NAME"
 
-	commitShaEnv     = "GIT_COMMIT"
-	branchEnv        = "BRANCH_NAME"
-	targetBranchName = "CHANGE_TARGET"
+	commitShaEnv                     = "GIT_COMMIT"
+	branchEnv                        = "BRANCH_NAME"
+	branchEnvGhSinglePipeline        = "ghprbSourceBranch"
+	targetBranchName                 = "CHANGE_TARGET"
+	targetBranchNameGhSinglePipeline = "ghprbTargetBranch"
 
 	githubHostname    = "github.com"
 	gitlabHostname    = "gitlab.com"
@@ -97,6 +99,7 @@ func loadConfiguration() (*models.Configuration, error) {
 	scmId := utils.GenerateScmId(cloneUrl)
 
 	branch := getBranchName(repositoryPath, commit)
+	targetBranch := getTargetBranch()
 	configuration := &models.Configuration{
 		Url:       os.Getenv(jenkinsURLEnv),
 		SCMApiUrl: apiUrl,
@@ -132,7 +135,7 @@ func loadConfiguration() (*models.Configuration, error) {
 				Branch: branch,
 			},
 			TargetRef: models.Ref{
-				Branch: os.Getenv(targetBranchName),
+				Branch: targetBranch,
 			},
 		},
 		Builder: builder,
@@ -152,8 +155,19 @@ func loadConfiguration() (*models.Configuration, error) {
 	return configuration, nil
 }
 
+func getTargetBranch() string {
+	targetName := os.Getenv(targetBranchName)
+	if targetName == "" {
+		return os.Getenv(targetBranchNameGhSinglePipeline)
+	}
+	return targetName
+}
+
 func getBranchName(repositoryPath string, commit string) string {
 	branchName := os.Getenv(branchEnv)
+	if branchName == "" {
+		branchName = os.Getenv(branchEnvGhSinglePipeline)
+	}
 	if branchName == "" {
 		branchName, _ = git.GetGitBranch(repositoryPath, commit)
 	}
