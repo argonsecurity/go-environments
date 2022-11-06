@@ -1,29 +1,25 @@
 package github
 
 import (
+	"github.com/argonsecurity/go-environments/environments/utils"
 	"github.com/argonsecurity/go-environments/models"
 	"os"
 )
 
 const (
-	gitHubToken                      = "GITHUB_TOKEN"
 	branchEnvGhSinglePipeline        = "ghprbSourceBranch"
 	targetBranchNameGhSinglePipeline = "ghprbTargetBranch"
 )
 
-func IsCurrentEnvironment() bool {
-	_, isExist := os.LookupEnv(gitHubToken)
+func IsGitHubSingleJenkinsPipeline() bool {
+	_, isExist := os.LookupEnv(branchEnvGhSinglePipeline)
 	return isExist
 }
 
-func EnhanceConfiguration(configuration *models.Configuration) *models.Configuration {
+func EnhanceConfigurationSinglePipeline(configuration *models.Configuration) *models.Configuration {
 
-	if configuration.PullRequest.TargetRef.Branch == "" {
-		configuration.PullRequest.TargetRef.Branch = os.Getenv(targetBranchNameGhSinglePipeline)
-	}
+	utils.SetValueIfEnvExist(configuration, branchEnvGhSinglePipeline, "PullRequest.SourceRef.Branch")
+	utils.SetValueIfEnvExist(configuration, targetBranchNameGhSinglePipeline, "PullRequest.TargetRef.Branch")
 
-	if configuration.PullRequest.SourceRef.Branch == "" {
-		configuration.PullRequest.SourceRef.Branch = os.Getenv(branchEnvGhSinglePipeline)
-	}
 	return configuration
 }

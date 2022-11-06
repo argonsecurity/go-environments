@@ -22,8 +22,8 @@ func EnhanceConfiguration(configuration *models.Configuration) *models.Configura
 		return bitbucketserver.EnhanceConfiguration(configuration)
 	}
 
-	if github.IsCurrentEnvironment() {
-		return github.EnhanceConfiguration(configuration)
+	if github.IsGitHubSingleJenkinsPipeline() {
+		return github.EnhanceConfigurationSinglePipeline(configuration)
 	}
 
 	return configuration
