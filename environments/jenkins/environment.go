@@ -2,11 +2,12 @@ package jenkins
 
 import (
 	"fmt"
-	githubserver "github.com/argonsecurity/go-environments/environments/jenkins/environments/github_server"
 	"os"
 	"path/filepath"
 	"runtime"
 	"strings"
+
+	githubserver "github.com/argonsecurity/go-environments/environments/jenkins/environments/github_server"
 
 	"github.com/argonsecurity/go-environments/enums"
 	"github.com/argonsecurity/go-environments/environments/github"
@@ -193,10 +194,19 @@ func (e environment) IsCurrentEnvironment() bool {
 }
 
 func getRepositoryCloneURL(repositoryPath string) (string, error) {
-	if cloneUrl, isExist := os.LookupEnv(repositoryCloneURLEnv); isExist {
-		return cloneUrl, nil
+	var err error
+	cloneUrl, isExist := os.LookupEnv(repositoryCloneURLEnv)
+	if !isExist {
+		cloneUrl, err = git.GetGitRemoteURL(repositoryPath)
 	}
-	return git.GetGitRemoteURL(repositoryPath)
+
+	cloneUrl = strings.TrimSuffix(cloneUrl, "/")
+
+	if !strings.HasSuffix(cloneUrl, ".git") {
+		cloneUrl += ".git"
+	}
+
+	return cloneUrl, err
 }
 
 func GetRepositorySource(cloneUrl string) (enums.Source, string) {

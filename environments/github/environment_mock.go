@@ -96,8 +96,12 @@ func (em *EnvironmentMock) GetStepLink() string {
 	return fmt.Sprintf("https://github.com/%s/%s/actions/runs/1837111563", MockOrgName, MockRepoName)
 }
 
-func (em *EnvironmentMock) GetFileLineLink(filePath string, ref string, line int) string {
-	return fmt.Sprintf("https://github.com/%s/%s/blob/%s/%s", MockOrgName, MockRepoName, ref, url.PathEscape(filePath))
+func (em *EnvironmentMock) GetFileLink(filename string, ref string, commit string) string {
+	return fmt.Sprintf("https://github.com/%s/%s/blob/%s", MockOrgName, MockRepoName, url.PathEscape(filename))
+}
+
+func (em *EnvironmentMock) GetFileLineLink(filename string, branch string, commit string, startLine int, endLine int) string {
+	return fmt.Sprintf("https://github.com/%s/%s/blob/%s/%s", MockOrgName, MockRepoName, branch, url.PathEscape(filename))
 }
 
 func (em *EnvironmentMock) IsCurrentEnvironment() bool {
