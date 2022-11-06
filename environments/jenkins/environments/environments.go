@@ -4,6 +4,7 @@ import (
 	"github.com/argonsecurity/go-environments/enums"
 	"github.com/argonsecurity/go-environments/environments/jenkins/environments/bitbucket"
 	bitbucketserver "github.com/argonsecurity/go-environments/environments/jenkins/environments/bitbucket_server"
+	"github.com/argonsecurity/go-environments/environments/jenkins/environments/github"
 	"github.com/argonsecurity/go-environments/environments/jenkins/environments/gitlab"
 	"github.com/argonsecurity/go-environments/models"
 )
@@ -19,6 +20,10 @@ func EnhanceConfiguration(configuration *models.Configuration) *models.Configura
 
 	if bitbucketserver.IsCurrentEnvironment() || configuration.Repository.Source == enums.BitbucketServer {
 		return bitbucketserver.EnhanceConfiguration(configuration)
+	}
+
+	if github.IsGitHubSingleJenkinsPipeline() {
+		return github.EnhanceConfigurationSinglePipeline(configuration)
 	}
 
 	return configuration
