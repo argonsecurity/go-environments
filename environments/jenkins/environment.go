@@ -234,7 +234,7 @@ func discoverSCMSource(gitUrl string) (enums.Source, string) {
 		}
 
 		// Checking github_token, after we checked for github saas already
-		if githubserver.CheckGithubServerByHTTPRequest(url, httpClient) || len(os.Getenv("GITHUB_TOKEN")) != 0 {
+		if githubserver.CheckGithubServerByHTTPRequest(url, httpClient){
 			return enums.GithubServer, githubserver.GetGithubServerApiUrl(url)
 		}
 
