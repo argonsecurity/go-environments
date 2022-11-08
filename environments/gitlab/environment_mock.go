@@ -39,9 +39,11 @@ func loadMockConfiguration() error {
 			BuildId:     "5131544634",
 			BuildNumber: "mock run",
 		},
-		Pipeline: models.Entity{
-			Id:   "373516881",
-			Name: "mock pipeline",
+		Pipeline: models.Pipeline{
+			Entity: models.Entity{
+				Id:   "373516881",
+				Name: "mock pipeline",
+			},
 		},
 		Runner: models.Runner{
 			Id: "63824405",

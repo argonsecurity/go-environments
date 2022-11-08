@@ -2,11 +2,12 @@ package jenkins
 
 import (
 	"fmt"
-	githubserver "github.com/argonsecurity/go-environments/environments/jenkins/environments/github_server"
 	"os"
 	"path/filepath"
 	"runtime"
 	"strings"
+
+	githubserver "github.com/argonsecurity/go-environments/environments/jenkins/environments/github_server"
 
 	"github.com/argonsecurity/go-environments/enums"
 	"github.com/argonsecurity/go-environments/environments/github"
@@ -109,9 +110,11 @@ func loadConfiguration() (*models.Configuration, error) {
 			Source:   repoSource,
 			Url:      repositoryURL,
 		},
-		Pipeline: models.Entity{
-			Id:   os.Getenv(jobNameEnv),
-			Name: os.Getenv(jobNameEnv),
+		Pipeline: models.Pipeline{
+			Entity: models.Entity{
+				Id:   os.Getenv(jobNameEnv),
+				Name: os.Getenv(jobNameEnv),
+			},
 		},
 		Job: models.Entity{
 			Id:   os.Getenv(stageNameEnv),

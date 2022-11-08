@@ -53,9 +53,11 @@ func Test_environment_GetConfiguration(t *testing.T) {
 					Id:   "test",
 					Name: "test",
 				},
-				Pipeline: models.Entity{
-					Id:   "test",
-					Name: "test",
+				Pipeline: models.Pipeline{
+					Entity: models.Entity{
+						Id:   "test",
+						Name: "test",
+					},
 				},
 				Runner: models.Runner{
 					Id:           "3008488429",
@@ -128,9 +130,11 @@ func Test_environment_GetConfiguration(t *testing.T) {
 					Id:   "test",
 					Name: "test",
 				},
-				Pipeline: models.Entity{
-					Id:   "test",
-					Name: "test",
+				Pipeline: models.Pipeline{
+					Entity: models.Entity{
+						Id:   "test",
+						Name: "test",
+					},
 				},
 				Runner: models.Runner{
 					Id:           "3014839969",
@@ -191,9 +195,11 @@ func Test_environment_GetConfiguration(t *testing.T) {
 					Id:   "test",
 					Name: "test",
 				},
-				Pipeline: models.Entity{
-					Id:   "test",
-					Name: "test",
+				Pipeline: models.Pipeline{
+					Entity: models.Entity{
+						Id:   "test",
+						Name: "test",
+					},
 				},
 				Runner: models.Runner{
 					Id:           "3008488429",
@@ -604,4 +610,44 @@ func prepareTest(t *testing.T, envsFilePath string) environment {
 	envCleanup := testutils.SetEnvsFromFile(envsFilePath)
 	t.Cleanup(envCleanup)
 	return e
+}
+
+func Test_getPipelinePath(t *testing.T) {
+	type args struct {
+		githubWorkflow string
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{
+			name: "No workflow",
+			args: args{
+				githubWorkflow: "",
+			},
+			want: "",
+		},
+		{
+			name: "Workflow name",
+			args: args{
+				githubWorkflow: "name",
+			},
+			want: "",
+		},
+		{
+			name: "Workflow path",
+			args: args{
+				githubWorkflow: ".github/workflows/name.yml",
+			},
+			want: ".github/workflows/name.yml",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := getPipelinePath(tt.args.githubWorkflow); got != tt.want {
+				t.Errorf("getPipelinePath() = %v, want %v", got, tt.want)
+			}
+		})
+	}
 }

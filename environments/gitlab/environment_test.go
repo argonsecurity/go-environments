@@ -55,9 +55,12 @@ func Test_environment_GetConfiguration(t *testing.T) {
 					CloneUrl: testRepoCloneUrl,
 					Source:   enums.Gitlab,
 				},
-				Pipeline: models.Entity{
-					Id:   "109238745",
-					Name: "test-project",
+				Pipeline: models.Pipeline{
+					Entity: models.Entity{
+						Id:   "109238745",
+						Name: "test-project",
+					},
+					Path: ".gitlab-ci.yml",
 				},
 				Job: models.Entity{
 					Id:   "deploy-main",
@@ -112,9 +115,12 @@ func Test_environment_GetConfiguration(t *testing.T) {
 					CloneUrl: testRepoCloneUrl,
 					Source:   enums.Gitlab,
 				},
-				Pipeline: models.Entity{
-					Id:   "840375028",
-					Name: "test-project",
+				Pipeline: models.Pipeline{
+					Entity: models.Entity{
+						Id:   "840375028",
+						Name: "test-project",
+					},
+					Path: ".gitlab-ci.yml",
 				},
 				Job: models.Entity{
 					Id:   "deploy-branch",
@@ -169,9 +175,12 @@ func Test_environment_GetConfiguration(t *testing.T) {
 					CloneUrl: "https://gitlab.com/test-group/test-sub-group/test-project.git",
 					Source:   enums.GitlabServer,
 				},
-				Pipeline: models.Entity{
-					Id:   "109238745",
-					Name: "test-project",
+				Pipeline: models.Pipeline{
+					Entity: models.Entity{
+						Id:   "109238745",
+						Name: "test-project",
+					},
+					Path: ".gitlab-ci.yml",
 				},
 				Job: models.Entity{
 					Id:   "deploy-main",
