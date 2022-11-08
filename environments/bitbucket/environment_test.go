@@ -56,6 +56,7 @@ func Test_environment_GetConfiguration(t *testing.T) {
 						Id:   "{052d6f7d-516e-4207-9e54-7446023ce285}",
 						Name: "test-repo",
 					},
+					Path: "bitbucket-pipelines.yml",
 				},
 				Run: models.BuildRun{
 					BuildId:     "2",
@@ -98,6 +99,7 @@ func Test_environment_GetConfiguration(t *testing.T) {
 						Id:   "{70045d3c-f44f-4507-8c6f-1f5e326a083a}",
 						Name: "test-repo",
 					},
+					Path: "bitbucket-pipelines.yml",
 				},
 				Run: models.BuildRun{
 					BuildId:     "5",

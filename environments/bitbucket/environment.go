@@ -28,7 +28,7 @@ const (
 
 	mergeRequestIdEnv = "BITBUCKET_PR_ID"
 	pipelineIdEnv     = "BITBUCKET_PIPELINE_UUID"
-	stepIdEnv         = "BITBUCKET_SoEP_UUID"
+	stepIdEnv         = "BITBUCKET_STEP_UUID"
 
 	bitbucketPipelineFile = "bitbucket-pipelines.yml"
 )
