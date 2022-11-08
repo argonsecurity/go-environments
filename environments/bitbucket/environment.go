@@ -19,7 +19,7 @@ const (
 	repositoryUrlEnv       = "BITBUCKET_GIT_HTTP_ORIGIN"
 	repositoryFullNameEnv  = "BITBUCKET_REPO_FULL_NAME"
 	workspaceEnv           = "BITBUCKET_WORKSPACE"
-	prDestentaionBranchEnv = "BITBUCKET_PR_DESTINATION_BRANCH"
+	prDestinationBranchEnv = "BITBUCKET_PR_DESTINATION_BRANCH"
 
 	buildNumber = "BITBUCKET_BUILD_NUMBER"
 
@@ -28,7 +28,9 @@ const (
 
 	mergeRequestIdEnv = "BITBUCKET_PR_ID"
 	pipelineIdEnv     = "BITBUCKET_PIPELINE_UUID"
-	stepIdEnv         = "BITBUCKET_STEP_UUID"
+	stepIdEnv         = "BITBUCKET_SoEP_UUID"
+
+	bitbucketPipelineFile = "bitbucket-pipelines.yml"
 )
 
 var (
@@ -40,7 +42,7 @@ var (
 	Bitbucket     = environment{}
 	configuration *models.Configuration
 
-	bitbucketPipelines = []string{"bitbucket-pipelines.yml"}
+	bitbucketPipelines = []string{bitbucketPipelineFile}
 )
 
 type environment struct{}
@@ -80,6 +82,7 @@ func loadConfiguration() *models.Configuration {
 				Id:   os.Getenv(pipelineIdEnv),
 				Name: os.Getenv(repositoryNameEnv),
 			},
+			Path: bitbucketPipelineFile,
 		},
 		Run: models.BuildRun{
 			BuildId:     os.Getenv(buildNumber),
@@ -95,7 +98,7 @@ func loadConfiguration() *models.Configuration {
 		PullRequest: models.PullRequest{
 			Id: os.Getenv(mergeRequestIdEnv),
 			TargetRef: models.Ref{
-				Branch: os.Getenv(prDestentaionBranchEnv),
+				Branch: os.Getenv(prDestinationBranchEnv),
 			},
 		},
 		PipelinePaths: getPipelinePaths(repoPath),
