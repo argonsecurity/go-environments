@@ -76,7 +76,7 @@ func loadConfiguration() error {
 	repoUrl := fmt.Sprintf("%s/%s", os.Getenv(githubServerEnv), os.Getenv(githubRepositoryEnv))
 	cloneUrl, err := git.GetGitRemoteURL(repoPath)
 
-	if err != nil || cloneUrl == "" {
+	if err != nil || cloneUrl == "" || !strings.HasSuffix(cloneUrl, ".git") {
 		cloneUrl = fmt.Sprintf("%s.git", repoUrl)
 	}
 
