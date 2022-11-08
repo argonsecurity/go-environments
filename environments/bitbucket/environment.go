@@ -75,9 +75,11 @@ func loadConfiguration() *models.Configuration {
 		Organization: models.Entity{
 			Name: os.Getenv(workspaceEnv),
 		},
-		Pipeline: models.Entity{
-			Id:   os.Getenv(pipelineIdEnv),
-			Name: os.Getenv(repositoryNameEnv),
+		Pipeline: models.Pipeline{
+			Entity: models.Entity{
+				Id:   os.Getenv(pipelineIdEnv),
+				Name: os.Getenv(repositoryNameEnv),
+			},
 		},
 		Run: models.BuildRun{
 			BuildId:     os.Getenv(buildNumber),

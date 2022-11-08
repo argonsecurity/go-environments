@@ -64,9 +64,11 @@ func Test_environment_GetConfiguration(t *testing.T) {
 					Id:   "Job",
 					Name: "Job",
 				},
-				Pipeline: models.Entity{
-					Id:   "a65c82d2-643f-4362-b55d-ad095527b237-8",
-					Name: "test-pipeline",
+				Pipeline: models.Pipeline{
+					Entity: models.Entity{
+						Id:   "a65c82d2-643f-4362-b55d-ad095527b237-8",
+						Name: "test-pipeline",
+					},
 				},
 				Run: models.BuildRun{
 					BuildId:     "152",
@@ -123,9 +125,11 @@ func Test_environment_GetConfiguration(t *testing.T) {
 					Id:   "Job",
 					Name: "Job",
 				},
-				Pipeline: models.Entity{
-					Id:   "a65c82d2-643f-4362-b55d-ad095527b237-8",
-					Name: "test-pipeline",
+				Pipeline: models.Pipeline{
+					Entity: models.Entity{
+						Id:   "a65c82d2-643f-4362-b55d-ad095527b237-8",
+						Name: "test-pipeline",
+					},
 				},
 				Run: models.BuildRun{
 					BuildId:     "178",

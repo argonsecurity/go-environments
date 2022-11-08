@@ -125,9 +125,11 @@ func loadConfiguration() error {
 			Id:   os.Getenv(jobNameEnv),
 			Name: os.Getenv(jobNameEnv),
 		},
-		Pipeline: models.Entity{
-			Id:   fmt.Sprintf("%s-%s", os.Getenv(projectIDEnv), os.Getenv(definitionIDEnv)),
-			Name: os.Getenv(pipelineNameEnv),
+		Pipeline: models.Pipeline{
+			Entity: models.Entity{
+				Id:   fmt.Sprintf("%s-%s", os.Getenv(projectIDEnv), os.Getenv(definitionIDEnv)),
+				Name: os.Getenv(pipelineNameEnv),
+			},
 		},
 		Run: models.BuildRun{
 			BuildId:     os.Getenv(buildIDEnv),

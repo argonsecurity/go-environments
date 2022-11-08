@@ -53,9 +53,11 @@ func Test_environment_GetConfiguration(t *testing.T) {
 					Id:   "test",
 					Name: "test",
 				},
-				Pipeline: models.Entity{
-					Id:   "test",
-					Name: "test",
+				Pipeline: models.Pipeline{
+					Entity: models.Entity{
+						Id:   "test",
+						Name: "test",
+					},
 				},
 				Runner: models.Runner{
 					Id:           "3008488429",
@@ -128,9 +130,11 @@ func Test_environment_GetConfiguration(t *testing.T) {
 					Id:   "test",
 					Name: "test",
 				},
-				Pipeline: models.Entity{
-					Id:   "test",
-					Name: "test",
+				Pipeline: models.Pipeline{
+					Entity: models.Entity{
+						Id:   "test",
+						Name: "test",
+					},
 				},
 				Runner: models.Runner{
 					Id:           "3014839969",
@@ -191,9 +195,11 @@ func Test_environment_GetConfiguration(t *testing.T) {
 					Id:   "test",
 					Name: "test",
 				},
-				Pipeline: models.Entity{
-					Id:   "test",
-					Name: "test",
+				Pipeline: models.Pipeline{
+					Entity: models.Entity{
+						Id:   "test",
+						Name: "test",
+					},
 				},
 				Runner: models.Runner{
 					Id:           "3008488429",

@@ -103,9 +103,11 @@ func loadConfiguration() error {
 			Id:   os.Getenv(githubJobEnv),
 			Name: os.Getenv(githubJobEnv),
 		},
-		Pipeline: models.Entity{
-			Id:   os.Getenv(githubWorkflowEnv),
-			Name: os.Getenv(githubWorkflowEnv),
+		Pipeline: models.Pipeline{
+			Entity: models.Entity{
+				Id:   os.Getenv(githubWorkflowEnv),
+				Name: os.Getenv(githubWorkflowEnv),
+			},
 		},
 		Runner: models.Runner{
 			Id:           os.Getenv(githubRunIdEnv),

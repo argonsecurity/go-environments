@@ -44,9 +44,11 @@ func loadMockConfiguration() error {
 			Username: "user",
 			Email:    "user@mock.com",
 		},
-		Pipeline: models.Entity{
-			Id:   "752e0c81-72s8-44eb-93cb-1d3b5gbd1acc-63",
-			Name: MockRepoName,
+		Pipeline: models.Pipeline{
+			Entity: models.Entity{
+				Id:   "752e0c81-72s8-44eb-93cb-1d3b5gbd1acc-63",
+				Name: MockRepoName,
+			},
 		},
 		Run: models.BuildRun{
 			BuildId: "3557",
