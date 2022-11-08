@@ -12,8 +12,6 @@ on:
       - main
     tags-ignore:
       - build-*
-    paths:
-      - .github/workflows/environments-build.yaml
   workflow_dispatch:
     inputs:
       increaseVersion:
