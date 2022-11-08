@@ -108,6 +108,7 @@ func loadConfiguration() error {
 				Id:   os.Getenv(githubWorkflowEnv),
 				Name: os.Getenv(githubWorkflowEnv),
 			},
+			Path: getPipelinePath(os.Getenv(githubWorkflowEnv)),
 		},
 		Runner: models.Runner{
 			Id:           os.Getenv(githubRunIdEnv),
@@ -148,6 +149,13 @@ func loadConfiguration() error {
 	}
 
 	return nil
+}
+
+func getPipelinePath(githubWorkflow string) string {
+	if strings.HasPrefix(githubWorkflow, ".github/workflows/") {
+		return githubWorkflow
+	}
+	return ""
 }
 
 func getSource() enums.Source {
