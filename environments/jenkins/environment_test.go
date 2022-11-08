@@ -15,6 +15,7 @@ import (
 
 var (
 	jenkinsGithubMainFullEnvsFilePath    = "testdata/jenkins-github-main-full-env.json"
+	jenkinsGithubMainNoGitEnvsFilePath   = "testdata/jenkins-github-main-no-.git-env.json"
 	jenkinsGithubMainMinimalEnvsFilePath = "testdata/jenkins-github-main-minimal-env.json"
 	testRepoPath                         = "/tmp/jenkins/repo"
 	testRepoUrl                          = "https://github.com/test-organization/test-repo"
@@ -263,6 +264,75 @@ func Test_environment_IsCurrentEnvironment(t *testing.T) {
 			if got := e.IsCurrentEnvironment(); got != tt.want {
 				t.Errorf("environment.IsCurrentEnvironment() = %v, want %v", got, tt.want)
 			}
+		})
+	}
+}
+
+func Test_getRepositoryCloneURL(t *testing.T) {
+	type args struct {
+		repositoryPath string
+	}
+	tests := []struct {
+		name         string
+		envsFilePath string
+		gitClient    *mocks.MockGitClient
+		args         args
+		want         string
+		wantErr      bool
+	}{
+		{
+			name:         "Clone url in env var with .git",
+			envsFilePath: jenkinsGithubMainFullEnvsFilePath,
+			args: args{
+				repositoryPath: "",
+			},
+			want:    "https://github.com/test-organization/test-repo.git",
+			wantErr: false,
+		},
+		{
+			name:         "Clone url in env var without .git",
+			envsFilePath: jenkinsGithubMainNoGitEnvsFilePath,
+			args: args{
+				repositoryPath: "",
+			},
+			want:    "https://github.com/test-organization/test-repo.git",
+			wantErr: false,
+		},
+		{
+			name:         "Clone url from repositoryPath with .git",
+			envsFilePath: jenkinsGithubMainMinimalEnvsFilePath,
+			gitClient:    (&mocks.MockGitClient{}).SetRemoteUrl("https://github.com/test-organization/test-repo.git"),
+			args: args{
+				repositoryPath: "",
+			},
+			want:    "https://github.com/test-organization/test-repo.git",
+			wantErr: false,
+		},
+		{
+			name:         "Clone url from repositoryPath without .git",
+			envsFilePath: jenkinsGithubMainMinimalEnvsFilePath,
+			gitClient:    (&mocks.MockGitClient{}).SetRemoteUrl("https://github.com/test-organization/test-repo"),
+			args: args{
+				repositoryPath: "",
+			},
+			want:    "https://github.com/test-organization/test-repo.git",
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Run(tt.name, func(t *testing.T) {
+				prepareTest(t, tt.envsFilePath)
+				setMockGitClient(t, tt.gitClient)
+				got, err := getRepositoryCloneURL(tt.args.repositoryPath)
+				if (err != nil) != tt.wantErr {
+					t.Errorf("getRepositoryCloneURL() error = %v, wantErr %v", err, tt.wantErr)
+					return
+				}
+				if got != tt.want {
+					t.Errorf("getRepositoryCloneURL() = %v, want %v", got, tt.want)
+				}
+			})
 		})
 	}
 }
