@@ -3,15 +3,9 @@ name: Build environments
 on:
   pull_request:
     branches: ["*"]
-    tags-ignore:
-      - build-*
-    paths:
-      - .github/workflows/environments-build.yaml
   push:
     branches:
       - main
-    tags-ignore:
-      - build-*
   workflow_dispatch:
     inputs:
       increaseVersion:
