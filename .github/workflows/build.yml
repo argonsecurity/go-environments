@@ -5,15 +5,12 @@ on:
     branches: ["*"]
     tags-ignore:
       - build-*
-    paths:
-      - .github/workflows/environments-build.yaml
   push:
     branches:
       - main
     tags-ignore:
       - build-*
-    paths:
-      - .github/workflows/environments-build.yaml
+
   workflow_dispatch:
     inputs:
       increaseVersion:
