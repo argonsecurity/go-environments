@@ -66,7 +66,7 @@ func Test_environment_GetConfiguration(t *testing.T) {
 				},
 				Pipeline: models.Pipeline{
 					Entity: models.Entity{
-						Id:   "a65c82d2-643f-4362-b55d-ad095527b237-8",
+						Id:   "8",
 						Name: "test-pipeline",
 					},
 				},
@@ -127,7 +127,7 @@ func Test_environment_GetConfiguration(t *testing.T) {
 				},
 				Pipeline: models.Pipeline{
 					Entity: models.Entity{
-						Id:   "a65c82d2-643f-4362-b55d-ad095527b237-8",
+						Id:   "8",
 						Name: "test-pipeline",
 					},
 				},
