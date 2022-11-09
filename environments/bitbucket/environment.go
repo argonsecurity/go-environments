@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
 
 	"github.com/argonsecurity/go-environments/enums"
 	"github.com/argonsecurity/go-environments/environments/utils"
@@ -57,6 +58,9 @@ func loadConfiguration() *models.Configuration {
 	repoPath := os.Getenv(repositoryPathEnv)
 	cloneUrl := fmt.Sprintf("%s.git", os.Getenv(repositoryUrlEnv))
 	strippedCloneUrl := utils.StripCredentialsFromUrl(cloneUrl)
+	if !strings.HasSuffix(strippedCloneUrl, ".git") {
+		strippedCloneUrl += ".git"
+	}
 	scmId := utils.GenerateScmId(strippedCloneUrl)
 
 	configuration = &models.Configuration{
