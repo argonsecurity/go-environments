@@ -3,13 +3,9 @@ name: Build environments
 on:
   pull_request:
     branches: ["*"]
-    tags-ignore:
-      - build-*
   push:
     branches:
       - main
-    tags-ignore:
-      - build-*
 
   workflow_dispatch:
     inputs:
