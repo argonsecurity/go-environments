@@ -38,8 +38,11 @@ func loadMockGithubServerConfiguration() error {
 			Source:   enums.GithubServer,
 			Url:      fmt.Sprintf("https://github.server.com/api/v3/%s/%s", MockGithubServerOrgName, MockGithubServerRepoName),
 		},
-		Pipeline: models.Entity{
-			Name: "mock pipeline",
+		Pipeline: models.Pipeline{
+			Entity: models.Entity{
+				Id:   "1",
+				Name: "mock-pipeline",
+			},
 		},
 		Run: models.BuildRun{
 			BuildId:     "jenkins-mock-pipeline-1",
