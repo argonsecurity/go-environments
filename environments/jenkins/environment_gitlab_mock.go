@@ -40,8 +40,10 @@ func loadMockGitlabConfiguration() error {
 			Source:   enums.GitlabServer,
 			Url:      fmt.Sprintf("https://gitlab-server.company.com/test_user/%s.git", MockGitlabRepoName),
 		},
-		Pipeline: models.Entity{
-			Name: "test pipeline",
+		Pipeline: models.Pipeline{
+			Entity: models.Entity{
+				Name: "test pipeline",
+			},
 		},
 		Run: models.BuildRun{
 			BuildId:     "4",

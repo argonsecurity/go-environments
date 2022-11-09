@@ -36,9 +36,11 @@ func loadConfiguration() {
 			Url:    "localhost",
 			Source: getSource(),
 		},
-		Pipeline: models.Entity{
-			Id:   "localhost",
-			Name: "localhost",
+		Pipeline: models.Pipeline{
+			Entity: models.Entity{
+				Id:   "localhost",
+				Name: "localhost",
+			},
 		},
 		Job: models.Entity{
 			Id:   "localhost",

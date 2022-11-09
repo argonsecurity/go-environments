@@ -51,9 +51,11 @@ func Test_environment_GetConfiguration(t *testing.T) {
 				Organization: models.Entity{
 					Name: "test-organization",
 				},
-				Pipeline: models.Entity{
-					Id:   "test-project",
-					Name: "test-project",
+				Pipeline: models.Pipeline{
+					Entity: models.Entity{
+						Id:   "test-project",
+						Name: "test-project",
+					},
 				},
 
 				Job: models.Entity{
@@ -104,9 +106,11 @@ func Test_environment_GetConfiguration(t *testing.T) {
 				Organization: models.Entity{
 					Name: "test-organization",
 				},
-				Pipeline: models.Entity{
-					Id:   "test-project",
-					Name: "test-project",
+				Pipeline: models.Pipeline{
+					Entity: models.Entity{
+						Id:   "test-project",
+						Name: "test-project",
+					},
 				},
 
 				Job: models.Entity{

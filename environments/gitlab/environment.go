@@ -29,6 +29,8 @@ const (
 	runnerOSEnv          = "CI_RUNNER_EXECUTABLE_ARCH"
 	runnerDescriptionEnv = "CI_RUNNER_DESCRIPTION"
 
+	pipelineFilePathEnv = "CI_CONFIG_PATH"
+
 	commitShaEnv       = "CI_COMMIT_SHA"
 	beforeCommitShaEnv = "CI_COMMIT_BEFORE_SHA"
 	branchEnv          = "CI_COMMIT_REF_NAME"
@@ -85,9 +87,12 @@ func loadConfiguration() *models.Configuration {
 			CloneUrl: cloneUrl,
 			Source:   source,
 		},
-		Pipeline: models.Entity{
-			Id:   os.Getenv(pipelineIdEnv), // Each GitLab project has only one pipeline
-			Name: os.Getenv(projectNameEnv),
+		Pipeline: models.Pipeline{
+			Entity: models.Entity{
+				Id:   os.Getenv(pipelineIdEnv), // Each GitLab project has only one pipeline
+				Name: os.Getenv(projectNameEnv),
+			},
+			Path: os.Getenv(pipelineFilePathEnv),
 		},
 		Job: models.Entity{
 			Id:   os.Getenv(jobNameEnv),

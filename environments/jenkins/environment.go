@@ -110,9 +110,11 @@ func loadConfiguration() (*models.Configuration, error) {
 			Source:   repoSource,
 			Url:      repositoryURL,
 		},
-		Pipeline: models.Entity{
-			Id:   os.Getenv(jobNameEnv),
-			Name: os.Getenv(jobNameEnv),
+		Pipeline: models.Pipeline{
+			Entity: models.Entity{
+				Id:   os.Getenv(jobNameEnv),
+				Name: os.Getenv(jobNameEnv),
+			},
 		},
 		Job: models.Entity{
 			Id:   os.Getenv(stageNameEnv),

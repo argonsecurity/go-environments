@@ -35,6 +35,11 @@ type Repository struct {
 	Source   enums.Source
 }
 
+type Pipeline struct {
+	Entity
+	Path string
+}
+
 type Configuration struct {
 	Url             string
 	SCMApiUrl       string
@@ -46,7 +51,7 @@ type Configuration struct {
 	ProjectId       string
 	Job             Entity
 	Run             BuildRun
-	Pipeline        Entity
+	Pipeline        Pipeline
 	Runner          Runner
 	Repository      Repository
 	PullRequest     PullRequest
