@@ -196,10 +196,22 @@ func (e environment) IsCurrentEnvironment() bool {
 }
 
 func getRepositoryCloneURL(repositoryPath string) (string, error) {
-	if cloneUrl, isExist := os.LookupEnv(repositoryCloneURLEnv); isExist {
-		return cloneUrl, nil
+	var err error
+	cloneUrl, isExist := os.LookupEnv(repositoryCloneURLEnv)
+	if !isExist {
+		cloneUrl, err = git.GetGitRemoteURL(repositoryPath)
+		if err != nil {
+			return "", err
+		}
 	}
-	return git.GetGitRemoteURL(repositoryPath)
+
+	cloneUrl = strings.TrimSuffix(cloneUrl, "/")
+
+	if !strings.HasSuffix(cloneUrl, ".git") {
+		cloneUrl += ".git"
+	}
+
+	return cloneUrl, err
 }
 
 func GetRepositorySource(cloneUrl string) (enums.Source, string) {
@@ -223,11 +235,11 @@ func discoverSCMSource(gitUrl string) (enums.Source, string) {
 	httpClient := http.GetHTTPClient("", nil)
 	for _, url := range urls {
 		if gitlab.CheckGitlabByHTTPRequest(url, httpClient) {
-			return enums.GitlabServer, url
+			return enums.GitlabServer, gitlab.GetGitlabApiUrl(url)
 		}
 
 		// Checking github_token, after we checked for github saas already
-		if githubserver.CheckGithubServerByHTTPRequest(url, httpClient) || len(os.Getenv("GITHUB_TOKEN")) != 0 {
+		if githubserver.CheckGithubServerByHTTPRequest(url, httpClient) {
 			return enums.GithubServer, githubserver.GetGithubServerApiUrl(url)
 		}
 

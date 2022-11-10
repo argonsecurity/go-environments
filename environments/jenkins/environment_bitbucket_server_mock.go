@@ -85,7 +85,11 @@ func (em *EnvironmentBitbucketServerMock) GetStepLink() string {
 	return fmt.Sprintf("http://localhost:8080/job/%s/job/%s/job/main/8/display/redirect", MockBitbucketServerWorkspace, MockBitbucketServerRepo)
 }
 
-func (em *EnvironmentBitbucketServerMock) GetFileLineLink(filename string, ref string, line int) string {
+func (em EnvironmentBitbucketServerMock) GetFileLink(filename string, branch string, commit string) string {
+	return ""
+}
+
+func (em EnvironmentBitbucketServerMock) GetFileLineLink(filename string, branch string, commit string, startLine int, endLine int) string {
 	return ""
 }
 

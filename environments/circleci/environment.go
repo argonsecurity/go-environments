@@ -1,12 +1,13 @@
 package circleci
 
 import (
-	"github.com/argonsecurity/go-environments/environments/circleci/environments/github"
 	"os"
 	"path"
 	"runtime"
 	"strconv"
 	"strings"
+
+	"github.com/argonsecurity/go-environments/environments/circleci/environments/github"
 
 	"github.com/argonsecurity/go-environments/enums"
 	"github.com/argonsecurity/go-environments/environments/utils"
@@ -70,6 +71,9 @@ func loadConfiguration() (*models.Configuration, error) {
 	repoCloneUrl := os.Getenv(repositoryCloneURLEnv)
 	source, apiUrl := GetRepositorySource(repoCloneUrl)
 	scmLink, org, _, err := utils.ParseDataFromCloneUrl(repoCloneUrl, apiUrl, source)
+	if !strings.HasSuffix(scmLink, ".git") {
+		scmLink += ".git"
+	}
 	if err != nil {
 		return nil, err
 	}

@@ -55,3 +55,10 @@ func CheckGitlabByHTTPRequest(url string, httpClient http.HTTPService) bool {
 	_, err := httpClient.Get(apiUrl, nil, nil)
 	return err != nil && strings.Contains(err.Error(), "403 Forbidden")
 }
+
+func GetGitlabApiUrl(url string) string {
+	if strings.Contains(url, "/api/v4") {
+		return strings.Trim(url, "/")
+	}
+	return fmt.Sprintf("%s/api/v4", strings.Trim(url, "/"))
+}

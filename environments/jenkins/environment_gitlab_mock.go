@@ -86,7 +86,11 @@ func (em *EnvironmentGitlabMock) GetStepLink() string {
 	return fmt.Sprintf("http://localhost:8080/job/%s/job/%s/job/main/8/display/redirect", MockGitlabOrgName, MockGitlabRepoName)
 }
 
-func (em *EnvironmentGitlabMock) GetFileLineLink(filename string, ref string, line int) string {
+func (em EnvironmentGitlabMock) GetFileLink(filename string, branch string, commit string) string {
+	return ""
+}
+
+func (em EnvironmentGitlabMock) GetFileLineLink(filename string, branch string, commit string, startLine int, endLine int) string {
 	return ""
 }
 

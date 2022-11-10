@@ -86,7 +86,12 @@ func (em *EnvironmentMock) GetStepLink() string {
 }
 
 // GetFileLineLink get a link to a file line
-func (em *EnvironmentMock) GetFileLineLink(filename string, ref string, line int) string {
+func (em *EnvironmentMock) GetFileLink(filename string, branch string, commit string) string {
+	return fmt.Sprintf("https://dev.azure.com/%s/%s/", MockCollectionName, MockProjectName)
+}
+
+// GetFileLineLink get a link to a file line
+func (em *EnvironmentMock) GetFileLineLink(filename string, branch string, commit string, startLine int, endLine int) string {
 	return fmt.Sprintf("https://dev.azure.com/%s/%s/", MockCollectionName, MockProjectName)
 }
 

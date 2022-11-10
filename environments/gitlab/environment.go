@@ -65,6 +65,9 @@ func loadConfiguration() *models.Configuration {
 	source := getSource()
 	repoPath := os.Getenv(repositoryPathEnv)
 	cloneUrl := utils.StripCredentialsFromUrl(os.Getenv(repositoryCloneURLEnv))
+	if !strings.HasSuffix(cloneUrl, ".git") {
+		cloneUrl += ".git"
+	}
 	scmId := utils.GenerateScmId(cloneUrl)
 
 	configuration = &models.Configuration{

@@ -81,8 +81,12 @@ func (em *EnvironmentMock) GetStepLink() string {
 	return fmt.Sprintf("https://bitbucket.org/%s/results/%s/steps/%s", MockRepositoryName, MockRunnerId, url.PathEscape(MockStepId))
 }
 
-func (em *EnvironmentMock) GetFileLineLink(filePath string, ref string, line int) string {
-	return fmt.Sprintf("https:///bitbucket.org/%s/src/%s/%s#lines%d", MockRepositoryName, ref, filePath, line)
+func (em *EnvironmentMock) GetFileLink(filename string, branch string, commit string) string {
+	return fmt.Sprintf("https:///bitbucket.org/%s/src/%s", MockRepositoryName, branch)
+}
+
+func (em *EnvironmentMock) GetFileLineLink(filename string, branch string, commit string, startLine int, endLine int) string {
+	return fmt.Sprintf("https:///bitbucket.org/%s/src/%s/%s#lines%d", MockRepositoryName, branch, filename, startLine)
 }
 
 func (em *EnvironmentMock) IsCurrentEnvironment() bool {
