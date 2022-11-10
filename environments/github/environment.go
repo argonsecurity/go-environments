@@ -82,6 +82,7 @@ func loadConfiguration() error {
 
 	username := payload.Sender.Login
 	if username == "" {
+		configuration.Pusher = models.Pusher{}
 		configuration.Pusher.Username = utils.DetectPusher()
 	}
 	strippedCloneUrl := utils.StripCredentialsFromUrl(cloneUrl)
