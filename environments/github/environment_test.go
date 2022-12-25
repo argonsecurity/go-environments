@@ -68,6 +68,7 @@ func Test_environment_GetConfiguration(t *testing.T) {
 				Repository: models.Repository{
 					Id:       "507947722",
 					Name:     "test-repo",
+					FullName: "test-org/test-repo",
 					Url:      testRepoUrl,
 					CloneUrl: testRepoCloneUrl,
 					Source:   enums.Github,
@@ -145,6 +146,7 @@ func Test_environment_GetConfiguration(t *testing.T) {
 				Repository: models.Repository{
 					Id:       "19283746",
 					Name:     "test-repo",
+					FullName: "test-org/test-repo",
 					Url:      testRepoUrl,
 					CloneUrl: testRepoCloneUrl,
 					Source:   enums.Github,
@@ -210,6 +212,7 @@ func Test_environment_GetConfiguration(t *testing.T) {
 				Repository: models.Repository{
 					Id:       "507947722",
 					Name:     "test-repo",
+					FullName: "test-org/test-repo",
 					Url:      "https://github.test.com/test-org/test-repo",
 					CloneUrl: "https://github.com/test-org/test-repo.git",
 					Source:   enums.GithubServer,

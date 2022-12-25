@@ -44,6 +44,7 @@ func Test_environment_GetConfiguration(t *testing.T) {
 				Branch:    "main",
 				Repository: models.Repository{
 					Name:     "test-repo",
+					FullName: "test-organization/test-repo",
 					Url:      testRepoUrl,
 					CloneUrl: testRepoCloneUrl,
 					Source:   enums.Github,
@@ -99,6 +100,7 @@ func Test_environment_GetConfiguration(t *testing.T) {
 				Branch:    "main",
 				Repository: models.Repository{
 					Name:     "test-repo",
+					FullName: "test-organization/test-repo",
 					Url:      testRepoUrl,
 					CloneUrl: testRepoCloneUrl,
 					Source:   enums.Github,

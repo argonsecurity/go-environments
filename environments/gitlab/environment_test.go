@@ -51,6 +51,7 @@ func Test_environment_GetConfiguration(t *testing.T) {
 				Repository: models.Repository{
 					Id:       "88227733",
 					Name:     "test-project",
+					FullName: "test-group/test-sub-group/test-project",
 					Url:      testRepoUrl,
 					CloneUrl: testRepoCloneUrl,
 					Source:   enums.Gitlab,
@@ -111,6 +112,7 @@ func Test_environment_GetConfiguration(t *testing.T) {
 				Repository: models.Repository{
 					Id:       "12345678",
 					Name:     "test-project",
+					FullName: "test-group/test-sub-group/test-project",
 					Url:      testRepoUrl,
 					CloneUrl: testRepoCloneUrl,
 					Source:   enums.Gitlab,
@@ -171,6 +173,7 @@ func Test_environment_GetConfiguration(t *testing.T) {
 				Repository: models.Repository{
 					Id:       "88227733",
 					Name:     "test-project",
+					FullName: "test-group/test-sub-group/test-project",
 					Url:      "https://gitlab.test.com/test-group/test-sub-group/test-project",
 					CloneUrl: "https://gitlab.com/test-group/test-sub-group/test-project.git",
 					Source:   enums.GitlabServer,
