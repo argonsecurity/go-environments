@@ -318,12 +318,13 @@ func Test_parseDataFromCloneUrl(t *testing.T) {
 		repoSource enums.Source
 	}
 	tests := []struct {
-		name     string
-		args     args
-		wantUrl  string
-		wantOrg  string
-		wantRepo string
-		wantErr  bool
+		name             string
+		args             args
+		wantUrl          string
+		wantOrg          string
+		wantRepo         string
+		wantRepoFullName string
+		wantErr          bool
 	}{
 		{
 			name: "GitHub HTTP clone url",
@@ -332,9 +333,10 @@ func Test_parseDataFromCloneUrl(t *testing.T) {
 				apiUrl:     githubApiUrl,
 				repoSource: enums.Github,
 			},
-			wantUrl:  "https://github.com/test-organization/test-repo",
-			wantOrg:  "test-organization",
-			wantRepo: "test-repo",
+			wantUrl:          "https://github.com/test-organization/test-repo",
+			wantOrg:          "test-organization",
+			wantRepo:         "test-repo",
+			wantRepoFullName: "test-organization/test-repo",
 		},
 		{
 			name: "GitHub SSH clone url",
@@ -343,9 +345,10 @@ func Test_parseDataFromCloneUrl(t *testing.T) {
 				apiUrl:     githubApiUrl,
 				repoSource: enums.Github,
 			},
-			wantUrl:  "https://github.com/test-organization/test-repo",
-			wantOrg:  "test-organization",
-			wantRepo: "test-repo",
+			wantUrl:          "https://github.com/test-organization/test-repo",
+			wantOrg:          "test-organization",
+			wantRepo:         "test-repo",
+			wantRepoFullName: "test-organization/test-repo",
 		},
 		{
 			name: "GitLab HTTP clone url",
@@ -354,9 +357,10 @@ func Test_parseDataFromCloneUrl(t *testing.T) {
 				apiUrl:     gitlabApiUrl,
 				repoSource: enums.Gitlab,
 			},
-			wantUrl:  "https://gitlab.com/test-group/subgroup1/subgroup2/test-project",
-			wantOrg:  "test-group",
-			wantRepo: "test-project",
+			wantUrl:          "https://gitlab.com/test-group/subgroup1/subgroup2/test-project",
+			wantOrg:          "test-group",
+			wantRepo:         "test-project",
+			wantRepoFullName: "test-group/subgroup1/subgroup2/test-project",
 		},
 		{
 			name: "GitLab SSH clone url",
@@ -365,9 +369,10 @@ func Test_parseDataFromCloneUrl(t *testing.T) {
 				apiUrl:     gitlabApiUrl,
 				repoSource: enums.Gitlab,
 			},
-			wantUrl:  "https://gitlab.com/test-group/subgroup1/subgroup2/test-project",
-			wantOrg:  "test-group",
-			wantRepo: "test-project",
+			wantUrl:          "https://gitlab.com/test-group/subgroup1/subgroup2/test-project",
+			wantOrg:          "test-group",
+			wantRepo:         "test-project",
+			wantRepoFullName: "test-group/subgroup1/subgroup2/test-project",
 		},
 		{
 			name: "GitLab Server HTTP clone url",
@@ -376,9 +381,10 @@ func Test_parseDataFromCloneUrl(t *testing.T) {
 				apiUrl:     "https://server.com/gitlab",
 				repoSource: enums.GitlabServer,
 			},
-			wantUrl:  "https://server.com/gitlab/test-group/subgroup1/subgroup2/test-project",
-			wantOrg:  "test-group",
-			wantRepo: "test-project",
+			wantUrl:          "https://server.com/gitlab/test-group/subgroup1/subgroup2/test-project",
+			wantOrg:          "test-group",
+			wantRepo:         "test-project",
+			wantRepoFullName: "test-group/subgroup1/subgroup2/test-project",
 		},
 		{
 			name: "GitLab Server SSH clone url",
@@ -387,9 +393,10 @@ func Test_parseDataFromCloneUrl(t *testing.T) {
 				apiUrl:     "https://server.com/gitlab",
 				repoSource: enums.GitlabServer,
 			},
-			wantUrl:  "https://server.com/gitlab/test-group/subgroup1/subgroup2/test-project",
-			wantOrg:  "test-group",
-			wantRepo: "test-project",
+			wantUrl:          "https://server.com/gitlab/test-group/subgroup1/subgroup2/test-project",
+			wantOrg:          "test-group",
+			wantRepo:         "test-project",
+			wantRepoFullName: "test-group/subgroup1/subgroup2/test-project",
 		},
 		{
 			name: "Azure HTTP clone url",
@@ -398,9 +405,10 @@ func Test_parseDataFromCloneUrl(t *testing.T) {
 				apiUrl:     azureApiUrl,
 				repoSource: enums.Azure,
 			},
-			wantUrl:  "https://dev.azure.com/test-organization/test-project/_git/test-repo",
-			wantOrg:  "test-organization",
-			wantRepo: "test-repo",
+			wantUrl:          "https://dev.azure.com/test-organization/test-project/_git/test-repo",
+			wantOrg:          "test-organization",
+			wantRepo:         "test-repo",
+			wantRepoFullName: "test-organization/test-project/_git/test-repo",
 		},
 		{
 			name: "Azure SSH clone url",
@@ -409,9 +417,10 @@ func Test_parseDataFromCloneUrl(t *testing.T) {
 				apiUrl:     azureApiUrl,
 				repoSource: enums.Azure,
 			},
-			wantUrl:  "https://dev.azure.com/test-organization/test-project/_git/test-repo",
-			wantOrg:  "test-organization",
-			wantRepo: "test-repo",
+			wantUrl:          "https://dev.azure.com/test-organization/test-project/_git/test-repo",
+			wantOrg:          "test-organization",
+			wantRepo:         "test-repo",
+			wantRepoFullName: "v3/test-organization/test-project/test-repo",
 		},
 		{
 			name: "Azure Server HTTP clone url",
@@ -420,9 +429,10 @@ func Test_parseDataFromCloneUrl(t *testing.T) {
 				apiUrl:     "",
 				repoSource: enums.AzureServer,
 			},
-			wantUrl:  "https://azure-devops.server.com/test-organization/test-project/_git/test-repo",
-			wantOrg:  "test-organization",
-			wantRepo: "test-repo",
+			wantUrl:          "https://azure-devops.server.com/test-organization/test-project/_git/test-repo",
+			wantOrg:          "test-organization",
+			wantRepo:         "test-repo",
+			wantRepoFullName: "test-organization/test-project/_git/test-repo",
 		},
 		{
 			name: "Azure Server SSH clone url",
@@ -431,9 +441,10 @@ func Test_parseDataFromCloneUrl(t *testing.T) {
 				apiUrl:     "",
 				repoSource: enums.AzureServer,
 			},
-			wantUrl:  "https://azure-devops.server.com/test-organization/test-project/_git/test-repo",
-			wantOrg:  "test-organization",
-			wantRepo: "test-repo",
+			wantUrl:          "https://azure-devops.server.com/test-organization/test-project/_git/test-repo",
+			wantOrg:          "test-organization",
+			wantRepo:         "test-repo",
+			wantRepoFullName: "test-organization/test-project/_git/test-repo",
 		},
 		{
 			name: "Bitbucket HTTP clone url",
@@ -442,9 +453,10 @@ func Test_parseDataFromCloneUrl(t *testing.T) {
 				apiUrl:     bitbucketApiUrl,
 				repoSource: enums.Bitbucket,
 			},
-			wantUrl:  "https://bitbucket.org/test-project/test-repo",
-			wantOrg:  "test-project",
-			wantRepo: "test-repo",
+			wantUrl:          "https://bitbucket.org/test-project/test-repo",
+			wantOrg:          "test-project",
+			wantRepo:         "test-repo",
+			wantRepoFullName: "test-project/test-repo",
 		},
 		{
 			name: "Bitbucket SSH clone url",
@@ -453,9 +465,10 @@ func Test_parseDataFromCloneUrl(t *testing.T) {
 				apiUrl:     bitbucketApiUrl,
 				repoSource: enums.Bitbucket,
 			},
-			wantUrl:  "https://bitbucket.org/test-project/test-repo",
-			wantOrg:  "test-project",
-			wantRepo: "test-repo",
+			wantUrl:          "https://bitbucket.org/test-project/test-repo",
+			wantOrg:          "test-project",
+			wantRepo:         "test-repo",
+			wantRepoFullName: "test-project/test-repo",
 		},
 		{
 			name: "Bitbucket Server HTTP clone url",
@@ -464,9 +477,10 @@ func Test_parseDataFromCloneUrl(t *testing.T) {
 				apiUrl:     "https://bitbucket.server.com",
 				repoSource: enums.BitbucketServer,
 			},
-			wantUrl:  "https://bitbucket.server.com/projects/TS/repos/test-repo",
-			wantOrg:  "TS",
-			wantRepo: "test-repo",
+			wantUrl:          "https://bitbucket.server.com/projects/TS/repos/test-repo",
+			wantOrg:          "TS",
+			wantRepo:         "test-repo",
+			wantRepoFullName: "scm/TS/test-repo",
 		},
 		{
 			name: "Bitbucket Server SSH clone url",
@@ -475,9 +489,10 @@ func Test_parseDataFromCloneUrl(t *testing.T) {
 				apiUrl:     "https://bitbucket.server.com",
 				repoSource: enums.BitbucketServer,
 			},
-			wantUrl:  "https://bitbucket.server.com/projects/TS/repos/test-repo",
-			wantOrg:  "TS",
-			wantRepo: "test-repo",
+			wantUrl:          "https://bitbucket.server.com/projects/TS/repos/test-repo",
+			wantOrg:          "TS",
+			wantRepo:         "test-repo",
+			wantRepoFullName: "TS/test-repo",
 		},
 		{
 			name: "Cannot parse clone url",
@@ -486,15 +501,16 @@ func Test_parseDataFromCloneUrl(t *testing.T) {
 				apiUrl:     "",
 				repoSource: enums.BitbucketServer,
 			},
-			wantUrl:  "",
-			wantOrg:  "",
-			wantRepo: "",
-			wantErr:  true,
+			wantUrl:          "",
+			wantOrg:          "",
+			wantRepo:         "",
+			wantRepoFullName: "",
+			wantErr:          true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotUrl, gotOrg, gotRepo, err := ParseDataFromCloneUrl(tt.args.cloneUrl, tt.args.apiUrl, tt.args.repoSource)
+			gotUrl, gotOrg, gotRepo, gotRepoFullName, err := ParseDataFromCloneUrl(tt.args.cloneUrl, tt.args.apiUrl, tt.args.repoSource)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ParseDataFromCloneUrl() error = %v, wantErr %v", err, tt.wantErr)
 			}
@@ -506,6 +522,9 @@ func Test_parseDataFromCloneUrl(t *testing.T) {
 			}
 			if gotRepo != tt.wantRepo {
 				t.Errorf("ParseDataFromCloneUrl() gotRepo = %v, want %v", gotRepo, tt.wantRepo)
+			}
+			if gotRepoFullName != tt.wantRepoFullName {
+				t.Errorf("ParseDataFromCloneUrl() gotRepoFullName = %v, want %v", gotRepoFullName, tt.wantRepoFullName)
 			}
 		})
 	}

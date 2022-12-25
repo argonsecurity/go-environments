@@ -18,6 +18,7 @@ const (
 
 	repositoryPathEnv     = "CI_PROJECT_DIR"
 	projectNameEnv        = "CI_PROJECT_NAME"
+	projectPathEnv        = "CI_PROJECT_PATH"
 	groupNameEnv          = "CI_PROJECT_NAMESPACE"
 	projectIdEnv          = "CI_PROJECT_ID"
 	projectUrlEnv         = "CI_PROJECT_URL"
@@ -83,6 +84,7 @@ func loadConfiguration() *models.Configuration {
 		Repository: models.Repository{
 			Id:       os.Getenv(projectIdEnv),
 			Name:     os.Getenv(projectNameEnv),
+			FullName: os.Getenv(projectPathEnv),
 			Url:      os.Getenv(projectUrlEnv),
 			CloneUrl: cloneUrl,
 			Source:   source,

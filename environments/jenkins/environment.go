@@ -82,7 +82,7 @@ func loadConfiguration() (*models.Configuration, error) {
 	}
 
 	repoSource, apiUrl := GetRepositorySource(cloneUrl)
-	repositoryURL, org, repositoryName, err := utils.ParseDataFromCloneUrl(cloneUrl, apiUrl, repoSource)
+	repositoryURL, org, repositoryName, repositoryFullName, err := utils.ParseDataFromCloneUrl(cloneUrl, apiUrl, repoSource)
 	if err != nil {
 		return nil, err
 	}
@@ -106,6 +106,7 @@ func loadConfiguration() (*models.Configuration, error) {
 		CommitSha: commit,
 		Repository: models.Repository{
 			Name:     repositoryName,
+			FullName: repositoryFullName,
 			CloneUrl: cloneUrl,
 			Source:   repoSource,
 			Url:      repositoryURL,
