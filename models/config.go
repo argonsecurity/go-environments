@@ -30,7 +30,7 @@ type PullRequest struct {
 type Repository struct {
 	Id       string
 	Name     string
-	FullName string // including group, sub-group etc.
+	FullName string
 	Url      string
 	CloneUrl string
 	Source   enums.Source
