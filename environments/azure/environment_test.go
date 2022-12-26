@@ -52,6 +52,7 @@ func Test_environment_GetConfiguration(t *testing.T) {
 				Repository: models.Repository{
 					Id:       "6613da8a-3e14-4d4e-a06b-f8933353e044",
 					Name:     "test-repo",
+					FullName: "test-organization/test-repo/_git/test-repo",
 					Url:      "https://test-organization@dev.azure.com/test-organization/test-repo/_git/test-repo",
 					CloneUrl: testRepoCloneUrl,
 					Source:   enums.Azure,
@@ -113,6 +114,7 @@ func Test_environment_GetConfiguration(t *testing.T) {
 				Repository: models.Repository{
 					Id:       "6613da8a-3e14-4d4e-a06b-f8933353e044",
 					Name:     "test-repo",
+					FullName: "test-organization/test-repo/_git/test-repo",
 					Url:      "https://test-organization@dev.azure.com/test-organization/test-repo/_git/test-repo",
 					CloneUrl: testRepoCloneUrl,
 					Source:   enums.Azure,

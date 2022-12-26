@@ -56,7 +56,7 @@ func StripCredentialsFromUrl(urlToStrip string) string {
 }
 
 // ParseDataFromCloneUrl extracts data from the clone url
-// and returns the repository url, organization and repository name
+// and returns the repository url, organization, repository name and repository full name (including org, group, sub group etc.)
 // the base url is used for cases where the base of the scm url includes a part of the URI
 //
 // i.e https://example.company.io/gitlab

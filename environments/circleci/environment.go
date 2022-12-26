@@ -89,6 +89,7 @@ func loadConfiguration() (*models.Configuration, error) {
 
 	configuration = &models.Configuration{
 		Url:       "https://app.circleci.com",
+		SCMApiUrl: apiUrl,
 		LocalPath: repoCloneUrl,
 		Branch:    os.Getenv(branchEnv),
 		CommitSha: os.Getenv(commitShaEnv),
