@@ -74,6 +74,7 @@ func loadConfiguration() *models.Configuration {
 		Repository: models.Repository{
 			Id:       os.Getenv(repositoryIdEnv),
 			Name:     os.Getenv(repositoryNameEnv),
+			FullName: os.Getenv(repositoryFullNameEnv),
 			Url:      os.Getenv(repositoryUrlEnv),
 			CloneUrl: strippedCloneUrl,
 			Source:   source,

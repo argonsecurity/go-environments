@@ -41,9 +41,10 @@ const (
 	pullRequestSourceBranchEnv = "SYSTEM_PULLREQUEST_SOURCEBRANCH"
 	pullRequestTargetBranchEnv = "SYSTEM_PULLREQUEST_TARGETBRANCH"
 
-	repositoryIdEnv   = "BUILD_REPOSITORY_ID"
-	repositoryNameEnv = "BUILD_REPOSITORY_NAME"
-	repositoryUriEnv  = "BUILD_REPOSITORY_URI"
+	repositoryIdEnv       = "BUILD_REPOSITORY_ID"
+	repositoryNameEnv     = "BUILD_REPOSITORY_NAME"
+	repositoryFullNameEnv = "PROJECT_PATH"
+	repositoryUriEnv      = "BUILD_REPOSITORY_URI"
 
 	usernameEnv = "BUILD_REQUESTEDFOR"
 
@@ -113,6 +114,7 @@ func loadConfiguration() error {
 		Repository: models.Repository{
 			Id:       os.Getenv(repositoryIdEnv),
 			Name:     os.Getenv(repositoryNameEnv),
+			FullName: os.Getenv(repositoryFullNameEnv),
 			Url:      repoUrl,
 			CloneUrl: strippedCloneUrl,
 			Source:   source,

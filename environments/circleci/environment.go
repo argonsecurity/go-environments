@@ -70,7 +70,7 @@ func loadConfiguration() (*models.Configuration, error) {
 
 	repoCloneUrl := os.Getenv(repositoryCloneURLEnv)
 	source, apiUrl := GetRepositorySource(repoCloneUrl)
-	scmLink, org, _, err := utils.ParseDataFromCloneUrl(repoCloneUrl, apiUrl, source)
+	scmLink, org, _, repositoryFullName, err := utils.ParseDataFromCloneUrl(repoCloneUrl, apiUrl, source)
 	if !strings.HasSuffix(scmLink, ".git") {
 		scmLink += ".git"
 	}
@@ -89,11 +89,13 @@ func loadConfiguration() (*models.Configuration, error) {
 
 	configuration = &models.Configuration{
 		Url:       "https://app.circleci.com",
+		SCMApiUrl: apiUrl,
 		LocalPath: repoCloneUrl,
 		Branch:    os.Getenv(branchEnv),
 		CommitSha: os.Getenv(commitShaEnv),
 		Repository: models.Repository{
 			Name:     os.Getenv(repositoryNameEnv),
+			FullName: repositoryFullName,
 			CloneUrl: scmLink,
 			Source:   source,
 		},

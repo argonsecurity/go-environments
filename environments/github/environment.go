@@ -119,6 +119,7 @@ func loadConfiguration() error {
 		Repository: models.Repository{
 			Id:       repoId,
 			Name:     strings.Split(os.Getenv(githubRepositoryEnv), "/")[1],
+			FullName: os.Getenv(githubRepositoryEnv),
 			Url:      repoUrl,
 			CloneUrl: strippedCloneUrl,
 			Source:   source,

@@ -43,6 +43,7 @@
   "SYSTEM_JOBDISPLAYNAME": "Job",
   "ANDROID_NDK": "/usr/local/lib/android/sdk/ndk/25.1.8937393",
   "BUILD_REPOSITORY_NAME": "test-repo",
+  "PROJECT_PATH": "test-organization/test-repo/_git/test-repo",
   "BOOTSTRAP_HASKELL_NONINTERACTIVE": "1",
   "PWD": "/home/vsts/work/1/s",
   "PIPX_BIN_DIR": "/opt/pipx_bin",

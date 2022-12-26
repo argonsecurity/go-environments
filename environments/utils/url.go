@@ -56,15 +56,15 @@ func StripCredentialsFromUrl(urlToStrip string) string {
 }
 
 // ParseDataFromCloneUrl extracts data from the clone url
-// and returns the repository url, organization and repository name
+// and returns the repository url, organization, repository name and repository full name (including org, group, sub group etc.)
 // the base url is used for cases where the base of the scm url includes a part of the URI
 //
 // i.e https://example.company.io/gitlab
-func ParseDataFromCloneUrl(cloneUrl, apiUrl string, repoSource enums.Source) (string, string, string, error) {
+func ParseDataFromCloneUrl(cloneUrl, apiUrl string, repoSource enums.Source) (string, string, string, string, error) {
 	var regexp = uriRegexp
 	baseUrl, uri, isSshUrl, err := getUriFromCloneUrl(cloneUrl, apiUrl)
 	if err != nil {
-		return "", "", "", err
+		return "", "", "", "", err
 	}
 
 	// In bitbucket server the clone url looks like this: https://server-bitbucket.company.com/scm/project/repo.git
@@ -76,7 +76,7 @@ func ParseDataFromCloneUrl(cloneUrl, apiUrl string, repoSource enums.Source) (st
 	}
 	results := regexp.FindAllStringSubmatch(uri, -1)
 	if len(results) == 0 {
-		return "", "", "", fmt.Errorf("could not parse clone url: %s", cloneUrl)
+		return "", "", "", "", fmt.Errorf("could not parse clone url: %s", cloneUrl)
 	}
 	result := results[0]
 
@@ -86,8 +86,9 @@ func ParseDataFromCloneUrl(cloneUrl, apiUrl string, repoSource enums.Source) (st
 	} else { // url doesn't contains subgroups
 		org, repo = result[1], result[2]
 	}
+	repositoryFullName := strings.TrimSuffix(strings.TrimPrefix(result[0], "/"), ".git")
 
-	return buildScmLink(baseUrl, org, subgroups, repo, isSshUrl, repoSource), org, repo, nil
+	return buildScmLink(baseUrl, org, subgroups, repo, isSshUrl, repoSource), org, repo, repositoryFullName, nil
 }
 
 func buildGenericScmLink(baseUrl, org, subgroups, repo string, isSshUrl bool) string {

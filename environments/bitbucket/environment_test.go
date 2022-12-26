@@ -44,6 +44,7 @@ func Test_environment_GetConfiguration(t *testing.T) {
 				Repository: models.Repository{
 					Id:       "{d41c6669-e5cb-4bfb-96f3-77bebd632437}",
 					Name:     "test-repo",
+					FullName: "test-workspace/test-repo",
 					Url:      testRepoUrl,
 					CloneUrl: testRepoCloneUrl,
 					Source:   enums.Bitbucket,
@@ -87,6 +88,7 @@ func Test_environment_GetConfiguration(t *testing.T) {
 				Repository: models.Repository{
 					Id:       "{d41c6669-e5cb-4bfb-96f3-77bebd632437}",
 					Name:     "test-repo",
+					FullName: "test-workspace/test-repo",
 					Url:      testRepoUrl,
 					CloneUrl: testRepoCloneUrl,
 					Source:   enums.Bitbucket,
