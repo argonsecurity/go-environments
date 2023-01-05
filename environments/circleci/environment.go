@@ -22,6 +22,10 @@ const (
 	repositoryNameEnv     = "CIRCLE_PROJECT_REPONAME"
 	branchEnv             = "CIRCLE_BRANCH"
 	circlePullRequestUrl  = "CIRCLE_PULL_REQUEST"
+	workflowIdEnv         = "CIRCLE_WORKFLOW_ID"
+	jobNameEnv            = "CIRCLE_JOB"
+	jobIdEnv              = "CIRCLE_WORKFLOW_JOB_ID"
+	pipelinePath          = ".circleci/config.yml"
 
 	githubHostname    = "github.com"
 	gitlabHostname    = "gitlab.com"
@@ -70,7 +74,8 @@ func loadConfiguration() (*models.Configuration, error) {
 
 	repoCloneUrl := os.Getenv(repositoryCloneURLEnv)
 	source, apiUrl := GetRepositorySource(repoCloneUrl)
-	scmLink, org, _, repositoryFullName, err := utils.ParseDataFromCloneUrl(repoCloneUrl, apiUrl, source)
+	scmUrl, org, _, repositoryFullName, err := utils.ParseDataFromCloneUrl(repoCloneUrl, apiUrl, source)
+	scmLink := scmUrl
 	if !strings.HasSuffix(scmLink, ".git") {
 		scmLink += ".git"
 	}
@@ -98,6 +103,18 @@ func loadConfiguration() (*models.Configuration, error) {
 			FullName: repositoryFullName,
 			CloneUrl: scmLink,
 			Source:   source,
+			Url:      scmUrl,
+		},
+		Pipeline: models.Pipeline{
+			Entity: models.Entity{
+				Id:   os.Getenv(workflowIdEnv),
+				Name: os.Getenv(workflowIdEnv),
+			},
+			Path: getPipelinePath(),
+		},
+		Job: models.Entity{
+			Id:   os.Getenv(jobIdEnv),
+			Name: os.Getenv(jobNameEnv),
 		},
 		Builder: builder,
 		Organization: models.Entity{
@@ -116,15 +133,26 @@ func loadConfiguration() (*models.Configuration, error) {
 		},
 		PullRequest: models.PullRequest{
 			Id: pullRequestId,
+			SourceRef: models.Ref{
+				Branch: os.Getenv(branchEnv),
+			},
 			TargetRef: models.Ref{
 				Branch: targetBranch,
 			},
 		},
-		Environment: enums.CircleCi,
-		ScmId:       scmId,
+		Environment:   enums.CircleCi,
+		ScmId:         scmId,
+		PipelinePaths: []string{getPipelinePath()},
 	}
 
 	return configuration, nil
+}
+
+func getPipelinePath() string {
+	if _, err := os.Stat(pipelinePath); err == nil {
+		return pipelinePath
+	}
+	return ""
 }
 
 func (e environment) Name() string {
