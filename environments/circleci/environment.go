@@ -25,6 +25,7 @@ const (
 	workflowIdEnv         = "CIRCLE_WORKFLOW_ID"
 	jobNameEnv            = "CIRCLE_JOB"
 	jobIdEnv              = "CIRCLE_WORKFLOW_JOB_ID"
+	buildUrlEnv           = "CIRCLE_BUILD_URL"
 	pipelinePath          = ".circleci/config.yml"
 
 	githubHostname    = "github.com"
@@ -46,7 +47,7 @@ var (
 type environment struct{}
 
 func (e environment) GetBuildLink() string {
-	return ""
+	return os.Getenv(buildUrlEnv)
 }
 
 func (e environment) GetStepLink() string {
@@ -71,7 +72,6 @@ func (e environment) GetConfiguration() (*models.Configuration, error) {
 }
 
 func loadConfiguration() (*models.Configuration, error) {
-
 	repoCloneUrl := os.Getenv(repositoryCloneURLEnv)
 	source, apiUrl := GetRepositorySource(repoCloneUrl)
 	scmUrl, org, _, repositoryFullName, err := utils.ParseDataFromCloneUrl(repoCloneUrl, apiUrl, source)
@@ -160,7 +160,6 @@ func (e environment) Name() string {
 }
 
 func (e environment) IsCurrentEnvironment() bool {
-
 	circleCi := os.Getenv("CIRCLECI")
 	return circleCi == "true"
 }
@@ -175,7 +174,6 @@ func GetRepositorySource(cloneUrl string) (enums.Source, string) {
 		return enums.Azure, azureApiUrl
 	case strings.Contains(cloneUrl, gitlabHostname):
 		return enums.Gitlab, gitlabApiUrl
-
 	}
 
 	return enums.Unknown, ""
