@@ -8,5 +8,6 @@
   "CIRCLE_PULL_REQUEST": "https://github.com/test-organization/test-repo/pull/49",
   "CIRCLE_WORKFLOW_ID": "test_workflow",
   "CIRCLE_JOB": "test_job",
-  "CIRCLE_WORKFLOW_JOB_ID": "job123456"
+  "CIRCLE_WORKFLOW_JOB_ID": "job123456",
+  "CIRCLE_WORKING_DIRECTORY": "/tmp/circleci/repo"
 }

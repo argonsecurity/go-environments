@@ -51,7 +51,7 @@ func Test_environment_GetConfiguration(t *testing.T) {
 						Id:   "test_workflow",
 						Name: "test_workflow",
 					},
-					Path: "",
+					Path: ".circleci/config.yml",
 				},
 				Job: models.Entity{
 					Id:   "job123456",
@@ -77,7 +77,7 @@ func Test_environment_GetConfiguration(t *testing.T) {
 				},
 				Environment:   enums.CircleCi,
 				ScmId:         "8891c0db39f3064732cc1b4ac02c9b9f",
-				PipelinePaths: []string{""},
+				PipelinePaths: []string{".circleci/config.yml"},
 			},
 			wantErr: false,
 		},

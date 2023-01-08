@@ -1,6 +1,7 @@
 package circleci
 
 import (
+	"fmt"
 	"os"
 	"path"
 	"runtime"
@@ -26,6 +27,7 @@ const (
 	jobNameEnv            = "CIRCLE_JOB"
 	jobIdEnv              = "CIRCLE_WORKFLOW_JOB_ID"
 	buildUrlEnv           = "CIRCLE_BUILD_URL"
+	workingDirectoryEnv   = "CIRCLE_WORKING_DIRECTORY"
 	pipelinePath          = ".circleci/config.yml"
 
 	githubHostname    = "github.com"
@@ -72,6 +74,7 @@ func (e environment) GetConfiguration() (*models.Configuration, error) {
 }
 
 func loadConfiguration() (*models.Configuration, error) {
+	repoPath := os.Getenv(workingDirectoryEnv)
 	repoCloneUrl := os.Getenv(repositoryCloneURLEnv)
 	source, apiUrl := GetRepositorySource(repoCloneUrl)
 	scmUrl, org, _, repositoryFullName, err := utils.ParseDataFromCloneUrl(repoCloneUrl, apiUrl, source)
@@ -110,7 +113,7 @@ func loadConfiguration() (*models.Configuration, error) {
 				Id:   os.Getenv(workflowIdEnv),
 				Name: os.Getenv(workflowIdEnv),
 			},
-			Path: getPipelinePath(),
+			Path: getPipelinePath(repoPath),
 		},
 		Job: models.Entity{
 			Id:   os.Getenv(jobIdEnv),
@@ -142,14 +145,14 @@ func loadConfiguration() (*models.Configuration, error) {
 		},
 		Environment:   enums.CircleCi,
 		ScmId:         scmId,
-		PipelinePaths: []string{getPipelinePath()},
+		PipelinePaths: []string{getPipelinePath(repoPath)},
 	}
 
 	return configuration, nil
 }
 
-func getPipelinePath() string {
-	if _, err := os.Stat(pipelinePath); err == nil {
+func getPipelinePath(repoPath string) string {
+	if _, err := os.Stat(fmt.Sprintf("%s/%s", repoPath, pipelinePath)); err == nil {
 		return pipelinePath
 	}
 	return ""
