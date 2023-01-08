@@ -152,8 +152,9 @@ func loadConfiguration() (*models.Configuration, error) {
 }
 
 func getPipelinePath(repoPath string) string {
-	if _, err := os.Stat(fmt.Sprintf("%s/%s", repoPath, pipelinePath)); err == nil {
-		return pipelinePath
+	path := fmt.Sprintf("%s/%s", repoPath, pipelinePath)
+	if _, err := os.Stat(path); err == nil {
+		return path
 	}
 	return ""
 }
