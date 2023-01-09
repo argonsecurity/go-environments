@@ -1,6 +1,7 @@
 package circleci
 
 import (
+	"fmt"
 	"os"
 	"path"
 	"runtime"
@@ -22,6 +23,12 @@ const (
 	repositoryNameEnv     = "CIRCLE_PROJECT_REPONAME"
 	branchEnv             = "CIRCLE_BRANCH"
 	circlePullRequestUrl  = "CIRCLE_PULL_REQUEST"
+	workflowIdEnv         = "CIRCLE_WORKFLOW_ID"
+	jobNameEnv            = "CIRCLE_JOB"
+	jobIdEnv              = "CIRCLE_WORKFLOW_JOB_ID"
+	buildUrlEnv           = "CIRCLE_BUILD_URL"
+	workingDirectoryEnv   = "CIRCLE_WORKING_DIRECTORY"
+	pipelinePath          = ".circleci/config.yml"
 
 	githubHostname    = "github.com"
 	gitlabHostname    = "gitlab.com"
@@ -42,7 +49,7 @@ var (
 type environment struct{}
 
 func (e environment) GetBuildLink() string {
-	return ""
+	return os.Getenv(buildUrlEnv)
 }
 
 func (e environment) GetStepLink() string {
@@ -67,10 +74,11 @@ func (e environment) GetConfiguration() (*models.Configuration, error) {
 }
 
 func loadConfiguration() (*models.Configuration, error) {
-
+	repoPath := os.Getenv(workingDirectoryEnv)
 	repoCloneUrl := os.Getenv(repositoryCloneURLEnv)
 	source, apiUrl := GetRepositorySource(repoCloneUrl)
-	scmLink, org, _, repositoryFullName, err := utils.ParseDataFromCloneUrl(repoCloneUrl, apiUrl, source)
+	scmUrl, org, _, repositoryFullName, err := utils.ParseDataFromCloneUrl(repoCloneUrl, apiUrl, source)
+	scmLink := scmUrl
 	if !strings.HasSuffix(scmLink, ".git") {
 		scmLink += ".git"
 	}
@@ -98,6 +106,18 @@ func loadConfiguration() (*models.Configuration, error) {
 			FullName: repositoryFullName,
 			CloneUrl: scmLink,
 			Source:   source,
+			Url:      scmUrl,
+		},
+		Pipeline: models.Pipeline{
+			Entity: models.Entity{
+				Id:   os.Getenv(workflowIdEnv),
+				Name: os.Getenv(workflowIdEnv),
+			},
+			Path: getPipelinePath(repoPath),
+		},
+		Job: models.Entity{
+			Id:   os.Getenv(jobIdEnv),
+			Name: os.Getenv(jobNameEnv),
 		},
 		Builder: builder,
 		Organization: models.Entity{
@@ -116,15 +136,27 @@ func loadConfiguration() (*models.Configuration, error) {
 		},
 		PullRequest: models.PullRequest{
 			Id: pullRequestId,
+			SourceRef: models.Ref{
+				Branch: os.Getenv(branchEnv),
+			},
 			TargetRef: models.Ref{
 				Branch: targetBranch,
 			},
 		},
-		Environment: enums.CircleCi,
-		ScmId:       scmId,
+		Environment:   enums.CircleCi,
+		ScmId:         scmId,
+		PipelinePaths: []string{getPipelinePath(repoPath)},
 	}
 
 	return configuration, nil
+}
+
+func getPipelinePath(repoPath string) string {
+	path := fmt.Sprintf("%s/%s", repoPath, pipelinePath)
+	if _, err := os.Stat(path); err == nil {
+		return path
+	}
+	return ""
 }
 
 func (e environment) Name() string {
@@ -132,7 +164,6 @@ func (e environment) Name() string {
 }
 
 func (e environment) IsCurrentEnvironment() bool {
-
 	circleCi := os.Getenv("CIRCLECI")
 	return circleCi == "true"
 }
@@ -147,7 +178,6 @@ func GetRepositorySource(cloneUrl string) (enums.Source, string) {
 		return enums.Azure, azureApiUrl
 	case strings.Contains(cloneUrl, gitlabHostname):
 		return enums.Gitlab, gitlabApiUrl
-
 	}
 
 	return enums.Unknown, ""

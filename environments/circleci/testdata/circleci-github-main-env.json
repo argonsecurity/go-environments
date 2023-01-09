@@ -5,7 +5,9 @@
   "CIRCLE_SHA1": "kcy8v2oazy4acuo1475rgtzg0nh403p23vw812lv",
   "CIRCLE_PROJECT_REPONAME": "test-repo",
   "CIRCLE_BUILD_NUM": 4,
-  "CIRCLE_PULL_REQUEST":"https://github.com/test-organization/test-repo/pull/49"
-
-
+  "CIRCLE_PULL_REQUEST": "https://github.com/test-organization/test-repo/pull/49",
+  "CIRCLE_WORKFLOW_ID": "test_workflow",
+  "CIRCLE_JOB": "test_job",
+  "CIRCLE_WORKFLOW_JOB_ID": "job123456",
+  "CIRCLE_WORKING_DIRECTORY": "/tmp/circleci/repo"
 }

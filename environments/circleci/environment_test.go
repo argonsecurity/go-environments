@@ -44,6 +44,18 @@ func Test_environment_GetConfiguration(t *testing.T) {
 					FullName: "test-organization/test-repo",
 					CloneUrl: testRepoCloneUrl,
 					Source:   enums.Github,
+					Url:      testRepoUrl,
+				},
+				Pipeline: models.Pipeline{
+					Entity: models.Entity{
+						Id:   "test_workflow",
+						Name: "test_workflow",
+					},
+					Path: fmt.Sprintf("%s/%s", testRepoPath, pipelinePath),
+				},
+				Job: models.Entity{
+					Id:   "job123456",
+					Name: "test_job",
 				},
 				Organization: models.Entity{
 					Name: "test-organization",
@@ -59,9 +71,13 @@ func Test_environment_GetConfiguration(t *testing.T) {
 				},
 				PullRequest: models.PullRequest{
 					Id: "49",
+					SourceRef: models.Ref{
+						Branch: "main",
+					},
 				},
-				Environment: enums.CircleCi,
-				ScmId:       "8891c0db39f3064732cc1b4ac02c9b9f",
+				Environment:   enums.CircleCi,
+				ScmId:         "8891c0db39f3064732cc1b4ac02c9b9f",
+				PipelinePaths: []string{fmt.Sprintf("%s/%s", testRepoPath, pipelinePath)},
 			},
 			wantErr: false,
 		},
